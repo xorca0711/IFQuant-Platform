@@ -149,7 +149,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-e6db1d29f1ad84514a66b273238dc2bc28d522fd896b0ce2d0d9846494beff4f
+ed690a9fb7273d16118b956744d003286e18d696c89866e9798bd5643a56d3ee
 ```
 
 ## Reproducible QuPath 0.7 CLI

@@ -524,6 +524,8 @@ final class IfQuantV1Exporter {
             }
             cellRecords.add(record)
         }
+        Map<String, Integer> objectQcFlagCounts =
+            countObjectQcFlags(cellRecords)
 
         List<Path> published = []
         try {
@@ -564,6 +566,7 @@ final class IfQuantV1Exporter {
                 qcConfig,
                 provenanceConfig,
                 configCanonicalSha256,
+                objectQcFlagCounts,
                 exclusionCounts
             )
             publishJson(outputDirectory, PACKAGE_PATH, packageDocument, published)
@@ -578,6 +581,7 @@ final class IfQuantV1Exporter {
             status: "exported_" + PILOT_STATUS,
             package_path: outputDirectory.resolve(PACKAGE_PATH).toString(),
             object_count: cellRecords.size(),
+            object_qc_flag_counts: objectQcFlagCounts,
             excluded_cell_counts: exclusionCounts,
             scientific_validation: false,
             backend_equivalence: false,
@@ -1768,6 +1772,7 @@ final class IfQuantV1Exporter {
         Map<String, Object> qcConfig,
         Map<String, Object> provenanceConfig,
         String configSha256,
+        Map<String, Integer> objectQcFlagCounts,
         Map<String, Integer> exclusionCounts
     ) {
         Map<String, Object> acquisition = requireMap(image.get("acquisition"), "image.acquisition")
@@ -1780,6 +1785,18 @@ final class IfQuantV1Exporter {
             "qc.package_flags"
         ).collect { new LinkedHashMap<>(it) }
         appendExclusionQcFlags(packageFlags, exclusionCounts)
+        Integer uncoveredNucleusCount = objectQcFlagCounts.get(
+            "nucleus_not_covered_by_cell_geometry"
+        )
+        if (uncoveredNucleusCount != null && uncoveredNucleusCount > 0) {
+            appendExporterQcFlag(packageFlags, [
+                code: "objects_nucleus_not_covered_by_cell_geometry",
+                severity: "warning",
+                message: uncoveredNucleusCount +
+                    " exported object(s) have normalized nucleus geometry " +
+                    "that is not covered by cell geometry."
+            ])
+        }
         if (objectCount == 0) {
             appendExporterQcFlag(packageFlags, [
                 code: "zero_cells_exported",
@@ -2585,6 +2602,27 @@ final class IfQuantV1Exporter {
                     descriptions.get(reason) + " and were excluded."
             ])
         }
+    }
+
+    static Map<String, Integer> countObjectQcFlags(
+        List<Map<String, Object>> records
+    ) {
+        Map<String, Integer> counts = new TreeMap<>()
+        for (Map<String, Object> record : records) {
+            Map<String, Object> qc = requireMap(
+                record.get("qc"),
+                "generated cell_object.qc"
+            )
+            List<Map<String, Object>> flags = typedMapList(
+                requireList(qc.get("flags"), "generated cell_object.qc.flags"),
+                "generated cell_object.qc.flags"
+            )
+            for (Map<String, Object> flag : flags) {
+                String code = flag.get("code").toString()
+                counts.put(code, (counts.get(code) ?: 0) + 1)
+            }
+        }
+        return counts
     }
 
     static void validateMorphologyCombination(String compartment, String feature, String unit, String context) {
