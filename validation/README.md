@@ -1,7 +1,8 @@
 # Validation
 
-The current execution-readiness record is in `PILOT_STATUS.md`. It explicitly
-records that no microscopy pilot has yet run on this host.
+The current execution and evidence record is in `PILOT_STATUS.md`. It records
+the completed structurally valid engineering pilot and its explicit
+non-validation boundaries.
 
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that
