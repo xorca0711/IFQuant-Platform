@@ -91,7 +91,7 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             "pluginCompletedAt.toString()",
             "sourceDetectionId",
             "cell.getID()",
-            "disableUnicodeEscaping()",
+            "appendJsonString(",
             "toPlainString()",
             "552826a2f58ca54e04be7b10fe1c3a349aba62618f370e6d80f384bf60d38111",
             "452d85ac99d2fe777a0511646a392e96f37b79b1a0b73f03914b7b4f75cf7e24",
@@ -101,6 +101,7 @@ class QuPathProofOfConceptTests(unittest.TestCase):
                 self.assertIn(fragment, self.script)
         for forbidden_path in ("X:\\", "D:\\", "C:\\"):
             self.assertNotIn(forbidden_path, self.script)
+        self.assertNotIn("groovy.json", self.script)
         self.assertNotIn("produced no cells", self.script.lower())
         readme = QUPATH_README.read_text(encoding="utf-8")
         self.assertIn("Project-only execution", readme)

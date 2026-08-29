@@ -82,7 +82,7 @@
       "kind": "native_qupath",
       "name": "QuPath WatershedCellDetection",
       "version": "0.7.0",
-      "artifact_sha256": "<REPLACE_WITH_64_HEX_QUPATH_RUNTIME_ARTIFACT_SHA256>"
+      "artifact_sha256": "<REPLACE_WITH_64_HEX_QUPATH_BACKEND_IMPLEMENTATION_ARTIFACT_SHA256>"
     },
     "detector": {
       "detector_id": "qupath_watershed_cell_detection",
@@ -231,7 +231,7 @@
   },
   "execution": {
     "script_path": "../scripts/DetectCellsAndExport.groovy",
-    "expected_script_sha256": "4ba40609b938fd4425acef2ec18ab96328725521c4dd6b5ee13ab081bc73f246",
+    "expected_script_sha256": "e6db1d29f1ad84514a66b273238dc2bc28d522fd896b0ce2d0d9846494beff4f",
     "script_contract": "ifquant.qupath-cell-exporter/v1",
     "script_version": "1.0.0"
   },

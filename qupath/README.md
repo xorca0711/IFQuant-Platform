@@ -82,10 +82,13 @@ Important bindings:
    QuPath through `ScriptAttributes.FILE_PATH`. Normalized paths must be
    equal, the filename and embedded contract/version sentinel must match, and
    the bytes must match `execution.expected_script_sha256`.
-6. `segmentation.backend.version` must equal the running QuPath version. The
-   backend artifact, algorithm descriptor, preprocessing profile, runtime
-   environment, code revision, and run/package identities must all be real,
-   immutable values for the run.
+6. `segmentation.backend.version` must equal the running QuPath version.
+   `segmentation.backend.artifact_sha256` must identify the implementation
+   artifact containing the configured plugin class (for the native 0.7 pilot,
+   `qupath-core-processing-0.7.0.jar`), not only the QuPath launcher. Record that
+   implementation artifact in the runtime attestation as well. The algorithm
+   descriptor, preprocessing profile, runtime environment, code revision, and
+   run/package identities must all be real, immutable values for the run.
    Plugin start/completion timestamps are captured around `QP.runPlugin` by
    the exporter; they are not accepted as predeclared config assertions.
 7. The three intensity `source_measurement` values are exact, case-sensitive
@@ -146,7 +149,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-4ba40609b938fd4425acef2ec18ab96328725521c4dd6b5ee13ab081bc73f246
+e6db1d29f1ad84514a66b273238dc2bc28d522fd896b0ce2d0d9846494beff4f
 ```
 
 ## Reproducible QuPath 0.7 CLI
@@ -229,8 +232,9 @@ Structural validation is necessary but is not scientific validation.
 
 ## Deliberate limitations
 
-- QuPath is not installed on the scaffold host, so this Groovy file has not
-  been compiled or executed against a microscopy image here.
+- QuPath 0.7.0 compiled and executed this exporter in the initial engineering
+  pilot recorded in `../validation/PILOT_STATUS.md`. One host and one synthetic
+  ROI do not establish broader runtime compatibility or scientific validity.
 - Canonical serialization, geometry-derived object identity, and row ordering
   are deterministic. Actual plugin timestamps and QuPath detection UUIDs are
   deliberately run-specific, so complete package bytes are not claimed to be

@@ -10,7 +10,6 @@
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
-import groovy.json.JsonGenerator
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.PrecisionModel
 import org.locationtech.jts.geom.util.AffineTransformation
@@ -70,10 +69,6 @@ final class IfQuantV1Exporter {
         "ifquant-platform-method-instance/v1"
     static final String WATERSHED_PLUGIN =
         "qupath.imagej.detect.cells.WatershedCellDetection"
-    static final JsonGenerator STRING_JSON = new JsonGenerator.Options()
-        .disableUnicodeEscaping()
-        .build()
-
     static final String IMAGE_MANIFEST_PATH =
         "manifests/image-manifest.json"
     static final String CHANNEL_MANIFEST_PATH =
@@ -2290,7 +2285,7 @@ final class IfQuantV1Exporter {
         }
         if (value instanceof String) {
             rejectUnpairedSurrogates((String) value, "canonical JSON string")
-            builder.append(STRING_JSON.toJson(value))
+            appendJsonString(builder, (String) value)
             return
         }
         if (value instanceof Boolean) {
@@ -2314,7 +2309,7 @@ final class IfQuantV1Exporter {
                 if (!first) builder.append(",")
                 first = false
                 rejectUnpairedSurrogates(key, "canonical JSON object key")
-                builder.append(STRING_JSON.toJson(key))
+                appendJsonString(builder, key)
                 builder.append(":")
                 appendCanonicalJson(builder, value.get(key))
             }
@@ -2348,6 +2343,51 @@ final class IfQuantV1Exporter {
                 fail(context + " contains an unpaired low surrogate")
             }
         }
+    }
+
+    static void appendJsonString(StringBuilder builder, String value) {
+        rejectUnpairedSurrogates(value, "JSON string")
+        builder.append('"')
+        for (int index = 0; index < value.length(); index++) {
+            char codeUnit = value.charAt(index)
+            switch (codeUnit) {
+                case '"' as char:
+                    builder.append('\\"')
+                    break
+                case '\\' as char:
+                    builder.append('\\\\')
+                    break
+                case '\b' as char:
+                    builder.append('\\b')
+                    break
+                case '\f' as char:
+                    builder.append('\\f')
+                    break
+                case '\n' as char:
+                    builder.append('\\n')
+                    break
+                case '\r' as char:
+                    builder.append('\\r')
+                    break
+                case '\t' as char:
+                    builder.append('\\t')
+                    break
+                default:
+                    if (codeUnit < 0x20) {
+                        builder.append('\\u')
+                        builder.append(String.format(Locale.ROOT, '%04x', (int) codeUnit))
+                    } else {
+                        builder.append(codeUnit)
+                    }
+            }
+        }
+        builder.append('"')
+    }
+
+    static String jsonString(String value) {
+        StringBuilder builder = new StringBuilder()
+        appendJsonString(builder, value)
+        return builder.toString()
     }
 
     static String canonicalSha256(Object value) {
@@ -2727,7 +2767,7 @@ final class IfQuantV1Exporter {
     }
 
     static String quoted(String value) {
-        return STRING_JSON.toJson(value)
+        return jsonString(value)
     }
 }
 
