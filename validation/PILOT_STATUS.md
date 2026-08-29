@@ -10,8 +10,9 @@ not contain the exact exporter bytes used at execution.
 
 ## Input and project boundary
 
-- `D:\Microscopy_Images` was used read-only. The selected VSI and its
-  pixel-bearing ETS companions were not renamed, copied in place, or modified.
+- The authorized microscopy input root was used read-only. The selected VSI and
+  its pixel-bearing ETS companions were not renamed, copied in place, or
+  modified.
 - The historical `IFQuant-Lung` repository and its QuPath projects were not
   modified. The unrelated pre-existing
   `scripts/export_vsi_overviews.groovy` working-tree edit was not copied.
@@ -76,9 +77,10 @@ identities are incomplete, package QC is `not_evaluated`, and review state is
 
 The local evidence manifest is
 `validation/output/pilot-20260829-engineering-02/attestations/evidence-manifest.json`.
-The entire run directory is Git-ignored and local-only, the package contains
-workstation-absolute file URIs, and the repository has no configured remote.
-Therefore this record is neither independently portable nor durably preserved.
+The entire run directory is Git-ignored and local-only, and the package contains
+workstation-absolute file URIs. Publishing the source repository does not
+publish that evidence bundle. Therefore this record is neither independently
+portable nor durably preserved.
 
 This result does not establish scientific validity, segmentation accuracy,
 backend equivalence, model universality, endpoint fitness, or authorization for

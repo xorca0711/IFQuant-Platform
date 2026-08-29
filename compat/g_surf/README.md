@@ -4,7 +4,7 @@ This directory is an isolated compatibility and regression edge for the
 historical G-SURF implementation. It is not an authority directory and is not a
 template for the new platform.
 
-The historical source at `X:\GitHub\IFQuant-Lung` remains read-only. Any
+The separate historical `IFQuant-Lung` source repository remains read-only. Any
 compatibility exercise must identify an explicit committed revision and the
 specific legacy behavior being checked. An uncommitted working tree is never an
 input or dependency.

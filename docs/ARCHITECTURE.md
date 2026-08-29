@@ -165,10 +165,10 @@ hash with a filename match.
 
 ## Historical compatibility boundary
 
-`X:\GitHub\IFQuant-Lung` remains a read-only historical G-SURF record. The
-compatibility layer may refer to an explicit committed revision and documented
-legacy behavior. It must not copy source authority, release outputs, current
-working-tree changes, or the historical production directory structure into
+The separate `IFQuant-Lung` repository remains a read-only historical G-SURF
+record. The compatibility layer may refer to an explicit committed revision and
+documented legacy behavior. It must not copy source authority, release outputs,
+current working-tree changes, or the historical production directory structure into
 the new core. Fiji is retained only as a frozen compatibility/regression
 reference, never as the design center of the platform.
 
