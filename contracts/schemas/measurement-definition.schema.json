@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/measurement-definition.schema.json",
+  "title": "IFQuant Platform measurement definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "contract_type",
+    "definition_id",
+    "definition_version",
+    "object_type",
+    "dimensionality",
+    "semantic_inputs",
+    "parameter_slots",
+    "features",
+    "missingness",
+    "aggregation"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/measurement-definition.schema.json"
+    },
+    "schema_version": { "const": "1.0.0" },
+    "contract_type": { "const": "ifquant_platform_measurement_definition" },
+    "definition_id": { "$ref": "#/$defs/id" },
+    "definition_version": { "$ref": "#/$defs/semver" },
+    "object_type": { "const": "cell" },
+    "dimensionality": { "const": "2d" },
+    "semantic_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input_id",
+          "marker_id",
+          "intensity_coordinate",
+          "intensity_representation",
+          "intensity_transform"
+        ],
+        "properties": {
+          "input_id": { "$ref": "#/$defs/id" },
+          "marker_id": { "$ref": "#/$defs/id" },
+          "intensity_coordinate": {
+            "enum": ["native_sample_value", "normalized_unit_interval"]
+          },
+          "intensity_representation": {
+            "enum": ["unsigned_integer", "floating_point"]
+          },
+          "intensity_transform": { "enum": ["none", "linear_rescale", "log1p"] }
+        }
+      }
+    },
+    "parameter_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["parameter_id", "value_type", "unit", "constraints"],
+        "properties": {
+          "parameter_id": { "$ref": "#/$defs/id" },
+          "value_type": { "enum": ["boolean", "integer", "number", "string"] },
+          "unit": { "$ref": "#/$defs/id" },
+          "constraints": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["minimum", "maximum", "allowed_values"],
+            "properties": {
+              "minimum": { "type": ["number", "null"] },
+              "maximum": { "type": ["number", "null"] },
+              "allowed_values": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": { "type": ["boolean", "number", "string"] }
+                  },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "feature_id",
+          "feature_kind",
+          "compartment",
+          "statistic",
+          "unit",
+          "source",
+          "input_id",
+          "parameter_ids"
+        ],
+        "properties": {
+          "feature_id": { "$ref": "#/$defs/id" },
+          "feature_kind": { "enum": ["morphology", "intensity"] },
+          "compartment": { "enum": ["cell", "cytoplasm", "nucleus"] },
+          "statistic": { "$ref": "#/$defs/id" },
+          "unit": { "$ref": "#/$defs/id" },
+          "source": { "enum": ["geometry", "semantic_input"] },
+          "input_id": {
+            "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+          },
+          "parameter_ids": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/id" },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "missingness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unavailable", "nonfinite"],
+      "properties": {
+        "unavailable": { "const": "reject_package" },
+        "nonfinite": { "const": "reject" }
+      }
+    },
+    "aggregation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method"],
+      "properties": {
+        "method": { "enum": ["none", "sum", "ratio_of_sums"] }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+  }
+}

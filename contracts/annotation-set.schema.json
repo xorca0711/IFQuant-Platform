@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/annotation-set.schema.json",
+  "title": "IFQuant Platform annotation set",
+  "description": "Versioned supplied regions that constrain segmentation for one image.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "annotation_set_id",
+    "image_id",
+    "coordinate_space_id",
+    "revision",
+    "annotations",
+    "provenance"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/annotation-set.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_annotation_set"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "annotation_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "coordinate_space_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "annotations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "annotation_id",
+          "label",
+          "inclusion_policy",
+          "geometry",
+          "review"
+        ],
+        "properties": {
+          "annotation_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inclusion_policy": {
+            "enum": [
+              "include",
+              "exclude"
+            ]
+          },
+          "geometry": {
+            "$ref": "#/$defs/wkt_geometry"
+          },
+          "review": {
+            "$ref": "#/$defs/review"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "source_system",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "parent_annotation_set_id"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "source_system": {
+          "enum": [
+            "qupath",
+            "imported",
+            "generated"
+          ]
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_annotation_set_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "wkt_geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "geometry_type",
+        "wkt"
+      ],
+      "properties": {
+        "encoding": {
+          "const": "WKT1"
+        },
+        "geometry_type": {
+          "enum": [
+            "POLYGON",
+            "MULTIPOLYGON"
+          ]
+        },
+        "wkt": {
+          "type": "string",
+          "pattern": "^(POLYGON|MULTIPOLYGON)\\s*\\("
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer_id",
+        "reviewed_at"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "corrected",
+            "rejected"
+          ]
+        },
+        "reviewer_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewed_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

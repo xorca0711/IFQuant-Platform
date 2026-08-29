@@ -1,0 +1,56 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/segmentation-run.schema.json",
+  "contract_type": "ifquant_platform_segmentation_run",
+  "contract_version": "1.0.0",
+  "segmentation_run_id": "synthetic-native-qupath-run-001",
+  "image_id": "synthetic-image-001",
+  "channel_map_id": "synthetic-channel-map-001",
+  "annotation_set_id": "synthetic-annotations-001",
+  "coordinate_space_id": "synthetic-image-pixels-001",
+  "backend": {
+    "kind": "native_qupath",
+    "name": "QuPath WatershedCellDetection",
+    "version": "0.7.0",
+    "artifact_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "detector": {
+    "detector_id": "qupath_watershed_cell_detection",
+    "detector_version": "1.0.0",
+    "config_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "model": {
+    "model_id": "qupath_native_watershed_descriptor",
+    "model_version": "1.0.0",
+    "descriptor_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+    "weights_sha256": null
+  },
+  "preprocessing": {
+    "profile_id": "synthetic_dapi_native_input",
+    "profile_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "boundary_policy": "clip_to_annotation",
+  "execution": {
+    "script_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "run_config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "started_at": "2026-08-29T00:00:00Z",
+    "completed_at": "2026-08-29T00:00:00Z"
+  },
+  "qc": {
+    "status": "not_evaluated",
+    "flags": [
+      {
+        "code": "synthetic_fixture",
+        "severity": "info",
+        "message": "Deterministic structural fixture; no QuPath execution occurred."
+      }
+    ]
+  },
+  "provenance": {
+    "created_at": "2026-08-29T00:00:00Z",
+    "producer_id": "ifquant_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_revision": "0000000",
+    "runtime_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  }
+}
+

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/parameter-set.schema.json",
+  "schema_version": "1.0.0",
+  "contract_type": "ifquant_platform_parameter_set",
+  "parameter_set_id": "cell_morphology_intensity_engineering",
+  "parameter_set_version": "1.0.0",
+  "measurement_definition": {
+    "definition_id": "cell_morphology_intensity",
+    "definition_version": "1.0.0",
+    "canonical_sha256": "b4699d43736ad279718126bdb0b87733c1c370d903a28d01335515af852c99e6"
+  },
+  "scope": {
+    "scope_id": "engineering_example_only",
+    "binding": "identifier_only_unattested",
+    "scope_profile_sha256": null,
+    "transfer_policy": "declared_scope_only"
+  },
+  "values": []
+}

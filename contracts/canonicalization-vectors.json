@@ -1,0 +1,30 @@
+{
+  "contract": "ifquant-platform-canonical-json/v1",
+  "vectors": [
+    {
+      "name": "unicode-controls-and-small-decimals",
+      "value": {
+        "z": "한글",
+        "a": "ä\n\"\\",
+        "small": 1e-7,
+        "less_small": 1e-5
+      },
+      "canonical_utf8": "{\"a\":\"ä\\n\\\"\\\\\",\"less_small\":0.00001,\"small\":0.0000001,\"z\":\"한글\"}",
+      "sha256": "552826a2f58ca54e04be7b10fe1c3a349aba62618f370e6d80f384bf60d38111"
+    },
+    {
+      "name": "integral-float-and-nested-unicode",
+      "value": {
+        "integral": 2.0,
+        "fraction": -12.34,
+        "nested": [
+          true,
+          null,
+          "μm²"
+        ]
+      },
+      "canonical_utf8": "{\"fraction\":-12.34,\"integral\":2,\"nested\":[true,null,\"μm²\"]}",
+      "sha256": "452d85ac99d2fe777a0511646a392e96f37b79b1a0b73f03914b7b4f75cf7e24"
+    }
+  ]
+}

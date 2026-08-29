@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/parameter-set.schema.json",
+  "title": "IFQuant Platform scope-bound parameter set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "contract_type",
+    "parameter_set_id",
+    "parameter_set_version",
+    "measurement_definition",
+    "scope",
+    "values"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/parameter-set.schema.json"
+    },
+    "schema_version": { "const": "1.0.0" },
+    "contract_type": { "const": "ifquant_platform_parameter_set" },
+    "parameter_set_id": { "$ref": "#/$defs/id" },
+    "parameter_set_version": { "$ref": "#/$defs/semver" },
+    "measurement_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition_id", "definition_version", "canonical_sha256"],
+      "properties": {
+        "definition_id": { "$ref": "#/$defs/id" },
+        "definition_version": { "$ref": "#/$defs/semver" },
+        "canonical_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope_id", "binding", "scope_profile_sha256", "transfer_policy"],
+      "properties": {
+        "scope_id": { "$ref": "#/$defs/id" },
+        "binding": { "enum": ["content_addressed", "identifier_only_unattested"] },
+        "scope_profile_sha256": {
+          "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        },
+        "transfer_policy": { "const": "declared_scope_only" }
+      }
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["parameter_id", "value", "unit"],
+        "properties": {
+          "parameter_id": { "$ref": "#/$defs/id" },
+          "value": { "type": ["boolean", "number", "string"] },
+          "unit": { "$ref": "#/$defs/id" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}
+

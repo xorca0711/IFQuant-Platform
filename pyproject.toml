@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ifquant-platform"
+version = "0.1.0"
+description = "QuPath-first, Python-governed contracts and tooling for reproducible immunofluorescence cell analysis."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "IFQuant contributors" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "jsonschema>=4.23",
+  "pytest>=8.3",
+  "ruff>=0.9",
+]
+
+[project.scripts]
+ifquant-platform = "ifquant_platform.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ifquant_platform"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

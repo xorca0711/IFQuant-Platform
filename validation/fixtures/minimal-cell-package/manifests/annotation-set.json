@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/annotation-set.schema.json",
+  "contract_type": "ifquant_platform_annotation_set",
+  "contract_version": "1.0.0",
+  "annotation_set_id": "synthetic-annotations-001",
+  "image_id": "synthetic-image-001",
+  "coordinate_space_id": "synthetic-image-pixels-001",
+  "revision": 0,
+  "annotations": [
+    {
+      "annotation_id": "synthetic-roi-001",
+      "label": "Synthetic pilot ROI",
+      "inclusion_policy": "include",
+      "geometry": {
+        "encoding": "WKT1",
+        "geometry_type": "POLYGON",
+        "wkt": "POLYGON ((10 10, 90 10, 90 90, 10 90, 10 10))"
+      },
+      "review": {
+        "state": "unreviewed",
+        "reviewer_id": null,
+        "reviewed_at": null
+      }
+    }
+  ],
+  "provenance": {
+    "created_at": "2026-08-29T00:00:00Z",
+    "source_system": "generated",
+    "producer_id": "ifquant_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "parent_annotation_set_id": null
+  }
+}
+

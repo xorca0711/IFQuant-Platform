@@ -1,0 +1,244 @@
+{
+  "schema_version": "ifquant.qupath-pilot-config/1.0.0",
+  "pilot_status": "unvalidated_engineering_pilot",
+  "output_directory": "../../pilot-output",
+  "package": {
+    "package_id": "<REPLACE_WITH_IMMUTABLE_PACKAGE_ID>",
+    "parent_package_id": null
+  },
+  "image": {
+    "image_id": "<REPLACE_WITH_STABLE_IMAGE_ID>",
+    "biological_unit_id": "<REPLACE_WITH_STABLE_BIOLOGICAL_UNIT_ID>",
+    "expected_server_name": "<REPLACE_WITH_EXACT_QUPATH_SERVER_NAME>",
+    "source_artifact": {
+      "source_uri": "<REPLACE_WITH_ABSOLUTE_FILE_URI>",
+      "sha256": "<REPLACE_WITH_64_HEX_SOURCE_FILE_SHA256>",
+      "size_bytes": 1,
+      "media_type": "application/octet-stream"
+    },
+    "calibration": {
+      "calibration_id": "<REPLACE_WITH_STABLE_CALIBRATION_ID>",
+      "expected_pixel_width_um": 0.5,
+      "expected_pixel_height_um": 0.5,
+      "tolerance_um": 0.000001
+    },
+    "coordinate_space_id": "<REPLACE_WITH_STABLE_2D_COORDINATE_SPACE_ID>",
+    "acquisition": {
+      "mouse_id": "<REPLACE_WITH_MOUSE_ID>",
+      "specimen_id": "<REPLACE_WITH_SPECIMEN_ID>",
+      "section_id": "<REPLACE_WITH_SECTION_ID>",
+      "slide_id": "<REPLACE_WITH_SLIDE_ID>",
+      "batch_id": "<REPLACE_WITH_BATCH_ID>",
+      "scanner_id": "<REPLACE_WITH_SCANNER_ID>",
+      "acquired_at": null
+    },
+    "provenance": {
+      "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
+      "producer_id": "ifquant_qupath_exporter",
+      "producer_version": "1.0.0"
+    }
+  },
+  "channel_map": {
+    "channel_map_id": "<REPLACE_WITH_STABLE_CHANNEL_MAP_ID>",
+    "channels": [
+      {
+        "source_channel_index": 0,
+        "source_channel_name": "DAPI",
+        "channel_id": "dapi",
+        "marker_id": "DAPI",
+        "role": "nuclear_counterstain",
+        "intensity": {
+          "representation": "unsigned_integer",
+          "bit_depth": 16,
+          "transform": "none",
+          "scale": 1,
+          "offset": 0,
+          "unit": "native_sample_value"
+        }
+      }
+    ],
+    "provenance": {
+      "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
+      "producer_id": "ifquant_qupath_exporter",
+      "producer_version": "1.0.0"
+    }
+  },
+  "annotation_set": {
+    "annotation_set_id": "<REPLACE_WITH_STABLE_ANNOTATION_SET_ID>",
+    "revision": 0,
+    "classification": "Pilot ROI",
+    "expected_content_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "provenance": {
+      "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
+      "source_system": "qupath",
+      "producer_id": "ifquant_qupath_exporter",
+      "producer_version": "1.0.0",
+      "parent_annotation_set_id": null
+    }
+  },
+  "segmentation": {
+    "segmentation_run_id": "<REPLACE_WITH_IMMUTABLE_SEGMENTATION_RUN_ID>",
+    "backend": {
+      "kind": "native_qupath",
+      "name": "QuPath WatershedCellDetection",
+      "version": "0.7.0",
+      "artifact_sha256": "<REPLACE_WITH_64_HEX_QUPATH_RUNTIME_ARTIFACT_SHA256>"
+    },
+    "detector": {
+      "detector_id": "qupath_watershed_cell_detection",
+      "detector_version": "1.0.0"
+    },
+    "plugin_class": "qupath.imagej.detect.cells.WatershedCellDetection",
+    "parameters": {
+      "detectionImage": "DAPI",
+      "requestedPixelSizeMicrons": 0.5,
+      "backgroundRadiusMicrons": 8.0,
+      "backgroundByReconstruction": true,
+      "medianRadiusMicrons": 0.0,
+      "sigmaMicrons": 1.5,
+      "minAreaMicrons": 10.0,
+      "maxAreaMicrons": 400.0,
+      "threshold": 100.0,
+      "watershedPostProcess": true,
+      "cellExpansionMicrons": 5.0,
+      "includeNuclei": true,
+      "smoothBoundaries": true,
+      "makeMeasurements": true
+    },
+    "model": {
+      "model_id": "qupath_native_watershed_descriptor",
+      "model_version": "1.0.0",
+      "descriptor_sha256": "<REPLACE_WITH_64_HEX_ALGORITHM_DESCRIPTOR_SHA256>",
+      "weights_sha256": null
+    },
+    "preprocessing": {
+      "profile_id": "<REPLACE_WITH_PREPROCESSING_PROFILE_ID>",
+      "profile_sha256": "<REPLACE_WITH_64_HEX_PREPROCESSING_PROFILE_SHA256>"
+    },
+    "boundary_policy": "exclude_touching_annotation_boundary",
+    "qc": {
+      "status": "not_evaluated",
+      "flags": [
+        {
+          "code": "engineering_pilot_unvalidated",
+          "severity": "warning",
+          "message": "Engineering pilot only; segmentation has not been scientifically validated."
+        }
+      ]
+    },
+    "provenance": {
+      "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
+      "producer_id": "ifquant_qupath_exporter",
+      "producer_version": "1.0.0",
+      "code_revision": "<REPLACE_WITH_7_TO_64_LOWERCASE_HEX_REVISION>",
+      "runtime_sha256": "<REPLACE_WITH_64_HEX_RUNTIME_ENVIRONMENT_SHA256>"
+    }
+  },
+  "measurement_method": {
+    "definition_source_path": "../../contracts/examples/cell-morphology-intensity-v1.json",
+    "definition_output_relative_path": "contracts/cell-morphology-intensity-v1.json",
+    "expected_definition_sha256": "b4699d43736ad279718126bdb0b87733c1c370d903a28d01335515af852c99e6",
+    "parameter_set_source_path": "../../contracts/examples/cell-morphology-intensity-engineering-v1.json",
+    "parameter_set_output_relative_path": "contracts/cell-morphology-intensity-engineering-v1.json",
+    "expected_parameter_set_sha256": "0ab144834e8e57b3ce21787bcfc99f2fe6bf661d695184814a07375876c83027",
+    "expected_method_instance_sha256": "6c47eda4968b78ec47df0253205dfb9bae40ad5677964def25a0ed1ac0938d3d"
+  },
+  "measurement_mappings": {
+    "morphology": [
+      {
+        "measurement_id": "cell_area_um2",
+        "compartment": "cell",
+        "feature": "area",
+        "unit": "um2"
+      },
+      {
+        "measurement_id": "cell_circularity",
+        "compartment": "cell",
+        "feature": "circularity",
+        "unit": "ratio"
+      },
+      {
+        "measurement_id": "cell_perimeter_um",
+        "compartment": "cell",
+        "feature": "perimeter",
+        "unit": "um"
+      },
+      {
+        "measurement_id": "nucleus_area_um2",
+        "compartment": "nucleus",
+        "feature": "area",
+        "unit": "um2"
+      },
+      {
+        "measurement_id": "nucleus_circularity",
+        "compartment": "nucleus",
+        "feature": "circularity",
+        "unit": "ratio"
+      },
+      {
+        "measurement_id": "nucleus_perimeter_um",
+        "compartment": "nucleus",
+        "feature": "perimeter",
+        "unit": "um"
+      }
+    ],
+    "intensity": [
+      {
+        "measurement_id": "dapi_cell_mean",
+        "source_measurement": "<REPLACE_WITH_EXACT_QUPATH_CELL_MEAN_MEASUREMENT>",
+        "channel_id": "dapi",
+        "marker_id": "DAPI",
+        "compartment": "cell",
+        "statistic": "mean",
+        "unit": "native_sample_value"
+      },
+      {
+        "measurement_id": "dapi_cytoplasm_mean",
+        "source_measurement": "<REPLACE_WITH_EXACT_QUPATH_CYTOPLASM_MEAN_MEASUREMENT>",
+        "channel_id": "dapi",
+        "marker_id": "DAPI",
+        "compartment": "cytoplasm",
+        "statistic": "mean",
+        "unit": "native_sample_value"
+      },
+      {
+        "measurement_id": "dapi_nucleus_mean",
+        "source_measurement": "<REPLACE_WITH_EXACT_QUPATH_NUCLEUS_MEAN_MEASUREMENT>",
+        "channel_id": "dapi",
+        "marker_id": "DAPI",
+        "compartment": "nucleus",
+        "statistic": "mean",
+        "unit": "native_sample_value"
+      }
+    ]
+  },
+  "qc": {
+    "object_default_status": "not_evaluated",
+    "object_default_flags": [
+      {
+        "code": "engineering_pilot_unvalidated",
+        "severity": "warning",
+        "message": "Engineering pilot object; scientific QC has not been evaluated."
+      }
+    ],
+    "package_flags": [
+      {
+        "code": "engineering_pilot_unvalidated",
+        "severity": "warning",
+        "message": "Engineering pilot package; scientific QC has not been evaluated."
+      }
+    ]
+  },
+  "execution": {
+    "script_path": "../scripts/DetectCellsAndExport.groovy",
+    "expected_script_sha256": "4ba40609b938fd4425acef2ec18ab96328725521c4dd6b5ee13ab081bc73f246",
+    "script_contract": "ifquant.qupath-cell-exporter/v1",
+    "script_version": "1.0.0"
+  },
+  "provenance": {
+    "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
+    "exporter_id": "ifquant_qupath_exporter",
+    "exporter_version": "1.0.0",
+    "code_revision": "<REPLACE_WITH_7_TO_64_LOWERCASE_HEX_REVISION>"
+  }
+}

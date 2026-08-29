@@ -1,0 +1,105 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/cell-object-package.schema.json",
+  "contract_type": "ifquant_platform_cell_object_package",
+  "contract_version": "1.0.0",
+  "package_id": "synthetic-cell-package-001",
+  "image": {
+    "image_id": "synthetic-image-001",
+    "manifest_relative_path": "manifests/image-manifest.json",
+    "manifest_sha256": "3e8a0c48ee6cdf8d5db44394d8b9b989660be0b1af277d205a40380bd4f6b3d4",
+    "source_sha256": "1bd18a4f00726cb8dc04f70e3e9db0ff3f480bdae06f01ede381f54e6a82ec68"
+  },
+  "biological_unit": {
+    "biological_unit_id": "synthetic-unit-001",
+    "mouse_id": "synthetic-mouse-001",
+    "specimen_id": "synthetic-specimen-001",
+    "section_id": "synthetic-section-001",
+    "slide_id": "synthetic-slide-001",
+    "batch_id": "synthetic-batch-001",
+    "scanner_id": "synthetic-scanner-001"
+  },
+  "channel_map": {
+    "channel_map_id": "synthetic-channel-map-001",
+    "manifest_relative_path": "manifests/channel-map.json",
+    "manifest_sha256": "ce04cca23a3b0ac229a83ee392528ba97726c3bfb3ca0dea435a9effe00a0c8b"
+  },
+  "annotation_set": {
+    "annotation_set_id": "synthetic-annotations-001",
+    "manifest_relative_path": "manifests/annotation-set.json",
+    "manifest_sha256": "173164f55615c0ea4f8bc3a34cf2edc4431b1886232f6ba5919884765f7dcfcb"
+  },
+  "pixel_calibration": {
+    "calibration_id": "synthetic-calibration-001",
+    "pixel_width_um": 0.5,
+    "pixel_height_um": 0.5,
+    "z_spacing_um": null,
+    "unit": "um"
+  },
+  "coordinate_space": {
+    "coordinate_space_id": "synthetic-image-pixels-001",
+    "dimension": "2d",
+    "geometry_unit": "pixel",
+    "axis_order": ["x", "y"],
+    "origin": "top_left",
+    "x_axis_direction": "right",
+    "y_axis_direction": "down"
+  },
+  "segmentation_run": {
+    "segmentation_run_id": "synthetic-native-qupath-run-001",
+    "manifest_relative_path": "manifests/segmentation-run.json",
+    "manifest_sha256": "32f2cb72d4b99926a138ffdbd5d10717c620685e13b25b22fa424d1596618f6f",
+    "backend_kind": "native_qupath",
+    "backend_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+    "model_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+    "weights_sha256": null,
+    "detector_config_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+    "preprocessing_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "measurement_method": {
+    "definition_id": "cell_morphology_intensity",
+    "definition_relative_path": "contracts/cell-morphology-intensity-v1.json",
+    "definition_sha256": "b4699d43736ad279718126bdb0b87733c1c370d903a28d01335515af852c99e6",
+    "parameter_set_id": "cell_morphology_intensity_engineering",
+    "parameter_set_relative_path": "contracts/cell-morphology-intensity-engineering-v1.json",
+    "parameter_set_sha256": "0ab144834e8e57b3ce21787bcfc99f2fe6bf661d695184814a07375876c83027",
+    "method_instance_sha256": "6c47eda4968b78ec47df0253205dfb9bae40ad5677964def25a0ed1ac0938d3d"
+  },
+  "cell_objects_artifact": {
+    "relative_path": "cell_objects.jsonl",
+    "media_type": "application/x-ndjson",
+    "schema_id": "https://ifquant.org/contracts/platform/v1/cell-object.schema.json",
+    "sha256": "9f4f74c0ede684eb93f68b791ff04ee3877ff5c6a2b86a0998eea6e75e27d788",
+    "size_bytes": 2566,
+    "record_count": 1,
+    "ordering": "object_index_ascending"
+  },
+  "qc": {
+    "status": "not_evaluated",
+    "object_count": 1,
+    "pass_count": 0,
+    "warning_count": 0,
+    "fail_count": 0,
+    "not_evaluated_count": 1,
+    "flags": [
+      {
+        "code": "synthetic_fixture",
+        "severity": "info",
+        "message": "Structural fixture only; no QuPath or scientific validation occurred."
+      }
+    ]
+  },
+  "review": {
+    "state": "unreviewed",
+    "reviewed_object_count": 0,
+    "reviewer_ids": [],
+    "last_reviewed_at": null
+  },
+  "provenance": {
+    "created_at": "2026-08-29T00:00:00Z",
+    "producer_id": "ifquant_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_revision": "0000000",
+    "package_config_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "parent_package_id": null
+  }
+}

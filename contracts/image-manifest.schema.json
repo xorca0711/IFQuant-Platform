@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/image-manifest.schema.json",
+  "title": "IFQuant Platform image manifest",
+  "description": "Content identity, calibration, coordinate space, acquisition grouping, and ingest provenance for one source image.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "image_id",
+    "biological_unit_id",
+    "source_artifact",
+    "dimensions",
+    "pixel_calibration",
+    "coordinate_space",
+    "acquisition",
+    "provenance"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/image-manifest.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_image_manifest"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "biological_unit_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "source_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_uri",
+        "sha256",
+        "size_bytes",
+        "media_type"
+      ],
+      "properties": {
+        "source_uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width_pixels",
+        "height_pixels",
+        "z_planes",
+        "timepoints"
+      ],
+      "properties": {
+        "width_pixels": {
+          "$ref": "#/$defs/positive_integer"
+        },
+        "height_pixels": {
+          "$ref": "#/$defs/positive_integer"
+        },
+        "z_planes": {
+          "const": 1
+        },
+        "timepoints": {
+          "const": 1
+        }
+      }
+    },
+    "pixel_calibration": {
+      "$ref": "#/$defs/pixel_calibration"
+    },
+    "coordinate_space": {
+      "$ref": "#/$defs/coordinate_space"
+    },
+    "acquisition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mouse_id",
+        "specimen_id",
+        "section_id",
+        "slide_id",
+        "batch_id",
+        "scanner_id",
+        "acquired_at"
+      ],
+      "properties": {
+        "mouse_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "specimen_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "section_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "slide_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "batch_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "scanner_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "acquired_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "ingest_config_sha256"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "ingest_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "nullable_identifier": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "nonnegative_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "positive_integer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "positive_number": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "pixel_calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_id",
+        "pixel_width_um",
+        "pixel_height_um",
+        "z_spacing_um",
+        "unit"
+      ],
+      "properties": {
+        "calibration_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "pixel_width_um": {
+          "$ref": "#/$defs/positive_number"
+        },
+        "pixel_height_um": {
+          "$ref": "#/$defs/positive_number"
+        },
+        "z_spacing_um": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/positive_number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "const": "um"
+        }
+      }
+    },
+    "coordinate_space": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate_space_id",
+        "dimension",
+        "geometry_unit",
+        "axis_order",
+        "origin",
+        "x_axis_direction",
+        "y_axis_direction"
+      ],
+      "properties": {
+        "coordinate_space_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "dimension": {
+          "const": "2d"
+        },
+        "geometry_unit": {
+          "const": "pixel"
+        },
+        "axis_order": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "x"
+            },
+            {
+              "const": "y"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "origin": {
+          "const": "top_left"
+        },
+        "x_axis_direction": {
+          "const": "right"
+        },
+        "y_axis_direction": {
+          "const": "down"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/measurement-definition.schema.json",
+  "schema_version": "1.0.0",
+  "contract_type": "ifquant_platform_measurement_definition",
+  "definition_id": "cell_morphology_intensity",
+  "definition_version": "1.0.0",
+  "object_type": "cell",
+  "dimensionality": "2d",
+  "semantic_inputs": [
+    {
+      "input_id": "dapi",
+      "marker_id": "DAPI",
+      "intensity_coordinate": "native_sample_value",
+      "intensity_representation": "unsigned_integer",
+      "intensity_transform": "none"
+    }
+  ],
+  "parameter_slots": [],
+  "features": [
+    {
+      "feature_id": "cell_area_um2",
+      "feature_kind": "morphology",
+      "compartment": "cell",
+      "statistic": "area",
+      "unit": "um2",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "cell_circularity",
+      "feature_kind": "morphology",
+      "compartment": "cell",
+      "statistic": "circularity",
+      "unit": "ratio",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "cell_perimeter_um",
+      "feature_kind": "morphology",
+      "compartment": "cell",
+      "statistic": "perimeter",
+      "unit": "um",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "dapi_cell_mean",
+      "feature_kind": "intensity",
+      "compartment": "cell",
+      "statistic": "mean",
+      "unit": "native_sample_value",
+      "source": "semantic_input",
+      "input_id": "dapi",
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "dapi_cytoplasm_mean",
+      "feature_kind": "intensity",
+      "compartment": "cytoplasm",
+      "statistic": "mean",
+      "unit": "native_sample_value",
+      "source": "semantic_input",
+      "input_id": "dapi",
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "dapi_nucleus_mean",
+      "feature_kind": "intensity",
+      "compartment": "nucleus",
+      "statistic": "mean",
+      "unit": "native_sample_value",
+      "source": "semantic_input",
+      "input_id": "dapi",
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "nucleus_area_um2",
+      "feature_kind": "morphology",
+      "compartment": "nucleus",
+      "statistic": "area",
+      "unit": "um2",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "nucleus_circularity",
+      "feature_kind": "morphology",
+      "compartment": "nucleus",
+      "statistic": "circularity",
+      "unit": "ratio",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    },
+    {
+      "feature_id": "nucleus_perimeter_um",
+      "feature_kind": "morphology",
+      "compartment": "nucleus",
+      "statistic": "perimeter",
+      "unit": "um",
+      "source": "geometry",
+      "input_id": null,
+      "parameter_ids": []
+    }
+  ],
+  "missingness": {
+    "unavailable": "reject_package",
+    "nonfinite": "reject"
+  },
+  "aggregation": {
+    "method": "none"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/channel-map.schema.json",
+  "title": "IFQuant Platform channel map",
+  "description": "Image-local channel indices mapped to backend-neutral semantic channel and marker identities.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "channel_map_id",
+    "image_id",
+    "channels",
+    "provenance"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/channel-map.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_channel_map"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "channel_map_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "channels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_channel_index",
+          "source_channel_name",
+          "channel_id",
+          "marker_id",
+          "role",
+          "intensity"
+        ],
+        "properties": {
+          "source_channel_index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "source_channel_name": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "channel_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "marker_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "role": {
+            "enum": [
+              "nuclear_counterstain",
+              "biomarker",
+              "autofluorescence",
+              "other"
+            ]
+          },
+          "intensity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "representation",
+              "bit_depth",
+              "transform",
+              "scale",
+              "offset",
+              "unit"
+            ],
+            "properties": {
+              "representation": {
+                "enum": [
+                  "unsigned_integer",
+                  "floating_point"
+                ]
+              },
+              "bit_depth": {
+                "enum": [
+                  8,
+                  16,
+                  32,
+                  64
+                ]
+              },
+              "transform": {
+                "enum": [
+                  "none",
+                  "linear"
+                ]
+              },
+              "scale": {
+                "type": "number"
+              },
+              "offset": {
+                "type": "number"
+              },
+              "unit": {
+                "enum": [
+                  "native_sample_value",
+                  "normalized_intensity"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "mapping_config_sha256"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "mapping_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    }
+  }
+}

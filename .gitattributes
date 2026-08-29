@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+*.groovy text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.toml text eol=lf
+*.bin binary

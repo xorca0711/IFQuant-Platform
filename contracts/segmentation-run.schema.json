@@ -1,0 +1,330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/segmentation-run.schema.json",
+  "title": "IFQuant Platform segmentation run",
+  "description": "One configured segmentation execution with content-addressed backend, detector, model, preprocessing, and runtime provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "segmentation_run_id",
+    "image_id",
+    "channel_map_id",
+    "annotation_set_id",
+    "coordinate_space_id",
+    "backend",
+    "detector",
+    "model",
+    "preprocessing",
+    "boundary_policy",
+    "execution",
+    "qc",
+    "provenance"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/segmentation-run.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_segmentation_run"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "segmentation_run_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "channel_map_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "annotation_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "coordinate_space_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "name",
+        "version",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "native_qupath",
+            "stardist",
+            "instanseg"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "detector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "detector_id",
+        "detector_version",
+        "config_sha256"
+      ],
+      "properties": {
+        "detector_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "detector_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "config_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_id",
+        "model_version",
+        "descriptor_sha256",
+        "weights_sha256"
+      ],
+      "properties": {
+        "model_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "model_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "descriptor_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "weights_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "preprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "profile_sha256"
+      ],
+      "properties": {
+        "profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "profile_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "boundary_policy": {
+      "enum": [
+        "clip_to_annotation",
+        "exclude_touching_annotation_boundary",
+        "include_touching_annotation_boundary"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "script_sha256",
+        "run_config_sha256",
+        "started_at",
+        "completed_at"
+      ],
+      "properties": {
+        "script_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "run_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completed_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "qc": {
+      "$ref": "#/$defs/qc"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_revision",
+        "runtime_sha256"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,64}$"
+        },
+        "runtime_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "backend": {
+            "properties": {
+              "kind": {
+                "const": "native_qupath"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "model": {
+            "properties": {
+              "weights_sha256": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "backend": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "stardist",
+                  "instanseg"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "model": {
+            "properties": {
+              "weights_sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "qc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "flags"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "warn",
+            "fail",
+            "not_evaluated"
+          ]
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "severity",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "$ref": "#/$defs/identifier"
+              },
+              "severity": {
+                "enum": [
+                  "info",
+                  "warning",
+                  "error"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
