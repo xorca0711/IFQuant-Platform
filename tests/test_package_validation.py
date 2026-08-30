@@ -286,13 +286,40 @@ class PackageValidationTests(unittest.TestCase):
             package_root = self.copy_fixture(temporary)
             run_path = package_root / "manifests" / "segmentation-run.json"
             run = read_json(run_path)
+            run["contract_version"] = "1.1.0"
             run["boundary_policy"] = "exclude_touching_annotation_or_image_boundary"
+            run["boundary_guard"] = {
+                "strategy": "one_processing_pixel",
+                "distance_pixels": 1.0,
+                "distance_um": 0.5,
+            }
             write_json(run_path, run)
             package_path = package_root / "package.json"
             package = read_json(package_path)
             package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
             write_json(package_path, package)
             self.assertEqual(validate_cell_package(package_root).status, "valid")
+
+            run["boundary_guard"]["distance_pixels"] = 2.0
+            write_json(run_path, run)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_json(package_path, package)
+            with self.assertRaisesRegex(ContractError, "distances disagree with pixel calibration"):
+                validate_cell_package(package_root)
+            run["boundary_guard"]["distance_pixels"] = 1.0
+
+            del run["boundary_guard"]
+            write_json(run_path, run)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_json(package_path, package)
+            with self.assertRaisesRegex(ContractError, "boundary_guard is required"):
+                validate_cell_package(package_root)
+
+            run["boundary_guard"] = {
+                "strategy": "one_processing_pixel",
+                "distance_pixels": 1.0,
+                "distance_um": 0.5,
+            }
 
             run["boundary_policy"] = "asymmetric_edge_policy"
             write_json(run_path, run)

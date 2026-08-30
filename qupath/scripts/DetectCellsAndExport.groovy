@@ -5,7 +5,7 @@
  * model universality, or endpoint authorization is implied.
  *
  * Runtime boundary: QuPath >= 0.6.0 and < 0.8.0.
- * IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.1.0
+ * IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.2.0
  */
 
 import com.google.gson.stream.JsonReader
@@ -43,13 +43,14 @@ final class IfQuantV1Exporter {
         "ifquant.qupath-pilot-config/1.0.0"
     static final String SCRIPT_CONTRACT =
         "ifquant.qupath-cell-exporter/v1"
-    static final String SCRIPT_VERSION = "1.1.0"
+    static final String SCRIPT_VERSION = "1.2.0"
     static final String SCRIPT_FILENAME = "DetectCellsAndExport.groovy"
     static final String SCRIPT_SENTINEL =
-        "IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.1.0"
+        "IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.2.0"
     static final String PILOT_STATUS =
         "unvalidated_engineering_pilot"
     static final String CONTRACT_VERSION = "1.0.0"
+    static final String SEGMENTATION_CONTRACT_VERSION = "1.1.0"
     static final String IMAGE_SCHEMA =
         "https://ifquant.org/contracts/platform/v1/image-manifest.schema.json"
     static final String CHANNEL_SCHEMA =
@@ -328,6 +329,11 @@ final class IfQuantV1Exporter {
                 (imageDimensions.get("height_pixels") as Number).intValue()
             )
         }
+        Map<String, Object> boundaryGuard = buildBoundaryGuard(
+            segmentationConfig,
+            pixelCalibration,
+            boundaryPolicy
+        )
 
         Map<Object, Map<String, Object>> annotationByObject =
             buildAnnotationRecords(
@@ -439,6 +445,8 @@ final class IfQuantV1Exporter {
                 selectedAnnotations,
                 annotationByObject,
                 boundaryPolicy,
+                boundaryGuard == null ? 0.0d :
+                    (boundaryGuard.get("distance_pixels") as Number).doubleValue(),
                 (imageDimensions.get("width_pixels") as Number).intValue(),
                 (imageDimensions.get("height_pixels") as Number).intValue()
             )
@@ -479,6 +487,7 @@ final class IfQuantV1Exporter {
                 channelMapId,
                 annotationSetId,
                 coordinateSpace.get("coordinate_space_id").toString(),
+                boundaryGuard,
                 scriptSha256,
                 configCanonicalSha256,
                 selectedCellAssignments.size(),
@@ -1630,6 +1639,7 @@ final class IfQuantV1Exporter {
         String channelMapId,
         String annotationSetId,
         String coordinateSpaceId,
+        Map<String, Object> boundaryGuard,
         String scriptSha256,
         String configSha256,
         int exportedCellCount,
@@ -1657,10 +1667,10 @@ final class IfQuantV1Exporter {
         flags.sort { left, right ->
             left.get("code").toString() <=> right.get("code").toString()
         }
-        return [
+        Map<String, Object> manifest = [
             "\$schema": SEGMENTATION_SCHEMA,
             contract_type: "ifquant_platform_segmentation_run",
-            contract_version: CONTRACT_VERSION,
+            contract_version: SEGMENTATION_CONTRACT_VERSION,
             segmentation_run_id: config.get("segmentation_run_id"),
             image_id: imageId,
             channel_map_id: channelMapId,
@@ -1690,6 +1700,10 @@ final class IfQuantV1Exporter {
                 runtime_sha256: provenance.get("runtime_sha256")
             ]
         ]
+        if (boundaryGuard != null) {
+            manifest.put("boundary_guard", boundaryGuard)
+        }
+        return manifest
     }
 
     static Map<String, Object> buildCellDraft(
@@ -2533,6 +2547,7 @@ final class IfQuantV1Exporter {
         List annotations,
         Map<Object, Map<String, Object>> annotationByObject,
         String boundaryPolicy,
+        double imageBoundaryGuardPixels,
         int imageWidth,
         int imageHeight
     ) {
@@ -2550,11 +2565,15 @@ final class IfQuantV1Exporter {
             )
         boolean nucleusNotCoveredByCell = nucleusGeometry != null &&
             !cellGeometry.covers(nucleusGeometry)
-        List<String> imageBoundarySides = imageBoundarySides(
-            cellGeometry,
-            imageWidth,
-            imageHeight
-        )
+        boolean usesImageBoundaryGuard = boundaryPolicy ==
+            "exclude_touching_annotation_or_image_boundary"
+        List<String> imageBoundarySides = usesImageBoundaryGuard ?
+            imageBoundarySides(
+                cellGeometry,
+                imageBoundaryGuardPixels,
+                imageWidth,
+                imageHeight
+            ) : []
         boolean touchesImageBoundary = !imageBoundarySides.isEmpty()
         List<Map<String, Object>> intersections = []
         for (def annotation : annotations) {
@@ -2640,7 +2659,7 @@ final class IfQuantV1Exporter {
             nucleus_not_covered_by_cell_geometry_warning:
                 nucleusNotCoveredByCell,
             exclusion_reason: include ? null : (
-                touchesImageBoundary ? "cell_touches_image_boundary" :
+                touchesImageBoundary ? "cell_within_image_boundary_guard" :
                 touchesBoundary ? "cell_touches_annotation_boundary" :
                 !annotationCoversCell ? "cell_not_covered_by_annotation" :
                 "nucleus_not_covered_by_annotation"
@@ -2667,19 +2686,67 @@ final class IfQuantV1Exporter {
 
     static List<String> imageBoundarySides(
         Geometry cellGeometry,
+        double guardPixels,
         int imageWidth,
         int imageHeight
     ) {
         if (imageWidth <= 0 || imageHeight <= 0) {
             fail("image dimensions must be positive for boundary classification")
         }
+        if (!Double.isFinite(guardPixels) || guardPixels < 0.0d) {
+            fail("image boundary guard must be finite and nonnegative")
+        }
         def envelope = cellGeometry.getEnvelopeInternal()
         List<String> sides = []
-        if (envelope.getMinY() <= 0.0d) sides.add("top")
-        if (envelope.getMaxX() >= imageWidth) sides.add("right")
-        if (envelope.getMaxY() >= imageHeight) sides.add("bottom")
-        if (envelope.getMinX() <= 0.0d) sides.add("left")
+        if (envelope.getMinY() <= guardPixels) sides.add("top")
+        if (envelope.getMaxX() >= imageWidth - guardPixels) {
+            sides.add("right")
+        }
+        if (envelope.getMaxY() >= imageHeight - guardPixels) {
+            sides.add("bottom")
+        }
+        if (envelope.getMinX() <= guardPixels) sides.add("left")
         return sides
+    }
+
+    static Map<String, Object> buildBoundaryGuard(
+        Map<String, Object> segmentationConfig,
+        Map<String, Object> pixelCalibration,
+        String boundaryPolicy
+    ) {
+        if (boundaryPolicy !=
+            "exclude_touching_annotation_or_image_boundary") {
+            return null
+        }
+        Map<String, Object> parameters = requireMap(
+            segmentationConfig.get("parameters"),
+            "segmentation.parameters"
+        )
+        double requestedMicrons = requirePositiveDouble(
+            parameters.get("requestedPixelSizeMicrons"),
+            "segmentation.parameters.requestedPixelSizeMicrons"
+        )
+        double pixelWidth = requirePositiveDouble(
+            pixelCalibration.get("pixel_width_um"),
+            "image pixel width"
+        )
+        double pixelHeight = requirePositiveDouble(
+            pixelCalibration.get("pixel_height_um"),
+            "image pixel height"
+        )
+        double averageNativePixelMicrons = (pixelWidth + pixelHeight) / 2.0d
+        double effectiveProcessingMicrons = Math.max(
+            requestedMicrons,
+            averageNativePixelMicrons
+        )
+        return [
+            strategy: "one_processing_pixel",
+            distance_pixels: finiteDouble(
+                effectiveProcessingMicrons / averageNativePixelMicrons,
+                "image boundary guard in native pixels"
+            ),
+            distance_um: effectiveProcessingMicrons
+        ]
     }
 
     static void requireFullImageAnnotation(
@@ -3029,8 +3096,8 @@ final class IfQuantV1Exporter {
                 "crossed outside its selected annotation",
             cell_touches_annotation_boundary:
                 "touched its selected annotation boundary",
-            cell_touches_image_boundary:
-                "touched the physical image boundary",
+            cell_within_image_boundary_guard:
+                "fell within the declared physical image-boundary guard",
             no_annotation_intersection:
                 "did not intersect a selected annotation",
             nucleus_not_covered_by_annotation:

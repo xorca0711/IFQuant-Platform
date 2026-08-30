@@ -17,7 +17,7 @@ reproducibility, model universality, or authority to use an endpoint.
 | `image-manifest.schema.json` | Identifies source image bytes, biological unit, dimensions, calibration, coordinate space, acquisition grouping, and ingest provenance. |
 | `channel-map.schema.json` | Maps image-local channel indices to stable semantic channel and marker identities. |
 | `annotation-set.schema.json` | Carries the supplied annotation regions used to constrain cell detection. |
-| `segmentation-run.schema.json` | Records one configured segmentation execution and the exact backend, model descriptor, optional weights, configuration, and preprocessing identities. |
+| `segmentation-run.schema.json` | Records one configured segmentation execution and the exact backend, model descriptor, optional weights, configuration, preprocessing, and versioned boundary semantics. Contract 1.1 adds an explicit detector-resolution image-boundary guard while 1.0 remains readable for legacy exact-envelope audits. |
 | `cell-object.schema.json` | Defines one deterministic cell-object record for JSON Lines export. |
 | `cell-object-package.schema.json` | Binds all manifests and exactly one deterministic JSON Lines cell-object artifact. |
 | `canonicalization-vectors.json` | Cross-runtime golden bytes and hashes for Unicode, control escaping, and binary64 number formatting. |

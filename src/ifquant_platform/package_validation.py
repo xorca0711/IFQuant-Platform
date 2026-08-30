@@ -519,10 +519,36 @@ def _validate_annotation_set(value: Mapping[str, Any]) -> set[str]:
 
 
 def _validate_segmentation_run(value: Mapping[str, Any]) -> str:
-    _exact(value, {"$schema", "contract_type", "contract_version", "segmentation_run_id", "image_id", "channel_map_id", "annotation_set_id", "coordinate_space_id", "backend", "detector", "model", "preprocessing", "boundary_policy", "execution", "qc", "provenance"}, "segmentation_run")
+    _exact(
+        value,
+        {
+            "$schema",
+            "contract_type",
+            "contract_version",
+            "segmentation_run_id",
+            "image_id",
+            "channel_map_id",
+            "annotation_set_id",
+            "coordinate_space_id",
+            "backend",
+            "detector",
+            "model",
+            "preprocessing",
+            "boundary_policy",
+            "execution",
+            "qc",
+            "provenance",
+        },
+        "segmentation_run",
+        optional={"boundary_guard"},
+    )
     _require(value["$schema"] == RUN_SCHEMA, "segmentation_run.$schema is unsupported")
     _require(value["contract_type"] == "ifquant_platform_segmentation_run", "segmentation_run.contract_type is unsupported")
-    _require(value["contract_version"] == "1.0.0", "segmentation_run.contract_version is unsupported")
+    contract_version = _enum(
+        value["contract_version"],
+        {"1.0.0", "1.1.0"},
+        "segmentation_run.contract_version",
+    )
     for key in ("segmentation_run_id", "image_id", "channel_map_id", "annotation_set_id", "coordinate_space_id"):
         _identifier(value[key], f"segmentation_run.{key}")
 
@@ -552,7 +578,7 @@ def _validate_segmentation_run(value: Mapping[str, Any]) -> str:
     _exact(preprocessing, {"profile_id", "profile_sha256"}, "segmentation_run.preprocessing")
     _identifier(preprocessing["profile_id"], "segmentation_run.preprocessing.profile_id")
     _sha256(preprocessing["profile_sha256"], "segmentation_run.preprocessing.profile_sha256")
-    _enum(
+    boundary_policy = _enum(
         value["boundary_policy"],
         {
             "clip_to_annotation",
@@ -562,6 +588,40 @@ def _validate_segmentation_run(value: Mapping[str, Any]) -> str:
         },
         "segmentation_run.boundary_policy",
     )
+    if (
+        contract_version == "1.1.0"
+        and boundary_policy == "exclude_touching_annotation_or_image_boundary"
+    ):
+        _require(
+            "boundary_guard" in value,
+            "segmentation_run.boundary_guard is required for image-boundary exclusion",
+        )
+    else:
+        _require(
+            "boundary_guard" not in value,
+            "segmentation_run.boundary_guard is only valid for a 1.1 image-boundary exclusion run",
+        )
+    if "boundary_guard" in value:
+        boundary_guard = _object(value["boundary_guard"], "segmentation_run.boundary_guard")
+        _exact(
+            boundary_guard,
+            {"strategy", "distance_pixels", "distance_um"},
+            "segmentation_run.boundary_guard",
+        )
+        _require(
+            boundary_guard["strategy"] == "one_processing_pixel",
+            "segmentation_run.boundary_guard.strategy is unsupported",
+        )
+        _number(
+            boundary_guard["distance_pixels"],
+            "segmentation_run.boundary_guard.distance_pixels",
+            positive=True,
+        )
+        _number(
+            boundary_guard["distance_um"],
+            "segmentation_run.boundary_guard.distance_um",
+            positive=True,
+        )
 
     execution = _object(value["execution"], "segmentation_run.execution")
     _exact(execution, {"script_sha256", "run_config_sha256", "started_at", "completed_at"}, "segmentation_run.execution")
@@ -923,6 +983,24 @@ def validate_cell_package(package_path: str | Path) -> PackageValidationReport:
     _require(run["channel_map_id"] == channel_map["channel_map_id"], "segmentation run uses the wrong channel map")
     _require(run["annotation_set_id"] == annotation_set["annotation_set_id"], "segmentation run uses the wrong annotation set")
     _require(run["coordinate_space_id"] == coordinate["coordinate_space_id"], "segmentation run uses the wrong coordinate space")
+    if "boundary_guard" in run:
+        guard = _object(run["boundary_guard"], "segmentation_run.boundary_guard")
+        average_native_pixel_um = (
+            float(calibration["pixel_width_um"])
+            + float(calibration["pixel_height_um"])
+        ) / 2.0
+        expected_distance_um = (
+            float(guard["distance_pixels"]) * average_native_pixel_um
+        )
+        _require(
+            math.isclose(
+                float(guard["distance_um"]),
+                expected_distance_um,
+                rel_tol=1e-12,
+                abs_tol=1e-12,
+            ),
+            "segmentation_run.boundary_guard distances disagree with pixel calibration",
+        )
 
     method_ref = _object(package["measurement_method"], "package.measurement_method")
     _exact(method_ref, {"definition_id", "definition_relative_path", "definition_sha256", "parameter_set_id", "parameter_set_relative_path", "parameter_set_sha256", "method_instance_sha256"}, "package.measurement_method")

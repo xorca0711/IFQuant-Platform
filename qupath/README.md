@@ -37,12 +37,24 @@ equivalence, endpoint validity, or a universal model.
   `exclude_touching_annotation_boundary` policy excludes cells crossing or
   touching a selected annotation. The stricter
   `exclude_touching_annotation_or_image_boundary` policy requires exactly one
-  selected annotation equal to the complete image extent and derives
-  physical-image contact symmetrically from normalized geometry at top
-  (`minY <= 0`), right (`maxX >= width`), bottom (`maxY >= height`), and left
-  (`minX <= 0`). Unambiguously assigned physical-edge candidates retain their
-  original geometry and use the single reason `cell_touches_image_boundary`;
-  they are never clipped.
+  selected annotation equal to the complete image extent and applies a declared
+  one-processing-pixel physical-edge guard symmetrically to normalized geometry.
+  The native-pixel guard distance is derived as
+  `max(requestedPixelSizeMicrons, averagedNativePixelSizeMicrons) /
+  averagedNativePixelSizeMicrons`, matching QuPath's native-resolution clamp;
+  top and left use
+  `minimum <= guard`, while right and bottom use
+  `maximum >= imageDimension - guard`. The guard treats geometry in the
+  detector's outermost processing pixel as potentially crop-truncated even when
+  resampling stops a positive-side polygon slightly before width/height.
+  Unambiguously assigned physical-edge candidates retain their
+  original geometry and use the single reason
+  `cell_within_image_boundary_guard`; they are never clipped. The canonical
+  segmentation-run manifest records both the derived native-pixel distance and
+  its configured processing-pixel size in micrometers.
+  Exporter 1.2 writes segmentation-run contract 1.1 for this declared guard;
+  the validator retains contract 1.0 exact-envelope semantics so superseded
+  engineering audits remain reproducible.
   Cells wholly covered by one selected annotation and eligible under the bound
   policy are exported. New cells with no
   selected-annotation intersection or an ambiguous multi-annotation
@@ -160,7 +172,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-8b971f1ae02957a5172e2202bc2ee826c34a016fa2eb15cea9c39793fe8e0dff
+7e28147d359efe7a1400c21ef883eec67e016a5dba79f325bde8f31f942950c2
 ```
 
 ## Reproducible QuPath 0.7 CLI

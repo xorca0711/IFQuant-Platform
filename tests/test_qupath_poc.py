@@ -46,8 +46,8 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             self.config["segmentation"]["boundary_policy"],
             "exclude_touching_annotation_or_image_boundary",
         )
-        self.assertEqual(self.config["execution"]["script_version"], "1.1.0")
-        self.assertEqual(self.config["provenance"]["exporter_version"], "1.1.0")
+        self.assertEqual(self.config["execution"]["script_version"], "1.2.0")
+        self.assertEqual(self.config["provenance"]["exporter_version"], "1.2.0")
         self.assertEqual(self.config["segmentation"]["backend"]["kind"], "native_qupath")
 
         method = self.config["measurement_method"]
@@ -89,7 +89,12 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             "exclude_touching_annotation_or_image_boundary",
             "exactly one full-image annotation",
             "complete image extent",
-            "cell_touches_image_boundary",
+            "one_processing_pixel",
+            "effectiveProcessingMicrons",
+            "Math.max(",
+            "usesImageBoundaryGuard",
+            "SEGMENTATION_CONTRACT_VERSION",
+            "cell_within_image_boundary_guard",
             'sides.add("top")',
             'sides.add("right")',
             'sides.add("bottom")',

@@ -31,7 +31,10 @@
       "const": "ifquant_platform_segmentation_run"
     },
     "contract_version": {
-      "const": "1.0.0"
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
     },
     "segmentation_run_id": {
       "$ref": "#/$defs/identifier"
@@ -153,6 +156,28 @@
         "include_touching_annotation_boundary"
       ]
     },
+    "boundary_guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy",
+        "distance_pixels",
+        "distance_um"
+      ],
+      "properties": {
+        "strategy": {
+          "const": "one_processing_pixel"
+        },
+        "distance_pixels": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "distance_um": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
     "execution": {
       "type": "object",
       "additionalProperties": false,
@@ -211,6 +236,34 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "required": [
+          "contract_version",
+          "boundary_policy"
+        ],
+        "properties": {
+          "contract_version": {
+            "const": "1.1.0"
+          },
+          "boundary_policy": {
+            "const": "exclude_touching_annotation_or_image_boundary"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "boundary_guard"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "boundary_guard"
+          ]
+        }
+      }
+    },
     {
       "if": {
         "properties": {

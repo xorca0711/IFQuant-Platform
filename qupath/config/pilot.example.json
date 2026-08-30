@@ -35,7 +35,7 @@
     "provenance": {
       "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
       "producer_id": "ifquant_qupath_exporter",
-      "producer_version": "1.1.0"
+      "producer_version": "1.2.0"
     }
   },
   "channel_map": {
@@ -60,7 +60,7 @@
     "provenance": {
       "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
       "producer_id": "ifquant_qupath_exporter",
-      "producer_version": "1.1.0"
+      "producer_version": "1.2.0"
     }
   },
   "annotation_set": {
@@ -72,7 +72,7 @@
       "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
       "source_system": "qupath",
       "producer_id": "ifquant_qupath_exporter",
-      "producer_version": "1.1.0",
+      "producer_version": "1.2.0",
       "parent_annotation_set_id": null
     }
   },
@@ -129,7 +129,7 @@
     "provenance": {
       "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
       "producer_id": "ifquant_qupath_exporter",
-      "producer_version": "1.1.0",
+      "producer_version": "1.2.0",
       "code_revision": "<REPLACE_WITH_7_TO_64_LOWERCASE_HEX_REVISION>",
       "runtime_sha256": "<REPLACE_WITH_64_HEX_RUNTIME_ENVIRONMENT_SHA256>"
     }
@@ -231,14 +231,14 @@
   },
   "execution": {
     "script_path": "../scripts/DetectCellsAndExport.groovy",
-    "expected_script_sha256": "8b971f1ae02957a5172e2202bc2ee826c34a016fa2eb15cea9c39793fe8e0dff",
+    "expected_script_sha256": "7e28147d359efe7a1400c21ef883eec67e016a5dba79f325bde8f31f942950c2",
     "script_contract": "ifquant.qupath-cell-exporter/v1",
-    "script_version": "1.1.0"
+    "script_version": "1.2.0"
   },
   "provenance": {
     "created_at": "<REPLACE_WITH_RFC3339_UTC_INSTANT>",
     "exporter_id": "ifquant_qupath_exporter",
-    "exporter_version": "1.1.0",
+    "exporter_version": "1.2.0",
     "code_revision": "<REPLACE_WITH_7_TO_64_LOWERCASE_HEX_REVISION>"
   }
 }

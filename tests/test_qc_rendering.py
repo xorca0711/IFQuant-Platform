@@ -139,7 +139,13 @@ class QcRenderingTests(unittest.TestCase):
 
         run_path = package_root / "manifests" / "segmentation-run.json"
         run = read_json(run_path)
+        run["contract_version"] = "1.1.0"
         run["boundary_policy"] = "exclude_touching_annotation_or_image_boundary"
+        run["boundary_guard"] = {
+            "strategy": "one_processing_pixel",
+            "distance_pixels": 1.0,
+            "distance_um": 0.5,
+        }
         write_canonical(run_path, run)
 
         package_path = package_root / "package.json"
@@ -173,7 +179,7 @@ class QcRenderingTests(unittest.TestCase):
             "accepted_object_id": None,
             "source_detection_id": "detection-edge-left",
             "disposition": "excluded",
-            "reason": "cell_touches_image_boundary",
+            "reason": "cell_within_image_boundary_guard",
             "geometry": {
                 "cell": {
                     "encoding": "WKT1",
@@ -201,7 +207,7 @@ class QcRenderingTests(unittest.TestCase):
         manifest["disposition_counts"] = {"accepted": 1, "excluded": 1}
         manifest["reason_counts"] = {
             "accepted": 1,
-            "cell_touches_image_boundary": 1,
+            "cell_within_image_boundary_guard": 1,
         }
         write_canonical(manifest_path, manifest)
         self.rewrite_artifact_binding(manifest_path, artifact_path)
@@ -237,17 +243,27 @@ class QcRenderingTests(unittest.TestCase):
             }
         )
         self.assertEqual(
-            image_boundary_sides(edge_geometry, 100, 100),
+            image_boundary_sides(edge_geometry, 100, 100, 1.0),
             ("top", "right", "bottom", "left"),
         )
         interior = parse_wkt(
             {
                 "encoding": "WKT1",
                 "geometry_type": "POLYGON",
-                "wkt": "POLYGON ((1 1, 99 1, 99 99, 1 99, 1 1))",
+                "wkt": "POLYGON ((2 2, 98 2, 98 98, 2 98, 2 2))",
             }
         )
-        self.assertEqual(image_boundary_sides(interior, 100, 100), ())
+        self.assertEqual(image_boundary_sides(interior, 100, 100, 1.0), ())
+        resampled_positive_edge = parse_wkt(
+            {
+                "encoding": "WKT1",
+                "geometry_type": "POLYGON",
+                "wkt": "POLYGON ((95 20, 99.84 20, 99.84 30, 95 30, 95 20))",
+            }
+        )
+        self.assertEqual(
+            image_boundary_sides(resampled_positive_edge, 100, 100, 1.0), ("right",)
+        )
 
     def test_candidate_ledger_reconciles_to_package_and_bindings(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -274,13 +290,13 @@ class QcRenderingTests(unittest.TestCase):
             package_root = self.copy_fixture(temporary)
             artifact_path, manifest_path = self.add_candidate_ledger(package_root)
             record = json.loads(artifact_path.read_text(encoding="utf-8"))
-            record["reason"] = "cell_touches_image_boundary"
+            record["reason"] = "cell_within_image_boundary_guard"
             artifact_path.write_bytes(canonical_json_bytes(record) + b"\n")
             manifest = read_json(manifest_path)
-            manifest["reason_counts"] = {"cell_touches_image_boundary": 1}
+            manifest["reason_counts"] = {"cell_within_image_boundary_guard": 1}
             write_canonical(manifest_path, manifest)
             self.rewrite_artifact_binding(manifest_path, artifact_path)
-            with self.assertRaisesRegex(ContractError, "physical image-edge contact"):
+            with self.assertRaisesRegex(ContractError, "strict image-boundary policy"):
                 validate_candidate_dispositions(package_root)
 
     def test_full_frame_policy_accepts_bound_edge_reason_and_rejects_mislabeling(self):
@@ -307,7 +323,7 @@ class QcRenderingTests(unittest.TestCase):
             }
             write_canonical(manifest_path, manifest)
             self.rewrite_artifact_binding(manifest_path, artifact_path)
-            with self.assertRaisesRegex(ContractError, "image-edge candidate"):
+            with self.assertRaisesRegex(ContractError, "image-boundary-guard candidate"):
                 validate_candidate_dispositions(package_root)
 
     def test_full_frame_policy_rejects_accepted_edge_candidate(self):
@@ -330,8 +346,59 @@ class QcRenderingTests(unittest.TestCase):
             manifest["reason_counts"] = {"accepted": 2}
             write_canonical(manifest_path, manifest)
             self.rewrite_artifact_binding(manifest_path, artifact_path)
-            with self.assertRaisesRegex(ContractError, "image-edge candidate"):
+            with self.assertRaisesRegex(ContractError, "image-boundary-guard candidate"):
                 validate_candidate_dispositions(package_root)
+
+    def test_full_frame_policy_rejects_incoherent_guard_calibration(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package_root = self.copy_fixture(temporary)
+            self.bind_full_frame_policy(package_root)
+            self.add_candidate_ledger(package_root)
+            run_path = package_root / "manifests" / "segmentation-run.json"
+            run = read_json(run_path)
+            run["boundary_guard"]["distance_pixels"] = 2.0
+            write_canonical(run_path, run)
+            package_path = package_root / "package.json"
+            package = read_json(package_path)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_canonical(package_path, package)
+            with self.assertRaisesRegex(ContractError, "distances disagree with pixel calibration"):
+                validate_candidate_dispositions(package_root)
+
+    def test_legacy_strict_policy_retains_exact_edge_semantics(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package_root = self.copy_fixture(temporary)
+            self.bind_full_frame_policy(package_root)
+            run_path = package_root / "manifests" / "segmentation-run.json"
+            run = read_json(run_path)
+            run["contract_version"] = "1.0.0"
+            del run["boundary_guard"]
+            write_canonical(run_path, run)
+            package_path = package_root / "package.json"
+            package = read_json(package_path)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_canonical(package_path, package)
+
+            artifact_path, manifest_path = self.add_candidate_ledger(package_root)
+            self.append_left_edge_candidate(package_root, artifact_path, manifest_path)
+            records = [
+                json.loads(line)
+                for line in artifact_path.read_text(encoding="utf-8").splitlines()
+            ]
+            records[1]["reason"] = "cell_touches_image_boundary"
+            artifact_path.write_bytes(
+                b"".join(canonical_json_bytes(record) + b"\n" for record in records)
+            )
+            manifest = read_json(manifest_path)
+            manifest["reason_counts"] = {
+                "accepted": 1,
+                "cell_touches_image_boundary": 1,
+            }
+            write_canonical(manifest_path, manifest)
+            self.rewrite_artifact_binding(manifest_path, artifact_path)
+            ledger = validate_candidate_dispositions(package_root)
+            self.assertIsNone(ledger.boundary_guard)
+            self.assertEqual(ledger.image_boundary_side_counts["left"], 1)
 
     def test_candidate_identity_and_false_claims_are_enforced(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -491,6 +558,9 @@ class QcRenderingTests(unittest.TestCase):
             self.assertEqual(
                 manifest["display"]["roi_boundary_display"],
                 "clamped_to_visible_pixel_extent",
+            )
+            self.assertEqual(
+                manifest["boundary_classification"]["guard"], None
             )
 
     def test_renderer_requires_a_fresh_output_directory(self):

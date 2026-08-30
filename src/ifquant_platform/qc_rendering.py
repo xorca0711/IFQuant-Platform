@@ -94,8 +94,11 @@ CLAIM_FIELDS = frozenset(
 )
 GEOMETRY_WARNING_CODE = "nucleus_not_covered_by_cell_geometry"
 ANNOTATION_BOUNDARY_REASON = "cell_touches_annotation_boundary"
-IMAGE_BOUNDARY_REASON = "cell_touches_image_boundary"
-BOUNDARY_REASONS = frozenset({ANNOTATION_BOUNDARY_REASON, IMAGE_BOUNDARY_REASON})
+IMAGE_BOUNDARY_REASON = "cell_within_image_boundary_guard"
+LEGACY_IMAGE_BOUNDARY_REASON = "cell_touches_image_boundary"
+BOUNDARY_REASONS = frozenset(
+    {ANNOTATION_BOUNDARY_REASON, IMAGE_BOUNDARY_REASON, LEGACY_IMAGE_BOUNDARY_REASON}
+)
 CANDIDATE_RECORD_SCHEMA = "ifquant.qc-candidate-disposition/1.0.0"
 CANDIDATE_MANIFEST_SCHEMA = "ifquant.qc-candidate-dispositions-manifest/1.0.0"
 SUPPORTED_PILOT_STATUS = "unvalidated_engineering_pilot"
@@ -127,6 +130,7 @@ class CandidateLedger:
     records: tuple[Mapping[str, Any], ...]
     disposition_counts: Mapping[str, int]
     reason_counts: Mapping[str, int]
+    boundary_guard: Mapping[str, Any] | None
     image_boundary_side_counts: Mapping[str, int]
     warning_count: int
 
@@ -315,11 +319,15 @@ def parse_wkt(value: Any, *, location: str = "geometry") -> WktGeometry:
 
 
 def image_boundary_sides(
-    geometry: WktGeometry, width_pixels: int, height_pixels: int
+    geometry: WktGeometry,
+    width_pixels: int,
+    height_pixels: int,
+    guard_pixels: float,
 ) -> tuple[str, ...]:
-    """Classify physical-image contact symmetrically from normalized coordinates."""
+    """Classify a symmetric physical-image guard from normalized coordinates."""
 
     _require(width_pixels > 0 and height_pixels > 0, "image dimensions must be positive")
+    _require(math.isfinite(guard_pixels) and guard_pixels >= 0, "image boundary guard is invalid")
     points = [
         point
         for polygon in geometry.polygons
@@ -332,13 +340,13 @@ def image_boundary_sides(
     minimum_y = min(point[1] for point in points)
     maximum_y = max(point[1] for point in points)
     sides: list[str] = []
-    if minimum_y <= 0:
+    if minimum_y <= guard_pixels:
         sides.append("top")
-    if maximum_x >= width_pixels:
+    if maximum_x >= width_pixels - guard_pixels:
         sides.append("right")
-    if maximum_y >= height_pixels:
+    if maximum_y >= height_pixels - guard_pixels:
         sides.append("bottom")
-    if minimum_x <= 0:
+    if minimum_x <= guard_pixels:
         sides.append("left")
     return tuple(sides)
 
@@ -535,8 +543,24 @@ def validate_candidate_dispositions(
     image_height = _integer(
         dimensions["height_pixels"], "image_manifest.dimensions.height_pixels"
     )
-    if run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary":
+    boundary_guard: Mapping[str, Any] | None = None
+    boundary_guard_pixels = 0.0
+    strict_image_boundary_policy = (
+        run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary"
+    )
+    expected_image_boundary_reason = (
+        IMAGE_BOUNDARY_REASON
+        if run["contract_version"] == "1.1.0"
+        else LEGACY_IMAGE_BOUNDARY_REASON
+    )
+    if strict_image_boundary_policy:
         _require_full_image_annotation(annotation_set, image_width, image_height)
+        if run["contract_version"] == "1.1.0":
+            boundary_guard = _mapping(run["boundary_guard"], "segmentation_run.boundary_guard")
+            boundary_guard_pixels = _finite(
+                boundary_guard["distance_pixels"],
+                "segmentation_run.boundary_guard.distance_pixels",
+            )
     for row, raw in enumerate(records):
         location = f"candidate_dispositions[{row}]"
         _exact(raw, RECORD_FIELDS, location)
@@ -571,7 +595,9 @@ def validate_candidate_dispositions(
         geometry = _mapping(raw["geometry"], f"{location}.geometry")
         _exact(geometry, frozenset({"cell", "nucleus"}), f"{location}.geometry")
         cell_geometry = parse_wkt(geometry["cell"], location=f"{location}.geometry.cell")
-        physical_sides = image_boundary_sides(cell_geometry, image_width, image_height)
+        physical_sides = image_boundary_sides(
+            cell_geometry, image_width, image_height, boundary_guard_pixels
+        )
         for side in physical_sides:
             image_side_counts[side] += 1
         if geometry["nucleus"] is not None:
@@ -627,10 +653,18 @@ def validate_candidate_dispositions(
                 raw["touches_annotation_boundary"],
                 f"{location} boundary-exclusion reason requires a true boundary flag",
             )
-        if reason == IMAGE_BOUNDARY_REASON:
+        if reason in {IMAGE_BOUNDARY_REASON, LEGACY_IMAGE_BOUNDARY_REASON}:
+            _require(
+                strict_image_boundary_policy,
+                f"{location} image-boundary reason requires the strict image-boundary policy",
+            )
+            _require(
+                reason == expected_image_boundary_reason,
+                f"{location} image-boundary reason is incompatible with segmentation-run contract version",
+            )
             _require(
                 bool(physical_sides),
-                f"{location} image-boundary reason requires physical image-edge contact",
+                f"{location} image-boundary reason requires geometry within the image-boundary guard",
             )
             _require(
                 annotation_id is not None,
@@ -638,23 +672,23 @@ def validate_candidate_dispositions(
             )
 
         if (
-            run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary"
+            strict_image_boundary_policy
             and physical_sides
             and annotation_id is not None
         ):
             _require(
-                disposition == "excluded" and reason == IMAGE_BOUNDARY_REASON,
-                f"{location} physical image-edge candidate must use image-boundary exclusion",
+                disposition == "excluded" and reason == expected_image_boundary_reason,
+                f"{location} image-boundary-guard candidate must use image-boundary exclusion",
             )
 
         accepted_object_id = raw["accepted_object_id"]
         if disposition == "accepted":
             _require(reason == "accepted", f"{location} accepted candidate must use reason accepted")
             _require(not raw["touches_annotation_boundary"], f"{location} accepted candidate cannot touch boundary")
-            if run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary":
+            if strict_image_boundary_policy:
                 _require(
                     not physical_sides,
-                    f"{location} accepted candidate cannot touch the physical image boundary",
+                    f"{location} accepted candidate cannot lie within the image-boundary guard",
                 )
             _require(annotation_id is not None, f"{location} accepted candidate requires annotation_id")
             object_id = _string(accepted_object_id, f"{location}.accepted_object_id")
@@ -722,6 +756,7 @@ def validate_candidate_dispositions(
         records=tuple(records),
         disposition_counts=dict(observed_dispositions),
         reason_counts=dict(observed_reasons),
+        boundary_guard=boundary_guard,
         image_boundary_side_counts=dict(image_side_counts),
         warning_count=warning_count,
     )
@@ -1137,7 +1172,7 @@ def render_qc(
             "status": "rendered_unvalidated_engineering_qc",
             "producer": {
                 "producer_id": "ifquant_platform.qc_rendering",
-                "producer_version": "1.1.0",
+                "producer_version": "1.2.0",
                 "implementation_sha256": file_sha256(Path(__file__).resolve()),
                 "python_version": platform.python_version(),
             },
@@ -1202,6 +1237,16 @@ def render_qc(
                 "roi_boundary_display": "clamped_to_visible_pixel_extent",
             },
             "selection": selection,
+            "boundary_classification": {
+                "policy": ledger.segmentation_run["boundary_policy"],
+                "guard": dict(ledger.boundary_guard) if ledger.boundary_guard else None,
+                "rule": (
+                    "top/left <= guard; right/bottom >= dimension - guard"
+                    if ledger.boundary_guard
+                    else "top/left <= 0; right/bottom >= dimension"
+                ),
+                "raw_geometry_modified": False,
+            },
             "counts": {
                 "dispositions": dict(ledger.disposition_counts),
                 "reasons": dict(ledger.reason_counts),
