@@ -2058,7 +2058,21 @@ final class IfQuantV1Exporter {
         for (Map<String, Object> mapping : typedMapList(requireList(mappings.get("intensity"), "intensity mappings"), "intensity mappings")) {
             String sourceName = mapping.get("source_measurement").toString()
             if (!measurementList.containsKey(sourceName)) {
-                fail("cell " + objectId + " lacks exact source measurement " + quoted(sourceName))
+                List<String> availableMeasurements = measurementList.getNames()
+                    .collect { it.toString() }
+                    .sort()
+                int diagnosticLimit = 100
+                String diagnostic = availableMeasurements
+                    .take(diagnosticLimit)
+                    .collect { quoted(it) }
+                    .join(", ")
+                if (availableMeasurements.size() > diagnosticLimit) {
+                    diagnostic += ", ... [truncated]"
+                }
+                fail(
+                    "cell " + objectId + " lacks exact source measurement " + quoted(sourceName) +
+                    "; available measurements (" + availableMeasurements.size() + "): " + diagnostic
+                )
             }
             intensity.add([
                 measurement_id: mapping.get("measurement_id"),
