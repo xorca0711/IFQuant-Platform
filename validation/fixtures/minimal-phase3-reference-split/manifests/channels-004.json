@@ -1,0 +1,9 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/channel-map.schema.json",
+  "contract_type": "ifquant_platform_channel_map",
+  "contract_version": "1.0.0",
+  "channel_map_id": "phase3-channels-004",
+  "image_id": "phase3-image-004",
+  "channels": [{"source_channel_index": 0, "source_channel_name": "DAPI", "channel_id": "dapi", "marker_id": "DAPI", "role": "nuclear_counterstain", "intensity": {"representation": "unsigned_integer", "bit_depth": 16, "transform": "none", "scale": 1, "offset": 0, "unit": "native_sample_value"}}],
+  "provenance": {"created_at": "2026-08-30T00:00:00Z", "producer_id": "ifquant_phase3_fixture_builder", "producer_version": "0.1.0", "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b", "mapping_config_sha256": "3b363c6b5bc28095a7fc068bf750db6166d6034444feedc8d00b6c064a662942"}
+}

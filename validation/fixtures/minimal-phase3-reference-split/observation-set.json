@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/governed-observation-set.schema.json",
+  "contract_type": "ifquant_platform_governed_observation_set",
+  "contract_version": "1.0.0",
+  "observation_set_id": "phase3-synthetic-observations-001",
+  "study_id": "phase3-synthetic-study-001",
+  "revision": 0,
+  "revision_reason": "Initial synthetic Phase 3 observation fixture.",
+  "parent": null,
+  "observations": [
+    {
+      "image": {"image_id": "phase3-image-001", "manifest_relative_path": "manifests/image-001.json", "manifest_sha256": "ab9cf9c232da98983a88d80c1b1bb846b04646a80944a10033659938b0b5b0b5", "source_sha256": "940b3d709989b4699596c3f5d9e0bf1ca3f5c776cb2608ac18dbcaeca9f20163"},
+      "biological_unit": {"biological_unit_id": "phase3-unit-001", "mouse_id": "phase3-mouse-001", "specimen_id": null, "section_id": null, "slide_id": "phase3-slide-001", "batch_id": "phase3-batch-shared", "scanner_id": "phase3-scanner-shared"},
+      "channel_map": {"channel_map_id": "phase3-channels-001", "manifest_relative_path": "manifests/channels-001.json", "manifest_sha256": "2433786bb4f5afdcba181c7d73dbc00c92fc02d77ad1a5368e282a6ce781a97d"},
+      "annotation_lineage": [{"annotation_set_id": "phase3-annotations-001", "revision": 0, "manifest_relative_path": "manifests/annotations-001.json", "manifest_sha256": "d8d00368cf82a061bbf15df1409f4e625706941aebff7a3741f267b0330e2b83", "parent_manifest_sha256": null, "revision_reason": "Initial synthetic reviewed scope."}],
+      "selected_annotation_set_id": "phase3-annotations-001",
+      "identity_review": {"state": "accepted", "reviewer_id": "synthetic-reviewer-001", "reviewed_at": "2026-08-30T00:00:00Z", "notes": "Synthetic fixture identity only."}
+    },
+    {
+      "image": {"image_id": "phase3-image-002", "manifest_relative_path": "manifests/image-002.json", "manifest_sha256": "2c3c87638403c85f95d6be0746ddea643c371668cff749dc7be809f9ae881ea6", "source_sha256": "16eb742e1d681051b99ebb93c2cb6011df7ba7f2c88a1bee09a60f2c7094e730"},
+      "biological_unit": {"biological_unit_id": "phase3-unit-002", "mouse_id": "phase3-mouse-001", "specimen_id": null, "section_id": null, "slide_id": "phase3-slide-002", "batch_id": "phase3-batch-shared", "scanner_id": "phase3-scanner-shared"},
+      "channel_map": {"channel_map_id": "phase3-channels-002", "manifest_relative_path": "manifests/channels-002.json", "manifest_sha256": "e706e0d68d92163b766554adbc7f90d68cdd6bc59d11c7b838d431dcec594397"},
+      "annotation_lineage": [{"annotation_set_id": "phase3-annotations-002", "revision": 0, "manifest_relative_path": "manifests/annotations-002.json", "manifest_sha256": "68c35eab9c9aa89eaa3268bcac0e76a1ec6ac5c7c0cefcd888962c59ffd69238", "parent_manifest_sha256": null, "revision_reason": "Initial synthetic reviewed scope."}],
+      "selected_annotation_set_id": "phase3-annotations-002",
+      "identity_review": {"state": "accepted", "reviewer_id": "synthetic-reviewer-001", "reviewed_at": "2026-08-30T00:00:00Z", "notes": "Synthetic fixture identity only."}
+    },
+    {
+      "image": {"image_id": "phase3-image-003", "manifest_relative_path": "manifests/image-003.json", "manifest_sha256": "af1390b52c58361fbd3a2de77929776923192f0221464dfb7203f524b8fc8fd4", "source_sha256": "b2da3a2c3c5a0d133f4ecffc3920aa1ab2349dfe080ccb95c2a8f4c1774c004e"},
+      "biological_unit": {"biological_unit_id": "phase3-unit-003", "mouse_id": "phase3-mouse-002", "specimen_id": null, "section_id": null, "slide_id": "phase3-slide-003", "batch_id": "phase3-batch-shared", "scanner_id": "phase3-scanner-shared"},
+      "channel_map": {"channel_map_id": "phase3-channels-003", "manifest_relative_path": "manifests/channels-003.json", "manifest_sha256": "545af5bcd3b3dc8b0bba0887008146645c42665567e26fb0c753d21265d7e9a2"},
+      "annotation_lineage": [{"annotation_set_id": "phase3-annotations-003", "revision": 0, "manifest_relative_path": "manifests/annotations-003.json", "manifest_sha256": "111ec602c6b57817c39016e260a2a6750049df7a1a27f03e347ba510aabeda41", "parent_manifest_sha256": null, "revision_reason": "Initial synthetic reviewed scope."}],
+      "selected_annotation_set_id": "phase3-annotations-003",
+      "identity_review": {"state": "accepted", "reviewer_id": "synthetic-reviewer-001", "reviewed_at": "2026-08-30T00:00:00Z", "notes": "Synthetic fixture identity only."}
+    },
+    {
+      "image": {"image_id": "phase3-image-004", "manifest_relative_path": "manifests/image-004.json", "manifest_sha256": "566fa08c627e9b593bd33b54b78ddfc8640aebc06174e0cd9e7e4917ef97f6a8", "source_sha256": "21e9e5f9f2ee298421ce59b10de74f3733b79bfcd447b9e0643bd6b5a25d386d"},
+      "biological_unit": {"biological_unit_id": "phase3-unit-004", "mouse_id": "phase3-mouse-003", "specimen_id": null, "section_id": null, "slide_id": "phase3-slide-004", "batch_id": "phase3-batch-heldout", "scanner_id": "phase3-scanner-heldout"},
+      "channel_map": {"channel_map_id": "phase3-channels-004", "manifest_relative_path": "manifests/channels-004.json", "manifest_sha256": "f2a7a0dd016d01e401c54482517cef8b4da116e52d45267b01ccf101e230336f"},
+      "annotation_lineage": [{"annotation_set_id": "phase3-annotations-004", "revision": 0, "manifest_relative_path": "manifests/annotations-004.json", "manifest_sha256": "edd61431c3aecba8360744126f180eb6e384e321f691fbe8099a1b574435f2d8", "parent_manifest_sha256": null, "revision_reason": "Initial synthetic reviewed scope."}],
+      "selected_annotation_set_id": "phase3-annotations-004",
+      "identity_review": {"state": "accepted", "reviewer_id": "synthetic-reviewer-001", "reviewed_at": "2026-08-30T00:00:00Z", "notes": "Synthetic fixture identity only."}
+    }
+  ],
+  "provenance": {
+    "created_at": "2026-08-30T00:00:00Z",
+    "producer_id": "ifquant_phase3_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b",
+    "code_artifact": {"relative_path": "producer-code.txt", "media_type": "text/plain", "sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b", "size_bytes": 41},
+    "identity_source": {"kind": "reviewed_manual_assertion", "artifact": null}
+  },
+  "claims": {"scientific_validation": false, "biological_ground_truth": false, "authorization": "none"}
+}

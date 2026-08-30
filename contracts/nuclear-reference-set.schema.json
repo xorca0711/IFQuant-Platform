@@ -1,0 +1,774 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/nuclear-reference-set.schema.json",
+  "title": "IFQuant Platform nuclear reference set",
+  "description": "A frozen, revisioned DAPI nuclear-instance reference set bound to one exact governed observation set, written selection and evaluation policies, exhaustive scope ledgers, and separate canonical nuclear-object and ignore-region artifacts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "reference_set_id",
+    "study_id",
+    "revision",
+    "revision_reason",
+    "parent",
+    "governed_observation_set",
+    "task",
+    "evaluation_policy",
+    "selection_protocol",
+    "source_family_ledger",
+    "region_ledger",
+    "artifacts",
+    "state",
+    "provenance",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/nuclear-reference-set.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_nuclear_reference_set"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "reference_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "study_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "revision": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        {
+          "maximum": 255
+        }
+      ]
+    },
+    "revision_reason": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "parent": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/parent_reference"
+        }
+      ]
+    },
+    "governed_observation_set": {
+      "$ref": "#/$defs/governed_observation_set_reference"
+    },
+    "task": {
+      "$ref": "#/$defs/task"
+    },
+    "evaluation_policy": {
+      "$ref": "#/$defs/evaluation_policy"
+    },
+    "selection_protocol": {
+      "$ref": "#/$defs/selection_protocol"
+    },
+    "source_family_ledger": {
+      "$ref": "#/$defs/source_family_ledger"
+    },
+    "region_ledger": {
+      "$ref": "#/$defs/region_ledger"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/reference_artifacts"
+    },
+    "state": {
+      "$ref": "#/$defs/frozen_state"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "revision"
+        ],
+        "properties": {
+          "revision": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parent": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "revision": {
+            "minimum": 1
+          },
+          "parent": {
+            "$ref": "#/$defs/parent_reference"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z$"
+    },
+    "nonnegative_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?![^/]*:)[^\\\\]+$"
+    },
+    "nullable_identifier": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullable_nonempty_string": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "parent_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_set_id",
+        "revision",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "reference_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "governed_observation_set_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_set_id",
+        "revision",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "observation_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "artifact_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "media_type",
+        "sha256",
+        "size_bytes"
+      ],
+      "properties": {
+        "relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/nonnegative_integer"
+        }
+      }
+    },
+    "dapi_nucleus_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "object_type",
+        "marker_id",
+        "channel_role"
+      ],
+      "properties": {
+        "object_type": {
+          "const": "nucleus"
+        },
+        "marker_id": {
+          "const": "DAPI"
+        },
+        "channel_role": {
+          "const": "nuclear"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "task_type",
+        "target"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "task_type": {
+          "const": "dapi_nucleus_instance_segmentation"
+        },
+        "target": {
+          "$ref": "#/$defs/dapi_nucleus_target"
+        }
+      }
+    },
+    "evaluation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation_policy_id",
+        "evaluation_policy_version",
+        "detector_guard_inherited",
+        "evaluation_extent",
+        "ignore_region_handling",
+        "unreviewed_region_policy",
+        "artifact"
+      ],
+      "properties": {
+        "evaluation_policy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evaluation_policy_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "detector_guard_inherited": {
+          "const": false
+        },
+        "evaluation_extent": {
+          "const": "reviewed_reference_regions_only"
+        },
+        "ignore_region_handling": {
+          "const": "exclude_explicit_reference_ignore_regions_before_scoring"
+        },
+        "unreviewed_region_policy": {
+          "const": "not_evaluated"
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifact_reference"
+        }
+      }
+    },
+    "selection_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_id",
+        "protocol_version",
+        "artifact"
+      ],
+      "properties": {
+        "protocol_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "protocol_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifact_reference"
+        }
+      }
+    },
+    "source_family_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completeness",
+        "ordering",
+        "families"
+      ],
+      "properties": {
+        "completeness": {
+          "const": "complete_for_governed_observation_set"
+        },
+        "ordering": {
+          "const": "source_family_id_ascending_with_image_id_ascending"
+        },
+        "families": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/source_family"
+          }
+        }
+      }
+    },
+    "source_family": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_family_id",
+        "description",
+        "image_ids"
+      ],
+      "properties": {
+        "source_family_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "image_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      }
+    },
+    "region_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completeness",
+        "ordering",
+        "regions",
+        "counts"
+      ],
+      "properties": {
+        "completeness": {
+          "const": "exhaustive_for_governed_observation_set"
+        },
+        "ordering": {
+          "const": "image_id_annotation_id_region_id_ascending"
+        },
+        "regions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/region_ledger_entry"
+          }
+        },
+        "counts": {
+          "$ref": "#/$defs/region_ledger_counts"
+        }
+      }
+    },
+    "region_ledger_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "region_id",
+        "image_id",
+        "biological_unit_id",
+        "annotation_id",
+        "coordinate_space_id",
+        "source_family_id",
+        "disposition",
+        "exclusion_reason",
+        "counts",
+        "review"
+      ],
+      "properties": {
+        "region_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "image_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "biological_unit_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "annotation_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "coordinate_space_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_family_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "disposition": {
+          "enum": [
+            "include",
+            "exclude",
+            "review"
+          ]
+        },
+        "exclusion_reason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/region_exclusion_reason"
+            }
+          ]
+        },
+        "counts": {
+          "$ref": "#/$defs/region_artifact_counts"
+        },
+        "review": {
+          "$ref": "#/$defs/region_review"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "disposition"
+            ],
+            "properties": {
+              "disposition": {
+                "const": "exclude"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "exclusion_reason": {
+                "$ref": "#/$defs/region_exclusion_reason"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "exclusion_reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "region_exclusion_reason": {
+      "type": "string",
+      "enum": [
+        "outside_reference_sampling_scope",
+        "duplicate_or_redundant_region",
+        "insufficient_dapi_signal",
+        "region_level_acquisition_artifact",
+        "region_level_staining_artifact",
+        "physical_edge_dominated",
+        "other_protocol_defined_exclusion"
+      ]
+    },
+    "region_artifact_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nuclear_reference_objects",
+        "reference_ignore_regions"
+      ],
+      "properties": {
+        "nuclear_reference_objects": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "reference_ignore_regions": {
+          "$ref": "#/$defs/nonnegative_integer"
+        }
+      }
+    },
+    "region_ledger_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regions_total",
+        "include",
+        "exclude",
+        "review",
+        "nuclear_reference_objects",
+        "reference_ignore_regions"
+      ],
+      "properties": {
+        "regions_total": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "include": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "exclude": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "review": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "nuclear_reference_objects": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "reference_ignore_regions": {
+          "$ref": "#/$defs/nonnegative_integer"
+        }
+      }
+    },
+    "region_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer_ids",
+        "reviewed_at",
+        "notes"
+      ],
+      "properties": {
+        "state": {
+          "const": "accepted"
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "reviewed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "notes": {
+          "$ref": "#/$defs/nullable_nonempty_string"
+        }
+      }
+    },
+    "canonical_ndjson_artifact_base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "media_type",
+        "sha256",
+        "size_bytes",
+        "record_count",
+        "record_schema",
+        "canonicalization_profile",
+        "ordering"
+      ],
+      "properties": {
+        "relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "media_type": {
+          "const": "application/x-ndjson"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "record_count": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "record_schema": {
+          "enum": [
+            "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json",
+            "https://ifquant.org/contracts/platform/v1/reference-ignore-region.schema.json"
+          ]
+        },
+        "canonicalization_profile": {
+          "const": "ifquant_canonical_json_v1"
+        },
+        "ordering": {
+          "const": "image_id_annotation_id_record_id_ascending"
+        }
+      }
+    },
+    "nuclear_reference_artifact": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/canonical_ndjson_artifact_base"
+        },
+        {
+          "properties": {
+            "record_schema": {
+              "const": "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json"
+            }
+          }
+        }
+      ]
+    },
+    "reference_ignore_artifact": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/canonical_ndjson_artifact_base"
+        },
+        {
+          "properties": {
+            "record_schema": {
+              "const": "https://ifquant.org/contracts/platform/v1/reference-ignore-region.schema.json"
+            }
+          }
+        }
+      ]
+    },
+    "reference_artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nuclear_reference_objects",
+        "reference_ignore_regions"
+      ],
+      "properties": {
+        "nuclear_reference_objects": {
+          "$ref": "#/$defs/nuclear_reference_artifact"
+        },
+        "reference_ignore_regions": {
+          "$ref": "#/$defs/reference_ignore_artifact"
+        }
+      }
+    },
+    "frozen_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frozen_at",
+        "frozen_by",
+        "change_policy"
+      ],
+      "properties": {
+        "status": {
+          "const": "frozen"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "frozen_by": {
+          "$ref": "#/$defs/identifier"
+        },
+        "change_policy": {
+          "const": "new_reference_set_revision_required"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "code_artifact"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_artifact": {
+          "$ref": "#/$defs/artifact_reference"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scientific_validation",
+        "biological_ground_truth",
+        "backend_equivalence",
+        "model_universality",
+        "authorization"
+      ],
+      "properties": {
+        "scientific_validation": {
+          "const": false
+        },
+        "biological_ground_truth": {
+          "const": false
+        },
+        "backend_equivalence": {
+          "const": false
+        },
+        "model_universality": {
+          "const": false
+        },
+        "authorization": {
+          "const": "none"
+        }
+      }
+    }
+  }
+}

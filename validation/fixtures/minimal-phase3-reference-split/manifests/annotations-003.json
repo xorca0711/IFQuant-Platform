@@ -1,0 +1,11 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/annotation-set.schema.json",
+  "contract_type": "ifquant_platform_annotation_set",
+  "contract_version": "1.0.0",
+  "annotation_set_id": "phase3-annotations-003",
+  "image_id": "phase3-image-003",
+  "coordinate_space_id": "phase3-pixels-003",
+  "revision": 0,
+  "annotations": [{"annotation_id": "phase3-roi-003", "label": "Synthetic reference scope 003", "inclusion_policy": "include", "geometry": {"encoding": "WKT1", "geometry_type": "POLYGON", "wkt": "POLYGON ((5 5, 95 5, 95 95, 5 95, 5 5))"}, "review": {"state": "accepted", "reviewer_id": "synthetic-reviewer-001", "reviewed_at": "2026-08-30T00:00:00Z"}}],
+  "provenance": {"created_at": "2026-08-30T00:00:00Z", "source_system": "generated", "producer_id": "ifquant_phase3_fixture_builder", "producer_version": "0.1.0", "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b", "parent_annotation_set_id": null}
+}

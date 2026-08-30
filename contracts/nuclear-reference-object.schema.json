@@ -1,0 +1,342 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json",
+  "title": "IFQuant Platform nuclear reference object",
+  "description": "One reviewed DAPI nuclear instance geometry for canonical JSON Lines export. A corrected prediction records exactly which prediction was exposed; a human-drawn object records that no prediction was exposed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "reference_object_id",
+    "reference_set_id",
+    "image_id",
+    "biological_unit_id",
+    "annotation_id",
+    "coordinate_space_id",
+    "target",
+    "geometry",
+    "creation_mode",
+    "prediction_exposure",
+    "review"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_nuclear_reference_object"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "reference_object_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "reference_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "biological_unit_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "annotation_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "coordinate_space_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "target": {
+      "$ref": "#/$defs/dapi_nucleus_target"
+    },
+    "geometry": {
+      "$ref": "#/$defs/wkt_geometry"
+    },
+    "creation_mode": {
+      "enum": [
+        "human_drawn",
+        "human_corrected_prediction"
+      ]
+    },
+    "prediction_exposure": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/prediction_exposure"
+        }
+      ]
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "creation_mode"
+        ],
+        "properties": {
+          "creation_mode": {
+            "const": "human_drawn"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "prediction_exposure": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "prediction_exposure": {
+            "$ref": "#/$defs/prediction_exposure"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z$"
+    },
+    "nullable_identifier": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullable_nonempty_string": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "dapi_nucleus_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "object_type",
+        "marker_id",
+        "channel_role"
+      ],
+      "properties": {
+        "object_type": {
+          "const": "nucleus"
+        },
+        "marker_id": {
+          "const": "DAPI"
+        },
+        "channel_role": {
+          "const": "nuclear"
+        }
+      }
+    },
+    "wkt_geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "geometry_type",
+        "wkt"
+      ],
+      "properties": {
+        "encoding": {
+          "const": "WKT1"
+        },
+        "geometry_type": {
+          "enum": [
+            "POLYGON",
+            "MULTIPOLYGON"
+          ]
+        },
+        "wkt": {
+          "type": "string",
+          "pattern": "^(POLYGON|MULTIPOLYGON)\\s*\\("
+        }
+      }
+    },
+    "prediction_exposure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_id",
+        "package_sha256",
+        "segmentation_run_id",
+        "predicted_object_id",
+        "predicted_geometry_sha256"
+      ],
+      "properties": {
+        "package_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "package_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "segmentation_run_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "predicted_object_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "predicted_geometry_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer_ids",
+        "reviewed_at",
+        "adjudication"
+      ],
+      "properties": {
+        "state": {
+          "const": "accepted"
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "reviewed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "adjudication": {
+          "$ref": "#/$defs/adjudication"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "adjudication": {
+                "properties": {
+                  "method": {
+                    "const": "single_reviewer"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reviewer_ids": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adjudication": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "independent_second_review",
+                      "consensus"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reviewer_ids": {
+                "minItems": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    "adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "adjudicator_id",
+        "notes"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "single_reviewer",
+            "independent_second_review",
+            "consensus",
+            "adjudicator_decision"
+          ]
+        },
+        "adjudicator_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "notes": {
+          "$ref": "#/$defs/nullable_nonempty_string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "method"
+            ],
+            "properties": {
+              "method": {
+                "const": "adjudicator_decision"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "adjudicator_id": {
+                "$ref": "#/$defs/identifier"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "adjudicator_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
