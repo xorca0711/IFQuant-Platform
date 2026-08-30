@@ -85,6 +85,29 @@ def _backend_report() -> dict[str, Any]:
     }
 
 
+def _render_qc(args: argparse.Namespace) -> dict[str, Any]:
+    # Keep Pillow and NumPy outside the core CLI import path.
+    from .qc_rendering import render_qc
+
+    manifest = render_qc(
+        args.package,
+        args.output,
+        candidate_manifest=args.candidate_manifest,
+        candidate_dispositions=args.candidate_dispositions,
+        lower_percentile=args.lower_percentile,
+        upper_percentile=args.upper_percentile,
+        montage_per_group=args.montage_per_group,
+        montage_crop_size=args.montage_crop_size,
+    )
+    return {
+        "status": manifest["status"],
+        "output_directory": str(args.output),
+        "manifest_relative_path": "qc-manifest.json",
+        "outputs": manifest["outputs"],
+        "claims": manifest["claims"],
+    }
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ifquant-platform",
@@ -117,6 +140,26 @@ def build_parser() -> argparse.ArgumentParser:
         "backends", help="list candidate segmentation adapters and their identity requirements"
     )
     backend_parser.set_defaults(handler=lambda _args: _backend_report())
+
+    qc_parser = subparsers.add_parser(
+        "render-qc",
+        help="render deterministic, non-scientific DAPI QC images from a package and candidate ledger",
+    )
+    qc_parser.add_argument("package", help="package.json or its containing directory")
+    qc_parser.add_argument("--output", required=True, help="fresh output directory")
+    qc_parser.add_argument(
+        "--candidate-manifest",
+        help="candidate manifest (default: PACKAGE/qc/candidate-dispositions-manifest.json)",
+    )
+    qc_parser.add_argument(
+        "--candidate-dispositions",
+        help="candidate JSONL; if given, it must match the path bound by the candidate manifest",
+    )
+    qc_parser.add_argument("--lower-percentile", type=float, default=1.0)
+    qc_parser.add_argument("--upper-percentile", type=float, default=99.8)
+    qc_parser.add_argument("--montage-per-group", type=int, default=8)
+    qc_parser.add_argument("--montage-crop-size", type=int, default=192)
+    qc_parser.set_defaults(handler=_render_qc)
     return parser
 
 
@@ -134,4 +177,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -231,7 +231,7 @@
   },
   "execution": {
     "script_path": "../scripts/DetectCellsAndExport.groovy",
-    "expected_script_sha256": "ed690a9fb7273d16118b956744d003286e18d696c89866e9798bd5643a56d3ee",
+    "expected_script_sha256": "00b8650a9c1c6d9ea6ebb13db569f013e8a8f719340fa422720fb510e6fd11fd",
     "script_contract": "ifquant.qupath-cell-exporter/v1",
     "script_version": "1.0.0"
   },

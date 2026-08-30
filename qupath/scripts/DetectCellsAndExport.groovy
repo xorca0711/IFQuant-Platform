@@ -79,6 +79,14 @@ final class IfQuantV1Exporter {
         "manifests/segmentation-run.json"
     static final String CELL_OBJECTS_PATH = "cell_objects.jsonl"
     static final String PACKAGE_PATH = "package.json"
+    static final String CANDIDATE_DISPOSITIONS_PATH =
+        "qc/candidate-dispositions.jsonl"
+    static final String CANDIDATE_DISPOSITIONS_MANIFEST_PATH =
+        "qc/candidate-dispositions-manifest.json"
+    static final String CANDIDATE_DISPOSITION_SCHEMA =
+        "ifquant.qc-candidate-disposition/1.0.0"
+    static final String CANDIDATE_DISPOSITIONS_MANIFEST_SCHEMA =
+        "ifquant.qc-candidate-dispositions-manifest/1.0.0"
 
     static final int WKT_DIMENSIONS = 2
     static final int WKT_PRECISION_DECIMALS = 6
@@ -411,6 +419,7 @@ final class IfQuantV1Exporter {
             fail("native cell detector produced non-cell detection objects")
         }
         String boundaryPolicy = segmentationConfig.get("boundary_policy").toString()
+        List<Map<String, Object>> allCellAssignments = []
         List<Map<String, Object>> selectedCellAssignments = []
         Map<String, Integer> exclusionCounts = new TreeMap<>()
         for (def cell : newDetections) {
@@ -420,6 +429,7 @@ final class IfQuantV1Exporter {
                 annotationByObject,
                 boundaryPolicy
             )
+            allCellAssignments.add(assignment)
             if (assignment.get("include") == Boolean.TRUE) {
                 selectedCellAssignments.add(assignment)
             } else {
@@ -513,6 +523,7 @@ final class IfQuantV1Exporter {
 
         List<Map<String, Object>> cellRecords = []
         Set<String> objectIds = new HashSet<>()
+        Map<Object, String> acceptedObjectIdByCell = new IdentityHashMap<>()
         for (int index = 0; index < drafts.size(); index++) {
             Map<String, Object> draft = drafts.get(index)
             Map<String, Object> record =
@@ -522,10 +533,35 @@ final class IfQuantV1Exporter {
             if (!objectIds.add(objectId)) {
                 fail("duplicate deterministic object_id " + objectId)
             }
+            def draftCell = draft.get("cell")
+            if (draftCell == null ||
+                acceptedObjectIdByCell.put(draftCell, objectId) != null) {
+                fail("duplicate or missing accepted candidate identity")
+            }
             cellRecords.add(record)
         }
         Map<String, Integer> objectQcFlagCounts =
             countObjectQcFlags(cellRecords)
+        Map<String, Object> candidateLedger = buildCandidateDispositionLedger(
+            allCellAssignments,
+            annotationByObject,
+            acceptedObjectIdByCell,
+            packageId,
+            imageId,
+            annotationSetId,
+            segmentationRunId,
+            coordinateSpace.get("coordinate_space_id").toString()
+        )
+        List<Map<String, Object>> candidateRecords = typedMapList(
+            requireList(
+                candidateLedger.get("records"),
+                "generated candidate disposition records"
+            ),
+            "generated candidate disposition records"
+        )
+        if (candidateRecords.size() != newDetections.size()) {
+            fail("candidate disposition ledger does not account for every new detection")
+        }
 
         List<Path> published = []
         try {
@@ -550,6 +586,47 @@ final class IfQuantV1Exporter {
             ensureParentDirectory(cellsPath)
             String cellsSha256 = writeJsonLinesAtomic(cellsPath, cellRecords)
             published.add(cellsPath)
+
+            Path candidateDispositionsPath = packageRelativePath(
+                outputDirectory,
+                CANDIDATE_DISPOSITIONS_PATH
+            )
+            ensureParentDirectory(candidateDispositionsPath)
+            String candidateDispositionsSha256 = writeJsonLinesAtomic(
+                candidateDispositionsPath,
+                candidateRecords
+            )
+            published.add(candidateDispositionsPath)
+            Map<String, Object> candidateManifest =
+                buildCandidateDispositionManifest(
+                    packageId,
+                    imageId,
+                    annotationSetId,
+                    segmentationRunId,
+                    coordinateSpace.get("coordinate_space_id").toString(),
+                    candidateRecords.size(),
+                    Files.size(candidateDispositionsPath),
+                    candidateDispositionsSha256,
+                    (Map<String, Integer>) candidateLedger.get("disposition_counts"),
+                    (Map<String, Integer>) candidateLedger.get("reason_counts"),
+                    (Map<String, Integer>) candidateLedger.get("geometry_warning_counts"),
+                    scriptSha256,
+                    configCanonicalSha256,
+                    requireSha256(
+                        requireMap(
+                            imageConfig.get("source_artifact"),
+                            "image.source_artifact"
+                        ).get("sha256"),
+                        "image.source_artifact.sha256"
+                    ),
+                    annotationContentSha256
+                )
+            publishJson(
+                outputDirectory,
+                CANDIDATE_DISPOSITIONS_MANIFEST_PATH,
+                candidateManifest,
+                published
+            )
 
             Map<String, Object> packageDocument = buildPackage(
                 packageConfig,
@@ -581,6 +658,8 @@ final class IfQuantV1Exporter {
             status: "exported_" + PILOT_STATUS,
             package_path: outputDirectory.resolve(PACKAGE_PATH).toString(),
             object_count: cellRecords.size(),
+            candidate_count: candidateRecords.size(),
+            candidate_disposition_counts: candidateLedger.get("disposition_counts"),
             object_qc_flag_counts: objectQcFlagCounts,
             excluded_cell_counts: exclusionCounts,
             scientific_validation: false,
@@ -1730,11 +1809,273 @@ final class IfQuantV1Exporter {
             ]
         ]
         return [
+            cell: cell,
             annotation_id: annotationId,
             cell_y: cellY,
             cell_x: cellX,
             cell_wkt: cellWkt.get("wkt"),
             record: record
+        ]
+    }
+
+    static Map<String, Object> buildCandidateDispositionLedger(
+        List<Map<String, Object>> assignments,
+        Map<Object, Map<String, Object>> annotationByObject,
+        Map<Object, String> acceptedObjectIdByCell,
+        String packageId,
+        String imageId,
+        String annotationSetId,
+        String segmentationRunId,
+        String coordinateSpaceId
+    ) {
+        List<Map<String, Object>> drafts = []
+        for (Map<String, Object> assignment : assignments) {
+            def cell = assignment.get("cell")
+            if (cell == null) fail("candidate assignment lacks a cell object")
+            Geometry cellGeometry = (Geometry) assignment.get("cell_geometry")
+            if (cellGeometry == null) {
+                fail("candidate assignment lacks normalized cell geometry")
+            }
+            Geometry nucleusGeometry =
+                (Geometry) assignment.get("nucleus_geometry")
+            Map<String, Object> cellWkt = wktRecord(cellGeometry)
+            Map<String, Object> nucleusWkt = nucleusGeometry == null ? null :
+                wktRecord(nucleusGeometry)
+            double cellX = finiteDouble(
+                cellGeometry.getCentroid().getX(),
+                "candidate cell centroid x"
+            )
+            double cellY = finiteDouble(
+                cellGeometry.getCentroid().getY(),
+                "candidate cell centroid y"
+            )
+            Double nucleusX = nucleusGeometry == null ? null : finiteDouble(
+                nucleusGeometry.getCentroid().getX(),
+                "candidate nucleus centroid x"
+            )
+            Double nucleusY = nucleusGeometry == null ? null : finiteDouble(
+                nucleusGeometry.getCentroid().getY(),
+                "candidate nucleus centroid y"
+            )
+            Double nucleusAreaOutsideCell = null
+            Double nucleusAreaOutsideCellFraction = null
+            if (nucleusGeometry != null) {
+                double nucleusArea = positiveGeometryValue(
+                    nucleusGeometry.getArea(),
+                    "candidate nucleus area"
+                )
+                nucleusAreaOutsideCell = finiteDouble(
+                    nucleusGeometry.difference(cellGeometry).getArea(),
+                    "candidate nucleus area outside cell"
+                )
+                nucleusAreaOutsideCellFraction = boundedRatio(
+                    nucleusAreaOutsideCell / nucleusArea,
+                    "candidate nucleus area outside cell fraction"
+                )
+            }
+
+            def annotationObject = assignment.get("annotation")
+            String annotationId = null
+            if (annotationObject != null) {
+                Map<String, Object> annotation =
+                    annotationByObject.get(annotationObject)
+                if (annotation == null) {
+                    fail("candidate's unambiguous annotation lacks a canonical record")
+                }
+                annotationId = annotation.get("annotation_id").toString()
+            }
+
+            boolean accepted = assignment.get("include") == Boolean.TRUE
+            String acceptedObjectId = acceptedObjectIdByCell.get(cell)
+            if (accepted && acceptedObjectId == null) {
+                fail("accepted candidate lacks its canonical object_id")
+            }
+            if (!accepted && acceptedObjectId != null) {
+                fail("excluded candidate unexpectedly maps to a canonical object_id")
+            }
+            String reason = accepted ? "accepted" :
+                assignment.get("exclusion_reason")?.toString()
+            if (reason == null || reason.isEmpty()) {
+                fail("candidate disposition lacks a reason")
+            }
+
+            def detectionUuid = cell.getID()
+            if (detectionUuid == null) {
+                fail("candidate cell lacks a QuPath detection UUID")
+            }
+            String sourceDetectionId = requireIdentifier(
+                detectionUuid.toString(),
+                "QuPath candidate detection UUID"
+            )
+            String candidateId = "cand_" + canonicalSha256([
+                cell_wkt: cellWkt.get("wkt"),
+                coordinate_space_id: coordinateSpaceId,
+                image_id: imageId,
+                nucleus_wkt: nucleusWkt == null ? null : nucleusWkt.get("wkt"),
+                segmentation_run_id: segmentationRunId
+            ])
+            boolean nucleusNotCoveredByCell = assignment.get(
+                "nucleus_not_covered_by_cell_geometry_warning"
+            ) == Boolean.TRUE
+            Map<String, Object> record = [
+                schema_version: CANDIDATE_DISPOSITION_SCHEMA,
+                candidate_id: candidateId,
+                candidate_index: null,
+                package_id: packageId,
+                image_id: imageId,
+                annotation_set_id: annotationSetId,
+                segmentation_run_id: segmentationRunId,
+                coordinate_space_id: coordinateSpaceId,
+                annotation_id: annotationId,
+                accepted_object_id: acceptedObjectId,
+                source_detection_id: sourceDetectionId,
+                disposition: accepted ? "accepted" : "excluded",
+                reason: reason,
+                geometry: [cell: cellWkt, nucleus: nucleusWkt],
+                centroids: [
+                    cell_x: cellX,
+                    cell_y: cellY,
+                    nucleus_x: nucleusX,
+                    nucleus_y: nucleusY,
+                    unit: "pixel"
+                ],
+                touches_annotation_boundary:
+                    assignment.get("touches_boundary") == Boolean.TRUE,
+                nucleus_not_covered_by_cell_geometry_warning:
+                    nucleusNotCoveredByCell,
+                nucleus_area_outside_cell_px2: nucleusAreaOutsideCell,
+                nucleus_area_outside_cell_fraction:
+                    nucleusAreaOutsideCellFraction
+            ]
+            drafts.add([
+                candidate_id: candidateId,
+                cell_x: cellX,
+                cell_y: cellY,
+                cell_wkt: cellWkt.get("wkt"),
+                nucleus_wkt: nucleusWkt == null ? null : nucleusWkt.get("wkt"),
+                record: record
+            ])
+        }
+
+        drafts.sort { left, right ->
+            int comparison = (
+                (left.get("cell_y") as Number).doubleValue() <=>
+                (right.get("cell_y") as Number).doubleValue()
+            )
+            if (comparison != 0) return comparison
+            comparison = (
+                (left.get("cell_x") as Number).doubleValue() <=>
+                (right.get("cell_x") as Number).doubleValue()
+            )
+            if (comparison != 0) return comparison
+            comparison = left.get("cell_wkt").toString() <=>
+                right.get("cell_wkt").toString()
+            if (comparison != 0) return comparison
+            comparison = (left.get("nucleus_wkt") ?: "").toString() <=>
+                (right.get("nucleus_wkt") ?: "").toString()
+            if (comparison != 0) return comparison
+            return left.get("candidate_id").toString() <=>
+                right.get("candidate_id").toString()
+        }
+
+        List<Map<String, Object>> records = []
+        Set<String> candidateIds = new HashSet<>()
+        Map<String, Integer> dispositionCounts = new TreeMap<>()
+        Map<String, Integer> reasonCounts = new TreeMap<>()
+        int uncoveredNucleusCount = 0
+        for (int index = 0; index < drafts.size(); index++) {
+            Map<String, Object> record =
+                (Map<String, Object>) drafts.get(index).get("record")
+            record.put("candidate_index", index)
+            String candidateId = record.get("candidate_id").toString()
+            if (!candidateIds.add(candidateId)) {
+                fail("duplicate deterministic candidate_id " + candidateId)
+            }
+            String disposition = record.get("disposition").toString()
+            String reason = record.get("reason").toString()
+            dispositionCounts.put(
+                disposition,
+                (dispositionCounts.get(disposition) ?: 0) + 1
+            )
+            reasonCounts.put(reason, (reasonCounts.get(reason) ?: 0) + 1)
+            if (record.get(
+                "nucleus_not_covered_by_cell_geometry_warning"
+            ) == Boolean.TRUE) {
+                uncoveredNucleusCount++
+            }
+            records.add(record)
+        }
+        for (String disposition : ["accepted", "excluded"]) {
+            if (!dispositionCounts.containsKey(disposition)) {
+                dispositionCounts.put(disposition, 0)
+            }
+        }
+        int acceptedCount = dispositionCounts.get("accepted") ?: 0
+        if (acceptedCount != acceptedObjectIdByCell.size()) {
+            fail("candidate disposition accepted count does not match cell objects")
+        }
+        if ((dispositionCounts.get("accepted") +
+            dispositionCounts.get("excluded")) != records.size()) {
+            fail("candidate disposition counts do not reconcile to records")
+        }
+        return [
+            records: records,
+            disposition_counts: dispositionCounts,
+            reason_counts: reasonCounts,
+            geometry_warning_counts: [
+                nucleus_not_covered_by_cell_geometry: uncoveredNucleusCount
+            ]
+        ]
+    }
+
+    static Map<String, Object> buildCandidateDispositionManifest(
+        String packageId,
+        String imageId,
+        String annotationSetId,
+        String segmentationRunId,
+        String coordinateSpaceId,
+        int recordCount,
+        long sizeBytes,
+        String artifactSha256,
+        Map<String, Integer> dispositionCounts,
+        Map<String, Integer> reasonCounts,
+        Map<String, Integer> geometryWarningCounts,
+        String scriptSha256,
+        String configSha256,
+        String sourceArtifactSha256,
+        String annotationContentSha256
+    ) {
+        return [
+            schema_version: CANDIDATE_DISPOSITIONS_MANIFEST_SCHEMA,
+            pilot_status: PILOT_STATUS,
+            package_id: packageId,
+            image_id: imageId,
+            annotation_set_id: annotationSetId,
+            segmentation_run_id: segmentationRunId,
+            coordinate_space_id: coordinateSpaceId,
+            artifact: [
+                relative_path: CANDIDATE_DISPOSITIONS_PATH,
+                media_type: "application/x-ndjson",
+                sha256: artifactSha256,
+                size_bytes: sizeBytes,
+                record_count: recordCount,
+                ordering: "candidate_index_ascending"
+            ],
+            disposition_counts: dispositionCounts,
+            reason_counts: reasonCounts,
+            geometry_warning_counts: geometryWarningCounts,
+            bindings: [
+                script_sha256: scriptSha256,
+                run_config_sha256: configSha256,
+                source_artifact_sha256: sourceArtifactSha256,
+                annotation_content_sha256: annotationContentSha256
+            ],
+            claims: [
+                scientific_validation: false,
+                backend_equivalence: false,
+                model_universality: false,
+                authorization: "none"
+            ]
         ]
     }
 
@@ -2178,6 +2519,14 @@ final class IfQuantV1Exporter {
             cellRoi.getGeometry(),
             "detected cell geometry"
         )
+        def nucleusRoi = cell.getNucleusROI()
+        Geometry nucleusGeometry = nucleusRoi == null ? null :
+            normalizedGeometry(
+                nucleusRoi.getGeometry(),
+                "detected nucleus geometry"
+            )
+        boolean nucleusNotCoveredByCell = nucleusGeometry != null &&
+            !cellGeometry.covers(nucleusGeometry)
         List<Map<String, Object>> intersections = []
         for (def annotation : annotations) {
             Geometry annotationGeometry = normalizedGeometry(
@@ -2195,16 +2544,30 @@ final class IfQuantV1Exporter {
         if (intersections.isEmpty()) {
             return [
                 cell: cell,
+                cell_geometry: cellGeometry,
+                nucleus_geometry: nucleusGeometry,
                 annotation: null,
                 include: false,
+                touches_boundary: false,
+                nucleus_not_covered_by_cell_geometry_warning:
+                    nucleusNotCoveredByCell,
                 exclusion_reason: "no_annotation_intersection"
             ]
         }
         if (intersections.size() > 1) {
+            boolean touchesAnyBoundary = intersections.any { intersection ->
+                ((Geometry) intersection.get("geometry")).getBoundary()
+                    .intersects(cellGeometry)
+            }
             return [
                 cell: cell,
+                cell_geometry: cellGeometry,
+                nucleus_geometry: nucleusGeometry,
                 annotation: null,
                 include: false,
+                touches_boundary: touchesAnyBoundary,
+                nucleus_not_covered_by_cell_geometry_warning:
+                    nucleusNotCoveredByCell,
                 exclusion_reason: "ambiguous_annotation_intersection"
             ]
         }
@@ -2219,17 +2582,8 @@ final class IfQuantV1Exporter {
             touchesBoundary,
             boundaryPolicy
         )
-        def nucleusRoi = null
-        Geometry nucleusGeometry = null
-        if (include) {
-            nucleusRoi = cell.getNucleusROI()
-            if (nucleusRoi == null) {
-                fail("an otherwise exportable cell lacks a nucleus ROI")
-            }
-            nucleusGeometry = normalizedGeometry(
-                nucleusRoi.getGeometry(),
-                "detected nucleus geometry"
-            )
+        if (include && nucleusGeometry == null) {
+            fail("an otherwise exportable cell lacks a nucleus ROI")
         }
         boolean annotationCoversNucleus =
             !include || annotationGeometry.covers(nucleusGeometry)
@@ -2242,9 +2596,13 @@ final class IfQuantV1Exporter {
         }
         return [
             cell: cell,
+            cell_geometry: cellGeometry,
+            nucleus_geometry: nucleusGeometry,
             annotation: annotation,
             include: include,
             touches_boundary: touchesBoundary,
+            nucleus_not_covered_by_cell_geometry_warning:
+                nucleusNotCoveredByCell,
             exclusion_reason: include ? null : (
                 !annotationCoversCell ? "cell_not_covered_by_annotation" :
                 touchesBoundary ? "cell_touches_annotation_boundary" :

@@ -23,6 +23,7 @@ working-tree changes are not copied into this core.
 | Canonical cell-object package | Initial v1 complete | Image, channel, calibration, annotation, geometry, measurements, model/detector, QC, review, and provenance are bound. |
 | Native QuPath executor | Engineering pilot complete | QuPath 0.7 ran the configured annotation-scoped exporter successfully. |
 | Structural validation CLI | Complete for v1 engineering scope | Referential, canonical, geometry, count, QC, review, and byte-integrity checks pass the pilot and fixtures. |
+| DAPI visual-QC evidence | Phase 1 in progress | Complete candidate dispositions and deterministic overview/overlay/montage rendering are implemented; human geometry review remains a required gate. |
 | StarDist and InstanSeg | Interface candidates | Adapters and validation evidence are not yet implemented; no equivalence is assumed. |
 | Dataset manifests and correction lineage | Architecture defined | Persistent registry, immutable versions, and QuPath correction ingestion are next. |
 | ML baselines and custom models | Planned | DAPI segmentation comparison, then morphology/intensity classifiers; custom CNNs only if justified. |
@@ -156,6 +157,12 @@ for biological analysis.
 
 ## Roadmap
 
+Development advances in evidence-gated phases. The normative order, current
+phase, and exit criteria are in [Development phases](docs/DEVELOPMENT_PHASES.md).
+Machine-verifiable gates and the human-review boundaries are separated in
+[Decision gates](docs/DECISION_GATES.md). In particular, a valid package does
+not resolve a geometry warning or authorize Phase 2 biological-data use.
+
 ```mermaid
 flowchart LR
     M0["Foundation<br/>contracts, package, CLI,<br/>native QuPath pilot<br/>CURRENT BASELINE"]
@@ -219,6 +226,17 @@ ifquant-platform validate-method `
 ifquant-platform validate-package validation/fixtures/minimal-cell-package
 ifquant-platform backends
 ```
+
+Deterministic DAPI review images use optional Pillow and NumPy dependencies:
+
+```powershell
+python -m pip install -e ".[qc]"
+ifquant-platform render-qc "X:\absolute\qupath-output" `
+  --output "X:\absolute\fresh-qc-output"
+```
+
+The renderer validates all package and candidate-ledger bindings before image
+generation. Its outputs are review evidence, not a completed QC decision.
 
 The QuPath executor, configuration contract, fail-closed checks, and headless
 command are documented in [QuPath pilot executor](qupath/README.md).

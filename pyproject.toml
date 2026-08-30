@@ -12,6 +12,10 @@ authors = [{ name = "IFQuant contributors" }]
 dependencies = []
 
 [project.optional-dependencies]
+qc = [
+  "numpy>=2.0",
+  "Pillow>=11.0",
+]
 dev = [
   "jsonschema>=4.23",
   "pytest>=8.3",

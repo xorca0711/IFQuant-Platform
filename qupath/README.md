@@ -38,7 +38,9 @@ equivalence, endpoint validity, or a universal model.
   cross or touch the boundary are counted and excluded. New cells with no
   selected-annotation intersection or an ambiguous multi-annotation
   intersection are also excluded with distinct QC ledger codes; no annotation
-  identity is fabricated.
+  identity is fabricated. Every newly detected `PathCellObject`, accepted or
+  excluded, is also retained in the deterministic candidate-disposition QC
+  sidecar with its geometry and exact disposition reason.
 - Existing detections that intersect, or are children of, a selected
   annotation cause a fail-closed stop before the plugin runs.
 - `stardist` and `instanseg` are interface candidates only and terminate
@@ -149,7 +151,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-ed690a9fb7273d16118b956744d003286e18d696c89866e9798bd5643a56d3ee
+00b8650a9c1c6d9ea6ebb13db569f013e8a8f719340fa422720fb510e6fd11fd
 ```
 
 ## Reproducible QuPath 0.7 CLI
@@ -175,6 +177,9 @@ A successful run publishes this exact package shape:
 output_directory/
   package.json
   cell_objects.jsonl
+  qc/
+    candidate-dispositions.jsonl
+    candidate-dispositions-manifest.json
   manifests/
     image-manifest.json
     channel-map.json
@@ -189,7 +194,43 @@ output_directory/
 hashes. `cell_objects.jsonl` is UTF-8 canonical JSON Lines; its exact bytes,
 size, record count, and SHA-256 are bound in the package. Publication uses
 same-directory temporary files and atomic moves, with rollback of published
-files if a later publication step fails.
+files, including both QC sidecars, if a later publication step fails. The QC
+sidecars deliberately do not change or extend the canonical package schema.
+
+`qc/candidate-dispositions.jsonl` accounts for every new QuPath cell candidate,
+not only accepted canonical objects. Each row records a deterministic
+`candidate_id` and contiguous `candidate_index`, the run/image/annotation-set/
+coordinate-space bindings, QuPath's source detection UUID, accepted or excluded
+disposition and exact reason, nullable accepted `object_id`, unambiguous
+annotation identity when one exists, normalized cell and nullable nucleus WKT,
+centroids, annotation-boundary contact, and the nucleus-not-covered-by-cell
+geometry warning. When nucleus geometry exists, the row also records its
+canonical numeric area outside the cell in pixel squared and that area's
+fraction of total nucleus area, making warning severity quantitatively
+inspectable. Candidate IDs are `cand_` plus canonical SHA-256 of:
+
+```json
+{
+  "cell_wkt": "...",
+  "coordinate_space_id": "...",
+  "image_id": "...",
+  "nucleus_wkt": "... or null",
+  "segmentation_run_id": "..."
+}
+```
+
+Rows sort by cell centroid y, cell centroid x, cell WKT, nullable nucleus WKT,
+and candidate ID before indices are assigned. Exact duplicate normalized
+candidate geometries in one segmentation run fail closed rather than relying on
+the run-specific QuPath UUID as a deterministic tie-breaker.
+
+`qc/candidate-dispositions-manifest.json` binds the JSON Lines byte size,
+record count, SHA-256 and ordering; package, image, annotation-set,
+segmentation-run and coordinate-space identities; disposition, reason and
+geometry-warning counts; and the exact exporter-script, canonical run-config,
+source-artifact and annotation-content hashes. It hard-codes false scientific
+validation, backend-equivalence and model-universality claims and authorization
+`none`. Its `artifact.relative_path` is relative to `output_directory`.
 
 Cell-object IDs use the documented geometry descriptor exactly:
 
@@ -214,13 +255,16 @@ and writes in ascending index order.
 separate from the deterministic geometry-derived `object_id`. Because this
 pilot omits `--save`, that UUID traces only the in-memory execution; it is not
 a durable project-object reference until a future persisted correction
-workflow establishes one.
+workflow establishes one. The same limitation applies to
+`source_detection_id` in the candidate-disposition ledger; it never participates
+in `candidate_id` or row ordering.
 
 Zero cells is a valid engineering result. The exporter writes an empty
 `cell_objects.jsonl`, `record_count: 0`, and explicit
 `zero_cells_exported` warning flags while QC remains `not_evaluated`.
 Every exclusion category is also recorded as a separate count-bearing warning
-in both the segmentation and package QC flags.
+in both the segmentation and package QC flags, and as a geometry-bearing row in
+the candidate-disposition QC ledger.
 
 Validate a completed output from the repository environment:
 
@@ -248,6 +292,9 @@ Structural validation is necessary but is not scientific validation.
   annotation boundary are excluded, not modified.
 - Annotation review, cell review, and QC remain unreviewed/not evaluated.
   Engineering warning flags are not biological QC.
+- Candidate-disposition files are governed QC sidecars, not canonical package
+  members. The v1 package validator does not treat their presence as scientific
+  review or validation.
 - Exact QuPath measurement names and Watershed behavior can change with image
   type, channel metadata, plugin parameters, and QuPath version; all are pinned
   inputs, not equivalence claims.

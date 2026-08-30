@@ -110,6 +110,36 @@ class QuPathProofOfConceptTests(unittest.TestCase):
         self.assertIn("Project-only execution", readme)
         self.assertNotIn("Standalone image, Windows PowerShell", readme)
 
+    def test_script_publishes_complete_candidate_disposition_qc_sidecars(self):
+        required_fragments = (
+            '"qc/candidate-dispositions.jsonl"',
+            '"qc/candidate-dispositions-manifest.json"',
+            "buildCandidateDispositionLedger(",
+            "buildCandidateDispositionManifest(",
+            '"candidate disposition ledger does not account for every new detection"',
+            "candidate_index_ascending",
+            "accepted_object_id: acceptedObjectId",
+            "source_detection_id: sourceDetectionId",
+            "touches_annotation_boundary:",
+            "nucleus_not_covered_by_cell_geometry_warning:",
+            "nucleus_area_outside_cell_px2: nucleusAreaOutsideCell",
+            "nucleus_area_outside_cell_fraction:",
+            "source_artifact_sha256: sourceArtifactSha256",
+            "annotation_content_sha256: annotationContentSha256",
+            "scientific_validation: false",
+            "backend_equivalence: false",
+            "model_universality: false",
+            'authorization: "none"',
+        )
+        for fragment in required_fragments:
+            with self.subTest(fragment=fragment):
+                self.assertIn(fragment, self.script)
+
+        readme = QUPATH_README.read_text(encoding="utf-8")
+        self.assertIn("Every newly detected `PathCellObject`", readme)
+        self.assertIn("do not change or extend the canonical package schema", readme)
+        self.assertIn("relative to `output_directory`", readme)
+
 
 if __name__ == "__main__":
     unittest.main()
