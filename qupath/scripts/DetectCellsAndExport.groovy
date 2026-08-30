@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.Envelope
 import org.locationtech.jts.geom.PrecisionModel
 import org.locationtech.jts.geom.util.AffineTransformation
 import org.locationtech.jts.io.WKTWriter
+import org.locationtech.jts.operation.overlayng.OverlayNG
 import org.locationtech.jts.precision.GeometryPrecisionReducer
 import qupath.lib.objects.PathCellObject
 import qupath.lib.scripting.QP
@@ -2199,7 +2200,11 @@ final class IfQuantV1Exporter {
                     "candidate nucleus area"
                 )
                 nucleusAreaOutsideCell = finiteDouble(
-                    nucleusGeometry.difference(cellGeometry).getArea(),
+                    fixedPrecisionDifferenceArea(
+                        nucleusGeometry,
+                        cellGeometry,
+                        "candidate nucleus outside cell"
+                    ),
                     "candidate nucleus area outside cell"
                 )
                 nucleusAreaOutsideCellFraction = boundedRatio(
@@ -3085,6 +3090,24 @@ final class IfQuantV1Exporter {
         String type = normalized.getGeometryType().toUpperCase(Locale.ROOT)
         if (!(type == "POLYGON" || type == "MULTIPOLYGON")) fail(context + " must be polygon or multipolygon")
         return normalized
+    }
+
+    static double fixedPrecisionDifferenceArea(
+        Geometry minuend,
+        Geometry subtrahend,
+        String context
+    ) {
+        PrecisionModel precisionModel = new PrecisionModel(WKT_PRECISION_SCALE)
+        Geometry difference = OverlayNG.overlay(
+            minuend,
+            subtrahend,
+            OverlayNG.DIFFERENCE,
+            precisionModel
+        )
+        if (difference == null || !difference.isValid()) {
+            fail(context + " fixed-precision overlay produced invalid geometry")
+        }
+        return finiteDouble(difference.getArea(), context + " area")
     }
 
     static Map<String, Object> wktRecord(Geometry geometry) {

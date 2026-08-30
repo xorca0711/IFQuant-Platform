@@ -185,6 +185,8 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             "nucleus_not_covered_by_cell_geometry_warning:",
             "nucleus_area_outside_cell_px2: nucleusAreaOutsideCell",
             "nucleus_area_outside_cell_fraction:",
+            "fixedPrecisionDifferenceArea(",
+            "OverlayNG.DIFFERENCE",
             "source_artifact_sha256: sourceArtifactSha256",
             "annotation_content_sha256: annotationContentSha256",
             "scientific_validation: false",

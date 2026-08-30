@@ -177,7 +177,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-fc86003bb0051e12c295354d220ffa4ac65e647eb6951a4fd99a98b96f39bd88
+32f7c2b01fc1f870fce938774ec2f3eb8a2fd71280ca06d4393345634349dd9c
 ```
 
 ### StarDist engineering configuration
