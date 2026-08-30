@@ -11,6 +11,12 @@ assignments, validator outputs, and remaining real-data gates are recorded in
 [`docs/PHASE3_WIP_STATUS.md`](../docs/PHASE3_WIP_STATUS.md). That checkpoint is
 engineering contract evidence only.
 
+The Phase 4 engineering evaluator, algorithms, connected-folder audit, decision
+gates, and exact remaining path to a scored native baseline are recorded in
+[`docs/PHASE4_STATUS.md`](../docs/PHASE4_STATUS.md). No real reviewed reference
+artifact was found in the connected microscopy folder, so Phase 4 scientific
+performance remains not evaluated.
+
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that
 the artifact is internally consistent for the identities and local artifacts
@@ -81,6 +87,7 @@ Phase 3 adds two read-only validators:
   canonical geometry/topology, image/ROI containment, edge-reason consistency,
   duplicate geometry, readiness, chronology, frozen state, provenance, and
   non-claims.
+
 - `validate-split` (alias `validate-split-manifest`) recursively revalidates the
   reference set, requires exact image-level assignment coverage, checks every
   biological/acquisition/source-family identity echo, rejects a declared
@@ -88,6 +95,20 @@ Phase 3 adds two read-only validators:
   declared batch/scanner controls, and verifies the exact held-out ID and
   reference-content locks, parent/successor policy, chronology, provenance, and
   non-claims.
+
+Phase 4 adds `evaluate-segmentation`. It recursively validates the frozen
+Phase 3 split/reference boundary, verifies reference-raster pixels against the
+canonical WKT objects, and reports deterministic matching, split/merge,
+boundary, size/crowding, count, and signed measurement-bias evidence.
+
+```powershell
+ifquant-platform evaluate-segmentation `
+  validation/fixtures/minimal-phase4-evaluation/evaluation-plan.json `
+  --predictions validation/fixtures/minimal-phase4-evaluation/prediction-instances.jsonl
+```
+
+That fixture is synthetic software evidence and cannot close the real-data
+Phase 4 gate.
 
 The geometry implementation is deliberately limited to a fail-closed 2D
 polygon subset. It canonicalizes ring orientation/start and member ordering;

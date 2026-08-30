@@ -22,6 +22,7 @@ from .phase3_validation import (
     validate_nuclear_reference_set,
     validate_split_manifest,
 )
+from .phase4_evaluation import evaluate_segmentation
 
 
 def _expect(actual: str, expected: str | None, label: str) -> None:
@@ -122,6 +123,13 @@ def _validate_split(args: argparse.Namespace) -> dict[str, Any]:
     return report.as_dict()
 
 
+def _evaluate_segmentation(args: argparse.Namespace) -> dict[str, Any]:
+    report = evaluate_segmentation(args.plan, args.predictions)
+    _expect(report.evaluation_plan_sha256, args.expect_plan_sha256, "evaluation-plan SHA-256")
+    _expect(report.prediction_instances_sha256, args.expect_predictions_sha256, "prediction-instances SHA-256")
+    return report.as_dict()
+
+
 def _backend_report() -> dict[str, Any]:
     return {
         "status": "ok",
@@ -219,6 +227,16 @@ def build_parser() -> argparse.ArgumentParser:
     split_parser.add_argument("--expect-held-out-test-image-ids-sha256")
     split_parser.add_argument("--expect-held-out-test-reference-content-sha256")
     split_parser.set_defaults(handler=_validate_split)
+
+    evaluation_parser = subparsers.add_parser(
+        "evaluate-segmentation",
+        help="evaluate native QuPath instance pixels against a frozen Phase 4 plan",
+    )
+    evaluation_parser.add_argument("plan", help="frozen segmentation evaluation plan")
+    evaluation_parser.add_argument("--predictions", required=True, help="ordered prediction-instance JSONL")
+    evaluation_parser.add_argument("--expect-plan-sha256")
+    evaluation_parser.add_argument("--expect-predictions-sha256")
+    evaluation_parser.set_defaults(handler=_evaluate_segmentation)
 
     method_parser = subparsers.add_parser(
         "validate-method", help="validate and resolve a measurement definition and parameter set"

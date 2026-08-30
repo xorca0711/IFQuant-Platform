@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/segmentation-evaluation-plan.schema.json",
+  "contract_type": "ifquant_platform_segmentation_evaluation_plan",
+  "contract_version": "1.0.0",
+  "evaluation_plan_id": "phase4-synthetic-native-qupath-plan-001",
+  "state": "frozen",
+  "declared_at": "2026-08-30T00:00:00Z",
+  "backend_id": "native_qupath",
+  "split_manifest": {
+    "relative_path": "../minimal-phase3-reference-split/split-manifest.json",
+    "sha256": "43c32b9c947257b79bd00ae59b09adf64883e0b7554606aaa700b2e6a0d3b47d"
+  },
+  "reference_set_sha256": "f0137f493ef2cecede86f933729d12ac169a528608bfc69b96d82e457f0fb935",
+  "reference_instances": {
+    "relative_path": "reference-instances.jsonl",
+    "sha256": "120654bec437d4bafebf54d3e5018852c4988101984b8574bfaf478600e2a925"
+  },
+  "partitions": ["held_out_test"],
+  "thresholds": {
+    "match_iou": 0.5,
+    "split_merge_overlap_fraction": 0.1,
+    "boundary_tolerance_pixels": 1,
+    "size_strata_pixels": [50, 200]
+  },
+  "acceptance_criteria": {
+    "scope": "synthetic_engineering_contract_fixture_only",
+    "minimum_evaluable_image_count": 1,
+    "minimum_reference_object_count": 1,
+    "minimum_precision": 1.0,
+    "minimum_recall": 1.0,
+    "minimum_f1": 1.0,
+    "minimum_boundary_f1": 1.0,
+    "maximum_split_rate": 0.0,
+    "maximum_merge_rate": 0.0,
+    "maximum_mean_absolute_count_error_per_image": 0.0,
+    "maximum_measurement_mae": [
+      {"measurement_id": "dapi_mean", "maximum_mae": 2.0},
+      {"measurement_id": "nucleus_area_pixels", "maximum_mae": 0.0}
+    ]
+  },
+  "claims": {
+    "scientific_validation": false,
+    "backend_equivalence": false,
+    "model_universality": false,
+    "authorization": "none"
+  }
+}

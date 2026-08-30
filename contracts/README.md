@@ -283,3 +283,14 @@ the held-out lock. A `valid` report describes engineering integrity only; it is
 not scientific validation, biological ground truth, split optimality,
 population representativeness, leakage proof, backend equivalence, model
 universality, or authorization.
+
+Phase 4 adds `segmentation-evaluation-plan.schema.json` and
+`segmentation-evaluation-instance.schema.json`. A frozen plan binds one exact
+native-QuPath method scope to the Phase 3 split/reference hashes, selected
+partitions, reference-raster bytes, matching/boundary/split-merge/size
+thresholds, and prospectively supplied acceptance criteria. The runtime does
+not trust the raster ledger alone: it independently rasterizes each selected
+canonical Phase 3 WKT object by pixel-center inclusion and requires exact
+identity and pixel equality. Prediction ledgers use the same ordered pixel-set
+shape. A valid evaluation report is a reproducible calculation, not scientific
+approval.

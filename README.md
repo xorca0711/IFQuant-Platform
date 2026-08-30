@@ -27,6 +27,7 @@ working-tree changes are not copied into this core.
 | StarDist and InstanSeg | Interface candidates | Adapters and validation evidence are not yet implemented; no equivalence is assumed. |
 | Governed observations and correction lineage | Initial Phase 2 contract complete; real intake gated | A closed observation-set contract and strict read-only validator now bind source bytes, canonical manifest identities, producer code, explicit biological/acquisition identity, and annotation lineage with a reviewed selected revision. |
 | Nuclear references and safe splits | Initial Phase 3 engineering infrastructure passing; real-data gates open | Closed reference-object, ignore-region, reference-set, and split schemas plus strict read-only validators pass a four-image synthetic fixture. Geometry, review readiness, chronology, exact held-out IDs, and held-out reference content are fail-closed. This is not real reference evidence or a leakage proof. |
+| Native QuPath baseline evaluation | Engineering evaluator complete; real performance not evaluated | Frozen-plan and pixel-ledger schemas, independent WKT raster verification, deterministic detection/split-merge/boundary/count/measurement-bias metrics, CLI, and synthetic tests pass. The connected raw-image folder contains no reviewed reference labels; see [Phase 4 status](docs/PHASE4_STATUS.md). |
 | ML baselines and custom models | Planned | DAPI segmentation comparison, then morphology/intensity classifiers; custom CNNs only if justified. |
 | Scientific validation | Not established | Requires prospective, scope-specific evaluation by mouse, slide, batch, scanner, and endpoint. |
 
@@ -113,9 +114,12 @@ The full ownership matrix is in
    governed reference content; never infer groups from paths or assign randomly
    by tile. Build hard connected components across every governed image, so an
    excluded or unassigned image can still bridge two assigned partitions.
-9. Train or evaluate a scope-specific model outside Groovy, then return
+9. Freeze a prospective segmentation-evaluation plan, independently rasterize
+   the reviewed reference geometry, and evaluate per-object detection,
+   split/merge, boundary, count, and measurement bias outside Groovy.
+10. Train or evaluate a scope-specific model outside Groovy, then return
    predictions and uncertainty to QuPath for human review.
-10. Aggregate only compatible, eligible, reviewed packages while retaining
+11. Aggregate only compatible, eligible, reviewed packages while retaining
    failed and abstained units.
 
 The canonical package is the hand-off point, not a scientific approval stamp:
@@ -185,7 +189,7 @@ flowchart LR
     P1["Phase 1<br/>full-image boundary accepted<br/>formal H1 + H2 open"]
     P2["Phase 2<br/>governance software complete<br/>real intake gated"]
     P3["Phase 3<br/>contracts + synthetic fixture pass<br/>real reference/split gates open"]
-    P4["Phase 4<br/>native QuPath baseline<br/>after real gates"]
+    P4["Phase 4<br/>evaluator complete<br/>real scoring gated"]
     P5["Phase 5<br/>StarDist + InstanSeg<br/>separate method identities"]
     P6["Phase 6<br/>object-classifier baselines"]
     P7["Phase 7<br/>QuPath correction loop"]
@@ -213,8 +217,9 @@ flowchart LR
    the task/evaluation/selection policy. Structural overlap checks do not prove
    that all hidden relatedness has been identified; they do include excluded
    and otherwise unassigned governed images as possible component bridges.
-5. Predeclare Phase 4 segmentation metrics and acceptance criteria before
-   evaluating the native QuPath baseline.
+5. Use the implemented Phase 4 evaluation contract and algorithms; approve
+   study-specific numeric acceptance criteria before evaluating the native
+   QuPath baseline on real frozen references.
 6. Implement StarDist and InstanSeg adapters that emit the same package shape
    while retaining distinct method, weights, preprocessing, and runtime
    identities.
@@ -275,6 +280,9 @@ ifquant-platform validate-split `
   44f3c019439012f5f0136129747a02e98a83354a84e42120f565cd9cdaa70f67 `
   --expect-held-out-test-reference-content-sha256 `
   a16120a41f7bf114a4c1608cca05757c09a119f50d290abd5e09861645a25900
+ifquant-platform evaluate-segmentation `
+  validation/fixtures/minimal-phase4-evaluation/evaluation-plan.json `
+  --predictions validation/fixtures/minimal-phase4-evaluation/prediction-instances.jsonl
 ifquant-platform backends
 ```
 
@@ -295,9 +303,10 @@ held-out ID list
 `44f3c019439012f5f0136129747a02e98a83354a84e42120f565cd9cdaa70f67`,
 and held-out reference content
 `a16120a41f7bf114a4c1608cca05757c09a119f50d290abd5e09861645a25900`.
-The current verification run discovers 108 tests: 107 pass and one optional
-JSON-Schema instance test is explicitly skipped when `jsonschema` is not
-installed. The standard-library runtime checks are not skipped.
+The current full verification run passes all 111 tests, including the optional
+QC-rendering tests with Pillow/NumPy installed; 122 schema/contract subtests
+also pass. Without those optional image dependencies, the two rendering-only
+tests skip explicitly; the standard-library runtime checks never skip.
 
 Phase 3 v1 deliberately accepts only a narrow, fail-closed 2D polygon subset.
 It enforces canonical topology, containment in the closed image domain and the
