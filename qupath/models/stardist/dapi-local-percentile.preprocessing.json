@@ -1,0 +1,26 @@
+{
+  "contract": "ifquant-platform-preprocessing-profile/1.0.0",
+  "profile_id": "stardist_dapi_local_percentile_1_99",
+  "profile_version": "1.0.0",
+  "channel_selection": {
+    "source_channel_name": "DAPI",
+    "channel_count": 1
+  },
+  "normalization": {
+    "scope": "per_tile",
+    "method": "percentile_linear",
+    "lower_percentile": 1.0,
+    "upper_percentile": 99.0
+  },
+  "inference_resolution_um_per_pixel": 0.5,
+  "known_limitations": [
+    "Per-tile percentile normalization can amplify background-only tiles.",
+    "Parameters are an engineering starting point and are not transferable acceptance criteria."
+  ],
+  "claims": {
+    "scientific_validation": false,
+    "backend_equivalence": false,
+    "model_universality": false,
+    "authorization": "none"
+  }
+}

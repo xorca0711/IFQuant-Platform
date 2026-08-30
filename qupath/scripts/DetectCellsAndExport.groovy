@@ -5,7 +5,7 @@
  * model universality, or endpoint authorization is implied.
  *
  * Runtime boundary: QuPath >= 0.6.0 and < 0.8.0.
- * IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.2.0
+ * IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.3.0
  */
 
 import com.google.gson.stream.JsonReader
@@ -23,6 +23,7 @@ import qupath.lib.scripting.ScriptAttributes
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.net.URI
+import java.net.URLClassLoader
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
@@ -43,10 +44,10 @@ final class IfQuantV1Exporter {
         "ifquant.qupath-pilot-config/1.0.0"
     static final String SCRIPT_CONTRACT =
         "ifquant.qupath-cell-exporter/v1"
-    static final String SCRIPT_VERSION = "1.2.0"
+    static final String SCRIPT_VERSION = "1.3.0"
     static final String SCRIPT_FILENAME = "DetectCellsAndExport.groovy"
     static final String SCRIPT_SENTINEL =
-        "IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.2.0"
+        "IFQUANT_SCRIPT_SENTINEL:ifquant.qupath-cell-exporter/v1@1.3.0"
     static final String PILOT_STATUS =
         "unvalidated_engineering_pilot"
     static final String CONTRACT_VERSION = "1.0.0"
@@ -71,6 +72,8 @@ final class IfQuantV1Exporter {
         "ifquant-platform-method-instance/v1"
     static final String WATERSHED_PLUGIN =
         "qupath.imagej.detect.cells.WatershedCellDetection"
+    static final String STARDIST_CLASS =
+        "qupath.ext.stardist.StarDist2D"
     static final String IMAGE_MANIFEST_PATH =
         "manifests/image-manifest.json"
     static final String CHANNEL_MANIFEST_PATH =
@@ -390,42 +393,51 @@ final class IfQuantV1Exporter {
             segmentationConfig.get("backend"),
             "segmentation.backend"
         ).get("kind").toString()
-        if (backend == "stardist" || backend == "instanseg") {
+        if (backend == "instanseg") {
             fail(
                 "CANDIDATE_BACKEND_NOT_IMPLEMENTED: " + backend +
                 " is registered behind the v1 interface but this script " +
-                "implements native_qupath only"
+                "does not yet implement InstanSeg"
             )
         }
-        if (backend != "native_qupath") {
+        if (!(backend in ["native_qupath", "stardist"])) {
             fail("unsupported segmentation backend: " + backend)
         }
         String configuredVersion = requireMap(
             segmentationConfig.get("backend"),
             "segmentation.backend"
         ).get("version").toString()
-        if (runtimeVersion != configuredVersion) {
+        if (backend == "native_qupath" && runtimeVersion != configuredVersion) {
             fail(
                 "configured QuPath version " + configuredVersion +
                 " does not equal runtime " + runtimeVersion
             )
         }
 
-        String pluginClass =
-            segmentationConfig.get("plugin_class").toString()
-        Map<String, Object> pluginParameters = requireMap(
-            segmentationConfig.get("parameters"),
-            "segmentation.parameters"
-        )
         Instant pluginStartedAt = Instant.now()
-        boolean completed = QP.runPlugin(
-            pluginClass,
-            imageData,
-            pluginParameters
-        )
+        boolean completed
+        if (backend == "native_qupath") {
+            completed = QP.runPlugin(
+                segmentationConfig.get("plugin_class").toString(),
+                imageData,
+                requireMap(
+                    segmentationConfig.get("parameters"),
+                    "segmentation.parameters"
+                )
+            )
+        } else {
+            runStarDist(
+                configPath,
+                imageData,
+                selectedAnnotations,
+                segmentationConfig,
+                runtimeVersion
+            )
+            completed = true
+        }
         Instant pluginCompletedAt = Instant.now()
         if (!completed) {
-            fail("WatershedCellDetection returned false")
+            fail("configured segmentation backend returned false")
         }
 
         List newDetections = hierarchy.getDetectionObjects()
@@ -434,7 +446,7 @@ final class IfQuantV1Exporter {
         List nonCellDetections = newDetections
             .findAll { !(it instanceof PathCellObject) }
         if (!nonCellDetections.isEmpty()) {
-            fail("native cell detector produced non-cell detection objects")
+            fail("configured cell detector produced non-cell detection objects")
         }
         List<Map<String, Object>> allCellAssignments = []
         List<Map<String, Object>> selectedCellAssignments = []
@@ -692,6 +704,184 @@ final class IfQuantV1Exporter {
         ])
     }
 
+    static void runStarDist(
+        Path configPath,
+        def imageData,
+        List selectedAnnotations,
+        Map<String, Object> segmentationConfig,
+        String runtimeQuPathVersion
+    ) {
+        Map<String, Object> runtimeInputs = requireMap(
+            segmentationConfig.get("runtime_inputs"),
+            "segmentation.runtime_inputs"
+        )
+        requireExactString(
+            runtimeInputs.get("qupath_version"),
+            runtimeQuPathVersion,
+            "segmentation.runtime_inputs.qupath_version"
+        )
+        Map<String, Object> backend = requireMap(
+            segmentationConfig.get("backend"),
+            "segmentation.backend"
+        )
+        Map<String, Object> model = requireMap(
+            segmentationConfig.get("model"),
+            "segmentation.model"
+        )
+        Map<String, Object> preprocessing = requireMap(
+            segmentationConfig.get("preprocessing"),
+            "segmentation.preprocessing"
+        )
+        Path extensionArtifact = verifyBoundArtifact(
+            configPath,
+            runtimeInputs.get("extension_artifact_path"),
+            backend.get("artifact_sha256"),
+            "StarDist extension artifact"
+        )
+        Path modelDescriptor = verifyBoundArtifact(
+            configPath,
+            runtimeInputs.get("model_descriptor_path"),
+            model.get("descriptor_sha256"),
+            "StarDist model descriptor"
+        )
+        Path modelWeights = verifyBoundArtifact(
+            configPath,
+            runtimeInputs.get("model_weights_path"),
+            model.get("weights_sha256"),
+            "StarDist model weights"
+        )
+        verifyBoundArtifact(
+            configPath,
+            runtimeInputs.get("preprocessing_profile_path"),
+            preprocessing.get("profile_sha256"),
+            "StarDist preprocessing profile"
+        )
+        if (!modelWeights.getFileName().toString().toLowerCase().endsWith(".pb")) {
+            fail("StarDist OpenCV pilot requires a frozen .pb model file")
+        }
+        if (Files.size(modelDescriptor) == 0L) {
+            fail("StarDist model descriptor must not be empty")
+        }
+
+        Class starDistClass
+        URLClassLoader extensionLoader = null
+        try {
+            starDistClass = IfQuantV1Exporter.class.classLoader.loadClass(
+                STARDIST_CLASS
+            )
+        } catch (ClassNotFoundException error) {
+            extensionLoader = new URLClassLoader(
+                [extensionArtifact.toUri().toURL()] as URL[],
+                IfQuantV1Exporter.class.classLoader
+            )
+            try {
+                starDistClass = extensionLoader.loadClass(STARDIST_CLASS)
+            } catch (ClassNotFoundException nestedError) {
+                extensionLoader.close()
+                fail(
+                    "STARDIST_EXTENSION_NOT_AVAILABLE: the hash-bound JAR " +
+                    "does not expose " + STARDIST_CLASS
+                )
+                return
+            }
+        }
+        Path loadedArtifact
+        try {
+            loadedArtifact = Paths.get(
+                starDistClass.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()
+            ).toAbsolutePath().normalize()
+        } catch (Exception error) {
+            fail("cannot resolve the loaded StarDist implementation artifact")
+            return
+        }
+        if (loadedArtifact != extensionArtifact) {
+            fail(
+                "loaded StarDist extension artifact does not equal configured " +
+                "artifact; loaded=" + loadedArtifact +
+                ", configured=" + extensionArtifact
+            )
+        }
+        String implementationVersion =
+            starDistClass.getPackage().getImplementationVersion()
+        if (implementationVersion == null ||
+            implementationVersion != backend.get("version").toString()) {
+            fail(
+                "loaded StarDist extension version " + implementationVersion +
+                " does not equal configured " + backend.get("version")
+            )
+        }
+
+        Map<String, Object> parameters = requireMap(
+            segmentationConfig.get("parameters"),
+            "segmentation.parameters"
+        )
+        def builder = starDistClass.builder(modelWeights.toString())
+            .channels(parameters.get("detectionChannel").toString())
+            .normalizePercentiles(
+                (parameters.get("normalizationLowerPercentile") as Number).doubleValue(),
+                (parameters.get("normalizationUpperPercentile") as Number).doubleValue()
+            )
+            .threshold((parameters.get("threshold") as Number).doubleValue())
+            .pixelSize(
+                (parameters.get("requestedPixelSizeMicrons") as Number).doubleValue()
+            )
+            .tileSize((parameters.get("tileSizePixels") as Number).intValue())
+            .cellExpansion(
+                (parameters.get("cellExpansionMicrons") as Number).doubleValue()
+            )
+            .cellConstrainScale(
+                (parameters.get("cellConstrainScale") as Number).doubleValue()
+            )
+            .nThreads((parameters.get("nThreads") as Number).intValue())
+            .simplify(
+                (parameters.get("simplifyDistancePixels") as Number).doubleValue()
+            )
+            .constrainToParent(
+                parameters.get("constrainToParent") == Boolean.TRUE
+            )
+        if (parameters.get("measureShape") == Boolean.TRUE) {
+            builder = builder.measureShape()
+        }
+        if (parameters.get("measureIntensity") == Boolean.TRUE) {
+            builder = builder.measureIntensity()
+        }
+        if (parameters.get("includeProbability") == Boolean.TRUE) {
+            builder = builder.includeProbability(true)
+        }
+        def starDist = builder.build()
+        try {
+            starDist.detectObjects(imageData, selectedAnnotations)
+        } finally {
+            starDist.close()
+            if (extensionLoader != null) extensionLoader.close()
+        }
+    }
+
+    static Path verifyBoundArtifact(
+        Path configPath,
+        Object configuredPath,
+        Object expectedSha256,
+        String label
+    ) {
+        Path path = resolveInputPath(
+            configPath,
+            requireResolvedString(configuredPath, label + " path")
+        )
+        if (!Files.isRegularFile(path) || !Files.isReadable(path)) {
+            fail(label + " is not a readable regular file: " + path)
+        }
+        String expected = requireSha256(expectedSha256, label + " SHA-256")
+        String observed = sha256File(path)
+        if (observed != expected) {
+            fail(
+                label + " hash mismatch: expected " + expected +
+                " but found " + observed
+            )
+        }
+        return path
+    }
+
     static void validateConfig(Map<String, Object> config) {
         exactKeys(
             config,
@@ -850,21 +1040,26 @@ final class IfQuantV1Exporter {
         Map<String, Object> segmentation,
         List<Map<String, Object>> channels
     ) {
+        Map<String, Object> backend = requireMap(
+            segmentation.get("backend"),
+            "segmentation.backend"
+        )
+        exactKeys(backend, ["kind", "name", "version", "artifact_sha256"], "segmentation.backend")
+        String kind = requireEnum(backend.get("kind"), ["native_qupath", "stardist", "instanseg"], "segmentation.backend.kind")
+        List<String> segmentationKeys = [
+            "segmentation_run_id", "backend", "detector", "plugin_class",
+            "parameters", "model", "preprocessing", "boundary_policy",
+            "qc", "provenance"
+        ]
+        if (kind == "stardist") segmentationKeys.add("runtime_inputs")
         exactKeys(
             segmentation,
-            [
-                "segmentation_run_id", "backend", "detector", "plugin_class",
-                "parameters", "model", "preprocessing", "boundary_policy",
-                "qc", "provenance"
-            ],
+            segmentationKeys,
             "segmentation"
         )
         requireIdentifier(segmentation.get("segmentation_run_id"), "segmentation.segmentation_run_id")
-        Map<String, Object> backend = requireMap(segmentation.get("backend"), "segmentation.backend")
-        exactKeys(backend, ["kind", "name", "version", "artifact_sha256"], "segmentation.backend")
-        String kind = requireEnum(backend.get("kind"), ["native_qupath", "stardist", "instanseg"], "segmentation.backend.kind")
-        if (kind == "stardist" || kind == "instanseg") {
-            fail("CANDIDATE_BACKEND_NOT_IMPLEMENTED: " + kind + " is not implemented by this script")
+        if (kind == "instanseg") {
+            fail("CANDIDATE_BACKEND_NOT_IMPLEMENTED: instanseg is not implemented by this script")
         }
         requireResolvedString(backend.get("name"), "segmentation.backend.name")
         requireSemver(backend.get("version"), "segmentation.backend.version")
@@ -873,41 +1068,16 @@ final class IfQuantV1Exporter {
         exactKeys(detector, ["detector_id", "detector_version"], "segmentation.detector")
         requireIdentifier(detector.get("detector_id"), "segmentation.detector.detector_id")
         requireSemver(detector.get("detector_version"), "segmentation.detector.detector_version")
-        requireExactString(segmentation.get("plugin_class"), WATERSHED_PLUGIN, "segmentation.plugin_class")
+        requireExactString(
+            segmentation.get("plugin_class"),
+            kind == "native_qupath" ? WATERSHED_PLUGIN : STARDIST_CLASS,
+            "segmentation.plugin_class"
+        )
         Map<String, Object> parameters = requireMap(segmentation.get("parameters"), "segmentation.parameters")
-        exactKeys(
-            parameters,
-            [
-                "detectionImage", "requestedPixelSizeMicrons",
-                "backgroundRadiusMicrons", "backgroundByReconstruction",
-                "medianRadiusMicrons", "sigmaMicrons", "minAreaMicrons",
-                "maxAreaMicrons", "threshold", "watershedPostProcess",
-                "cellExpansionMicrons", "includeNuclei", "smoothBoundaries",
-                "makeMeasurements"
-            ],
-            "segmentation.parameters"
-        )
-        String detectionImage = requireResolvedString(parameters.get("detectionImage"), "segmentation.parameters.detectionImage")
-        if (!channels.any { it.get("source_channel_name") == detectionImage }) {
-            fail("detectionImage must equal a configured source channel name")
-        }
-        requirePositiveDouble(parameters.get("requestedPixelSizeMicrons"), "segmentation.parameters.requestedPixelSizeMicrons")
-        for (String key : ["backgroundRadiusMicrons", "medianRadiusMicrons", "sigmaMicrons"]) {
-            requireNonnegativeDouble(parameters.get(key), "segmentation.parameters." + key)
-        }
-        requirePositiveDouble(
-            parameters.get("cellExpansionMicrons"),
-            "segmentation.parameters.cellExpansionMicrons"
-        )
-        double minimumArea = requirePositiveDouble(parameters.get("minAreaMicrons"), "segmentation.parameters.minAreaMicrons")
-        double maximumArea = requirePositiveDouble(parameters.get("maxAreaMicrons"), "segmentation.parameters.maxAreaMicrons")
-        if (maximumArea < minimumArea) fail("maxAreaMicrons must be at least minAreaMicrons")
-        finiteDouble(parameters.get("threshold"), "segmentation.parameters.threshold")
-        for (String key : ["backgroundByReconstruction", "watershedPostProcess", "includeNuclei", "smoothBoundaries", "makeMeasurements"]) {
-            requireBoolean(parameters.get(key), "segmentation.parameters." + key)
-        }
-        if (parameters.get("includeNuclei") != Boolean.TRUE || parameters.get("makeMeasurements") != Boolean.TRUE) {
-            fail("includeNuclei and makeMeasurements must both be true")
+        if (kind == "native_qupath") {
+            validateNativeParameters(parameters, channels)
+        } else {
+            validateStarDistParameters(parameters, channels)
         }
 
         Map<String, Object> model = requireMap(segmentation.get("model"), "segmentation.model")
@@ -915,7 +1085,31 @@ final class IfQuantV1Exporter {
         requireIdentifier(model.get("model_id"), "segmentation.model.model_id")
         requireSemver(model.get("model_version"), "segmentation.model.model_version")
         requireSha256(model.get("descriptor_sha256"), "segmentation.model.descriptor_sha256")
-        if (model.get("weights_sha256") != null) fail("native_qupath model.weights_sha256 must be null")
+        if (kind == "native_qupath") {
+            if (model.get("weights_sha256") != null) fail("native_qupath model.weights_sha256 must be null")
+        } else {
+            requireSha256(model.get("weights_sha256"), "segmentation.model.weights_sha256")
+            Map<String, Object> runtimeInputs = requireMap(
+                segmentation.get("runtime_inputs"),
+                "segmentation.runtime_inputs"
+            )
+            exactKeys(
+                runtimeInputs,
+                [
+                    "qupath_version", "extension_artifact_path",
+                    "model_descriptor_path", "model_weights_path",
+                    "preprocessing_profile_path"
+                ],
+                "segmentation.runtime_inputs"
+            )
+            requireSemver(runtimeInputs.get("qupath_version"), "segmentation.runtime_inputs.qupath_version")
+            for (String key : [
+                "extension_artifact_path", "model_descriptor_path",
+                "model_weights_path", "preprocessing_profile_path"
+            ]) {
+                requireResolvedString(runtimeInputs.get(key), "segmentation.runtime_inputs." + key)
+            }
+        }
         Map<String, Object> preprocessing = requireMap(segmentation.get("preprocessing"), "segmentation.preprocessing")
         exactKeys(preprocessing, ["profile_id", "profile_sha256"], "segmentation.preprocessing")
         requireIdentifier(preprocessing.get("profile_id"), "segmentation.preprocessing.profile_id")
@@ -961,6 +1155,97 @@ final class IfQuantV1Exporter {
         requireSemver(provenance.get("producer_version"), "segmentation.provenance.producer_version")
         requireCodeRevision(provenance.get("code_revision"), "segmentation.provenance.code_revision")
         requireSha256(provenance.get("runtime_sha256"), "segmentation.provenance.runtime_sha256")
+    }
+
+    static void validateNativeParameters(
+        Map<String, Object> parameters,
+        List<Map<String, Object>> channels
+    ) {
+        exactKeys(
+            parameters,
+            [
+                "detectionImage", "requestedPixelSizeMicrons",
+                "backgroundRadiusMicrons", "backgroundByReconstruction",
+                "medianRadiusMicrons", "sigmaMicrons", "minAreaMicrons",
+                "maxAreaMicrons", "threshold", "watershedPostProcess",
+                "cellExpansionMicrons", "includeNuclei", "smoothBoundaries",
+                "makeMeasurements"
+            ],
+            "segmentation.parameters"
+        )
+        String detectionImage = requireResolvedString(parameters.get("detectionImage"), "segmentation.parameters.detectionImage")
+        if (!channels.any { it.get("source_channel_name") == detectionImage }) {
+            fail("detectionImage must equal a configured source channel name")
+        }
+        requirePositiveDouble(parameters.get("requestedPixelSizeMicrons"), "segmentation.parameters.requestedPixelSizeMicrons")
+        for (String key : ["backgroundRadiusMicrons", "medianRadiusMicrons", "sigmaMicrons"]) {
+            requireNonnegativeDouble(parameters.get(key), "segmentation.parameters." + key)
+        }
+        requirePositiveDouble(
+            parameters.get("cellExpansionMicrons"),
+            "segmentation.parameters.cellExpansionMicrons"
+        )
+        double minimumArea = requirePositiveDouble(parameters.get("minAreaMicrons"), "segmentation.parameters.minAreaMicrons")
+        double maximumArea = requirePositiveDouble(parameters.get("maxAreaMicrons"), "segmentation.parameters.maxAreaMicrons")
+        if (maximumArea < minimumArea) fail("maxAreaMicrons must be at least minAreaMicrons")
+        finiteDouble(parameters.get("threshold"), "segmentation.parameters.threshold")
+        for (String key : ["backgroundByReconstruction", "watershedPostProcess", "includeNuclei", "smoothBoundaries", "makeMeasurements"]) {
+            requireBoolean(parameters.get(key), "segmentation.parameters." + key)
+        }
+        if (parameters.get("includeNuclei") != Boolean.TRUE || parameters.get("makeMeasurements") != Boolean.TRUE) {
+            fail("includeNuclei and makeMeasurements must both be true")
+        }
+
+    }
+
+    static void validateStarDistParameters(
+        Map<String, Object> parameters,
+        List<Map<String, Object>> channels
+    ) {
+        exactKeys(
+            parameters,
+            [
+                "detectionChannel", "requestedPixelSizeMicrons",
+                "normalizationLowerPercentile", "normalizationUpperPercentile",
+                "threshold", "tileSizePixels", "cellExpansionMicrons",
+                "cellConstrainScale", "measureShape", "measureIntensity",
+                "includeProbability", "nThreads", "simplifyDistancePixels",
+                "constrainToParent"
+            ],
+            "segmentation.parameters"
+        )
+        String detectionChannel = requireResolvedString(
+            parameters.get("detectionChannel"),
+            "segmentation.parameters.detectionChannel"
+        )
+        if (!channels.any { it.get("source_channel_name") == detectionChannel }) {
+            fail("detectionChannel must equal a configured source channel name")
+        }
+        requirePositiveDouble(parameters.get("requestedPixelSizeMicrons"), "segmentation.parameters.requestedPixelSizeMicrons")
+        double lower = finiteDouble(parameters.get("normalizationLowerPercentile"), "segmentation.parameters.normalizationLowerPercentile")
+        double upper = finiteDouble(parameters.get("normalizationUpperPercentile"), "segmentation.parameters.normalizationUpperPercentile")
+        if (lower < 0.0d || upper > 100.0d || lower >= upper) {
+            fail("StarDist normalization percentiles must satisfy 0 <= lower < upper <= 100")
+        }
+        double threshold = finiteDouble(parameters.get("threshold"), "segmentation.parameters.threshold")
+        if (threshold <= 0.0d || threshold > 1.0d) {
+            fail("StarDist threshold must be in (0, 1]")
+        }
+        requireInteger(parameters.get("tileSizePixels"), "segmentation.parameters.tileSizePixels", 64)
+        requirePositiveDouble(parameters.get("cellExpansionMicrons"), "segmentation.parameters.cellExpansionMicrons")
+        double constrainScale = requirePositiveDouble(parameters.get("cellConstrainScale"), "segmentation.parameters.cellConstrainScale")
+        if (constrainScale <= 1.0d) fail("StarDist cellConstrainScale must be greater than 1")
+        requireInteger(parameters.get("nThreads"), "segmentation.parameters.nThreads", 1)
+        requireNonnegativeDouble(parameters.get("simplifyDistancePixels"), "segmentation.parameters.simplifyDistancePixels")
+        for (String key : ["measureShape", "measureIntensity", "includeProbability", "constrainToParent"]) {
+            requireBoolean(parameters.get(key), "segmentation.parameters." + key)
+        }
+        if (parameters.get("measureShape") != Boolean.TRUE ||
+            parameters.get("measureIntensity") != Boolean.TRUE ||
+            parameters.get("includeProbability") != Boolean.TRUE ||
+            parameters.get("constrainToParent") != Boolean.TRUE) {
+            fail("StarDist shape, intensity, probability, and parent constraints must be enabled")
+        }
     }
 
     static void validateMeasurementMethodConfig(Map<String, Object> method) {

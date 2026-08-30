@@ -1,0 +1,24 @@
+{
+  "contract": "ifquant-platform-model-descriptor/1.0.0",
+  "model_id": "stardist_dsb2018_heavy_augment",
+  "model_version": "1.0.0",
+  "backend_id": "stardist",
+  "task": "dapi_nuclear_instance_segmentation",
+  "model_format": "opencv_frozen_graph_pb",
+  "expected_input": {
+    "channel_count": 1,
+    "channel_role": "nuclear_counterstain",
+    "recommended_pixel_size_um": 0.5
+  },
+  "upstream": {
+    "repository": "https://github.com/qupath/models",
+    "relative_path": "stardist/dsb2018_heavy_augment.pb"
+  },
+  "scope": "engineering_candidate_only",
+  "claims": {
+    "scientific_validation": false,
+    "backend_equivalence": false,
+    "model_universality": false,
+    "authorization": "none"
+  }
+}

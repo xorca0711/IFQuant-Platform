@@ -17,6 +17,13 @@ from ifquant_platform.method_contracts import (  # noqa: E402
 
 SCRIPT = ROOT / "qupath" / "scripts" / "DetectCellsAndExport.groovy"
 CONFIG = ROOT / "qupath" / "config" / "pilot.example.json"
+STARDIST_CONFIG = ROOT / "qupath" / "config" / "stardist.example.json"
+STARDIST_DESCRIPTOR = (
+    ROOT / "qupath" / "models" / "stardist" / "dsb2018-heavy-augment.descriptor.json"
+)
+STARDIST_PREPROCESSING = (
+    ROOT / "qupath" / "models" / "stardist" / "dapi-local-percentile.preprocessing.json"
+)
 QUPATH_README = ROOT / "qupath" / "README.md"
 
 
@@ -46,8 +53,8 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             self.config["segmentation"]["boundary_policy"],
             "exclude_touching_annotation_or_image_boundary",
         )
-        self.assertEqual(self.config["execution"]["script_version"], "1.2.0")
-        self.assertEqual(self.config["provenance"]["exporter_version"], "1.2.0")
+        self.assertEqual(self.config["execution"]["script_version"], "1.3.0")
+        self.assertEqual(self.config["provenance"]["exporter_version"], "1.3.0")
         self.assertEqual(self.config["segmentation"]["backend"]["kind"], "native_qupath")
 
         method = self.config["measurement_method"]
@@ -100,6 +107,10 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             'sides.add("bottom")',
             'sides.add("left")',
             "CANDIDATE_BACKEND_NOT_IMPLEMENTED",
+            "STARDIST_EXTENSION_NOT_AVAILABLE",
+            "runStarDist(",
+            "StarDist normalization percentiles",
+            "loaded StarDist extension artifact does not equal configured",
             "ifquant_platform_cell_object_package",
             "ifquant_platform_cell_object",
             "pluginStartedAt.toString()",
@@ -124,6 +135,41 @@ class QuPathProofOfConceptTests(unittest.TestCase):
         readme = QUPATH_README.read_text(encoding="utf-8")
         self.assertIn("Project-only execution", readme)
         self.assertNotIn("Standalone image, Windows PowerShell", readme)
+
+    def test_stardist_example_binds_distinct_runtime_and_model_identities(self):
+        config = load_strict_json(STARDIST_CONFIG)
+        segmentation = config["segmentation"]
+        self.assertEqual(segmentation["backend"]["kind"], "stardist")
+        self.assertEqual(segmentation["backend"]["version"], "0.6.0")
+        self.assertEqual(
+            segmentation["backend"]["artifact_sha256"],
+            "8c8be80fc9169802a5ef58f7d73f8c0474f7dbbfd13709d24e18d3cc445ff73b",
+        )
+        self.assertEqual(
+            segmentation["model"]["weights_sha256"],
+            "fc1f1148f22180bf2874346d14926e7baf8486088cb66277e13cb22ddccfe01b",
+        )
+        self.assertEqual(segmentation["plugin_class"], "qupath.ext.stardist.StarDist2D")
+        self.assertEqual(segmentation["runtime_inputs"]["qupath_version"], "0.7.0")
+        self.assertTrue(segmentation["parameters"]["constrainToParent"])
+        self.assertTrue(segmentation["parameters"]["measureIntensity"])
+        self.assertTrue(segmentation["parameters"]["includeProbability"])
+        self.assertNotEqual(
+            segmentation["backend"]["artifact_sha256"],
+            segmentation["model"]["weights_sha256"],
+        )
+        self.assertEqual(
+            segmentation["model"]["descriptor_sha256"],
+            hashlib.sha256(STARDIST_DESCRIPTOR.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(
+            segmentation["preprocessing"]["profile_sha256"],
+            hashlib.sha256(STARDIST_PREPROCESSING.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(
+            config["execution"]["expected_script_sha256"],
+            hashlib.sha256(self.script_bytes).hexdigest(),
+        )
 
     def test_script_publishes_complete_candidate_disposition_qc_sidecars(self):
         required_fragments = (

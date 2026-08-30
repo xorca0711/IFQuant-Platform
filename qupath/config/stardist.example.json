@@ -1,9 +1,9 @@
 {
   "schema_version": "ifquant.qupath-pilot-config/1.0.0",
   "pilot_status": "unvalidated_engineering_pilot",
-  "output_directory": "../../pilot-output",
+  "output_directory": "../../pilot-output-stardist",
   "package": {
-    "package_id": "<REPLACE_WITH_IMMUTABLE_PACKAGE_ID>",
+    "package_id": "<REPLACE_WITH_IMMUTABLE_STARDIST_PACKAGE_ID>",
     "parent_package_id": null
   },
   "image": {
@@ -77,52 +77,59 @@
     }
   },
   "segmentation": {
-    "segmentation_run_id": "<REPLACE_WITH_IMMUTABLE_SEGMENTATION_RUN_ID>",
+    "segmentation_run_id": "<REPLACE_WITH_IMMUTABLE_STARDIST_SEGMENTATION_RUN_ID>",
     "backend": {
-      "kind": "native_qupath",
-      "name": "QuPath WatershedCellDetection",
-      "version": "0.7.0",
-      "artifact_sha256": "<REPLACE_WITH_64_HEX_QUPATH_BACKEND_IMPLEMENTATION_ARTIFACT_SHA256>"
+      "kind": "stardist",
+      "name": "QuPath StarDist2D",
+      "version": "0.6.0",
+      "artifact_sha256": "8c8be80fc9169802a5ef58f7d73f8c0474f7dbbfd13709d24e18d3cc445ff73b"
     },
     "detector": {
-      "detector_id": "qupath_watershed_cell_detection",
+      "detector_id": "qupath_stardist2d_opencv",
       "detector_version": "1.0.0"
     },
-    "plugin_class": "qupath.imagej.detect.cells.WatershedCellDetection",
+    "plugin_class": "qupath.ext.stardist.StarDist2D",
     "parameters": {
-      "detectionImage": "DAPI",
+      "detectionChannel": "DAPI",
       "requestedPixelSizeMicrons": 0.5,
-      "backgroundRadiusMicrons": 8.0,
-      "backgroundByReconstruction": true,
-      "medianRadiusMicrons": 0.0,
-      "sigmaMicrons": 1.5,
-      "minAreaMicrons": 10.0,
-      "maxAreaMicrons": 400.0,
-      "threshold": 100.0,
-      "watershedPostProcess": true,
-      "cellExpansionMicrons": 5.0,
-      "includeNuclei": true,
-      "smoothBoundaries": true,
-      "makeMeasurements": true
+      "normalizationLowerPercentile": 1,
+      "normalizationUpperPercentile": 99,
+      "threshold": 0.5,
+      "tileSizePixels": 1024,
+      "cellExpansionMicrons": 5,
+      "cellConstrainScale": 1.5,
+      "measureShape": true,
+      "measureIntensity": true,
+      "includeProbability": true,
+      "nThreads": 4,
+      "simplifyDistancePixels": 1,
+      "constrainToParent": true
     },
     "model": {
-      "model_id": "qupath_native_watershed_descriptor",
+      "model_id": "stardist_dsb2018_heavy_augment",
       "model_version": "1.0.0",
-      "descriptor_sha256": "<REPLACE_WITH_64_HEX_ALGORITHM_DESCRIPTOR_SHA256>",
-      "weights_sha256": null
+      "descriptor_sha256": "83a8c0a78204a04fd37513b9fa58c3530bbac28b6ddd7fdd143a6b8977eac205",
+      "weights_sha256": "fc1f1148f22180bf2874346d14926e7baf8486088cb66277e13cb22ddccfe01b"
     },
     "preprocessing": {
-      "profile_id": "<REPLACE_WITH_PREPROCESSING_PROFILE_ID>",
-      "profile_sha256": "<REPLACE_WITH_64_HEX_PREPROCESSING_PROFILE_SHA256>"
+      "profile_id": "stardist_dapi_local_percentile_1_99",
+      "profile_sha256": "e406445a658a6e90ae77d7a97c96f86852db7c8abca0617703b453df7a1ba6c8"
+    },
+    "runtime_inputs": {
+      "qupath_version": "0.7.0",
+      "extension_artifact_path": "../../validation/runtime-cache/qupath-extension-stardist-0.6.0.jar",
+      "model_descriptor_path": "../models/stardist/dsb2018-heavy-augment.descriptor.json",
+      "model_weights_path": "../../validation/runtime-cache/dsb2018_heavy_augment.pb",
+      "preprocessing_profile_path": "../models/stardist/dapi-local-percentile.preprocessing.json"
     },
     "boundary_policy": "exclude_touching_annotation_or_image_boundary",
     "qc": {
       "status": "not_evaluated",
       "flags": [
         {
-          "code": "engineering_pilot_unvalidated",
+          "code": "engineering_stardist_candidate_unvalidated",
           "severity": "warning",
-          "message": "Engineering pilot only; segmentation has not been scientifically validated."
+          "message": "StarDist engineering candidate only; no scientific validation or backend equivalence."
         }
       ]
     },
@@ -216,16 +223,16 @@
     "object_default_status": "not_evaluated",
     "object_default_flags": [
       {
-        "code": "engineering_pilot_unvalidated",
+        "code": "engineering_stardist_candidate_unvalidated",
         "severity": "warning",
-        "message": "Engineering pilot object; scientific QC has not been evaluated."
+        "message": "StarDist engineering candidate object; scientific QC has not been evaluated."
       }
     ],
     "package_flags": [
       {
-        "code": "engineering_pilot_unvalidated",
+        "code": "engineering_stardist_candidate_unvalidated",
         "severity": "warning",
-        "message": "Engineering pilot package; scientific QC has not been evaluated."
+        "message": "StarDist engineering candidate package; no backend equivalence or scientific validation."
       }
     ]
   },

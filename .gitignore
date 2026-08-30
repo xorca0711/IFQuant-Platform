@@ -11,3 +11,4 @@ dist/
 qupath/output/
 pilot-output/
 validation/output/
+validation/runtime-cache/
