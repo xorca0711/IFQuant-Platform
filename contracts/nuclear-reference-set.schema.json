@@ -248,7 +248,14 @@
           "$ref": "#/$defs/sha256"
         },
         "size_bytes": {
-          "$ref": "#/$defs/nonnegative_integer"
+          "allOf": [
+            {
+              "$ref": "#/$defs/nonnegative_integer"
+            },
+            {
+              "minimum": 1
+            }
+          ]
         }
       }
     },
@@ -428,6 +435,7 @@
       }
     },
     "region_ledger_entry": {
+      "description": "A completed human-reviewed final disposition for one governed reference region. Include regions are eligible for evaluation; exclude regions are not evaluated and require a controlled exclusion reason. Frozen sets cannot contain a pending disposition.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -462,10 +470,10 @@
           "$ref": "#/$defs/identifier"
         },
         "disposition": {
+          "description": "Final evaluation eligibility after completed region review.",
           "enum": [
             "include",
-            "exclude",
-            "review"
+            "exclude"
           ]
         },
         "exclusion_reason": {
@@ -501,6 +509,16 @@
             "properties": {
               "exclusion_reason": {
                 "$ref": "#/$defs/region_exclusion_reason"
+              },
+              "counts": {
+                "properties": {
+                  "nuclear_reference_objects": {
+                    "const": 0
+                  },
+                  "reference_ignore_regions": {
+                    "const": 0
+                  }
+                }
               }
             }
           },
@@ -549,7 +567,6 @@
         "regions_total",
         "include",
         "exclude",
-        "review",
         "nuclear_reference_objects",
         "reference_ignore_regions"
       ],
@@ -563,11 +580,15 @@
         "exclude": {
           "$ref": "#/$defs/nonnegative_integer"
         },
-        "review": {
-          "$ref": "#/$defs/nonnegative_integer"
-        },
         "nuclear_reference_objects": {
-          "$ref": "#/$defs/nonnegative_integer"
+          "allOf": [
+            {
+              "$ref": "#/$defs/nonnegative_integer"
+            },
+            {
+              "minimum": 1
+            }
+          ]
         },
         "reference_ignore_regions": {
           "$ref": "#/$defs/nonnegative_integer"
@@ -647,12 +668,19 @@
       }
     },
     "nuclear_reference_artifact": {
+      "description": "Canonical reviewed DAPI nuclear instances. A reference set must contain at least one positive instance; per-image confirmatory readiness is enforced by the runtime validator.",
       "allOf": [
         {
           "$ref": "#/$defs/canonical_ndjson_artifact_base"
         },
         {
           "properties": {
+            "record_count": {
+              "minimum": 1
+            },
+            "size_bytes": {
+              "minimum": 1
+            },
             "record_schema": {
               "const": "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json"
             }

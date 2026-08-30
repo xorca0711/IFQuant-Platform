@@ -76,11 +76,54 @@
     "image_assignments": {
       "type": "array",
       "minItems": 3,
+      "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/image_assignment"
-      }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "train"
+              }
+            }
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "tuning"
+              }
+            }
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "held_out_test"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      ]
     },
     "held_out_test_commitment": {
+      "description": "Immutable commitment to exact held-out image identities and the governed reference, ignore, region, observation, and evaluation-policy content used for them.",
       "$ref": "#/$defs/held_out_test_commitment"
     },
     "state": {
@@ -345,9 +388,15 @@
         "image_ids",
         "image_ids_sha256",
         "canonicalization_profile",
+        "reference_content_profile",
+        "reference_content_sha256",
+        "ordering",
         "committed_at",
         "committed_by",
-        "change_policy"
+        "change_policy",
+        "successor_assignment_policy",
+        "successor_new_image_policy",
+        "successor_commitment_policy"
       ],
       "properties": {
         "state": {
@@ -370,6 +419,17 @@
         "canonicalization_profile": {
           "const": "ifquant_canonical_json_v1"
         },
+        "reference_content_profile": {
+          "description": "Canonical descriptor profile used to bind held-out truth and evaluation content across successor reference revisions.",
+          "const": "ifquant_held_out_reference_content_v1"
+        },
+        "reference_content_sha256": {
+          "description": "SHA-256 of the canonical held-out reference-content descriptor for the exact committed image IDs.",
+          "$ref": "#/$defs/sha256"
+        },
+        "ordering": {
+          "const": "image_id_ascending"
+        },
         "committed_at": {
           "$ref": "#/$defs/timestamp"
         },
@@ -378,6 +438,15 @@
         },
         "change_policy": {
           "const": "new_split_manifest_revision_required"
+        },
+        "successor_assignment_policy": {
+          "const": "preserve_all_prior_image_assignments"
+        },
+        "successor_new_image_policy": {
+          "const": "new_images_may_enter_train_or_tuning_only"
+        },
+        "successor_commitment_policy": {
+          "const": "preserve_held_out_test_commitment"
         }
       }
     },
@@ -403,7 +472,14 @@
           "$ref": "#/$defs/sha256"
         },
         "size_bytes": {
-          "$ref": "#/$defs/nonnegative_integer"
+          "allOf": [
+            {
+              "$ref": "#/$defs/nonnegative_integer"
+            },
+            {
+              "minimum": 1
+            }
+          ]
         }
       }
     },
@@ -464,6 +540,9 @@
       "additionalProperties": false,
       "required": [
         "scientific_validation",
+        "biological_ground_truth",
+        "backend_equivalence",
+        "model_universality",
         "split_optimality",
         "population_representativeness",
         "domain_generalizability",
@@ -471,6 +550,15 @@
       ],
       "properties": {
         "scientific_validation": {
+          "const": false
+        },
+        "biological_ground_truth": {
+          "const": false
+        },
+        "backend_equivalence": {
+          "const": false
+        },
+        "model_universality": {
           "const": false
         },
         "split_optimality": {

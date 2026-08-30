@@ -18,6 +18,10 @@ from .method_contracts import (
     resolve_method,
 )
 from .package_validation import validate_cell_package
+from .phase3_validation import (
+    validate_nuclear_reference_set,
+    validate_split_manifest,
+)
 
 
 def _expect(actual: str, expected: str | None, label: str) -> None:
@@ -74,6 +78,46 @@ def _validate_observation_set(args: argparse.Namespace) -> dict[str, Any]:
         report.observation_set_sha256,
         args.expect_observation_set_sha256,
         "observation-set SHA-256",
+    )
+    return report.as_dict()
+
+
+def _validate_reference_set(args: argparse.Namespace) -> dict[str, Any]:
+    report = validate_nuclear_reference_set(args.reference_set)
+    _expect(
+        report.reference_set_sha256,
+        args.expect_reference_set_sha256,
+        "reference-set SHA-256",
+    )
+    _expect(
+        report.governed_observation_set_sha256,
+        args.expect_observation_set_sha256,
+        "observation-set SHA-256",
+    )
+    return report.as_dict()
+
+
+def _validate_split(args: argparse.Namespace) -> dict[str, Any]:
+    report = validate_split_manifest(args.split_manifest)
+    _expect(
+        report.split_manifest_sha256,
+        args.expect_split_manifest_sha256,
+        "split-manifest SHA-256",
+    )
+    _expect(
+        report.reference_set_sha256,
+        args.expect_reference_set_sha256,
+        "reference-set SHA-256",
+    )
+    _expect(
+        report.held_out_test_image_ids_sha256,
+        args.expect_held_out_test_image_ids_sha256,
+        "held-out-test image-IDs SHA-256",
+    )
+    _expect(
+        report.held_out_test_reference_content_sha256,
+        args.expect_held_out_test_reference_content_sha256,
+        "held-out-test reference-content SHA-256",
     )
     return report.as_dict()
 
@@ -147,6 +191,34 @@ def build_parser() -> argparse.ArgumentParser:
     )
     observation_set_parser.add_argument("--expect-observation-set-sha256")
     observation_set_parser.set_defaults(handler=_validate_observation_set)
+
+    reference_set_parser = subparsers.add_parser(
+        "validate-reference-set",
+        aliases=["validate-nuclear-reference-set"],
+        help="validate a frozen DAPI nuclear-reference set and its bound artifacts",
+    )
+    reference_set_parser.add_argument(
+        "reference_set",
+        help="nuclear-reference-set.json or its containing directory",
+    )
+    reference_set_parser.add_argument("--expect-reference-set-sha256")
+    reference_set_parser.add_argument("--expect-observation-set-sha256")
+    reference_set_parser.set_defaults(handler=_validate_reference_set)
+
+    split_parser = subparsers.add_parser(
+        "validate-split",
+        aliases=["validate-split-manifest"],
+        help="validate a frozen image-level split and its recursive reference boundary",
+    )
+    split_parser.add_argument(
+        "split_manifest",
+        help="split-manifest.json or its containing directory",
+    )
+    split_parser.add_argument("--expect-split-manifest-sha256")
+    split_parser.add_argument("--expect-reference-set-sha256")
+    split_parser.add_argument("--expect-held-out-test-image-ids-sha256")
+    split_parser.add_argument("--expect-held-out-test-reference-content-sha256")
+    split_parser.set_defaults(handler=_validate_split)
 
     method_parser = subparsers.add_parser(
         "validate-method", help="validate and resolve a measurement definition and parameter set"
