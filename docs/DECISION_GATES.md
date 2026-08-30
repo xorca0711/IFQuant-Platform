@@ -13,10 +13,10 @@ not reinterpret an absent review as approval.
 | E2. Image and channel eligibility | Groovy | Pass for the engineering derivative: fluorescence, singleton Z/T, calibrated UINT16, DAPI mapped. | Repeat against each governed acquisition domain. |
 | E3. Annotation eligibility | QuPath + Groovy | Pass as a synthetic fixture only. | Use a reviewed biological annotation version with reviewer lineage. |
 | E4. Detector execution | QuPath | Pass: 1,551 native watershed candidates. | Preserve complete success/failure and candidate ledgers. |
-| E5. Candidate disposition | Groovy | 1,453 accepted; 45 cell-not-covered; 53 boundary-touching. | Reconcile every candidate geometry and reason in QC evidence. |
+| E5. Candidate disposition | Groovy | Pass for the engineering pilot: all 1,551 candidates are retained; 1,453 accepted, 45 cell-not-covered, and 53 boundary-touching. | Continue retaining and reconciling every candidate geometry and reason. |
 | E6. Canonical package integrity | Python | Pass for structural, referential, and byte integrity. | Maintain exact hashes, IDs, measurements, counts, QC, and review reconciliation. |
-| H1. Visual DAPI detection review | Human reviewer | Not performed; no rendered overlay existed in the initial pilot. | Review deterministic overview and zoom evidence against raw DAPI. |
-| H2. Geometry-warning policy | Human reviewer + method owner | Open: 182 accepted objects carry `nucleus_not_covered_by_cell_geometry`. | Confirm exclude, accept under a precise rule, or change the method and rerun. |
+| H1. Visual DAPI detection review | Human reviewer | Evidence generated; overview, complete disposition overlay, and warning/control montage await confirmation. | Review deterministic overview and zoom evidence against raw DAPI. |
+| H2. Geometry-warning policy | Human reviewer + method owner | Open: 182 accepted objects carry `nucleus_not_covered_by_cell_geometry`; median outside fraction is 0.0377%, maximum 1.2676%. | Confirm exclude, accept under a precise rule, or change the method and rerun. |
 | D1. Dataset and split eligibility | Python governance | Not eligible; acquisition-group identities are absent and objects are unreviewed. | Complete identities, immutable review/correction lineage, and leakage-safe split manifest. |
 | S1. Segmentation performance | Validation owner | Not evaluated. | Meet prospective detection/boundary/count/bias criteria on frozen reference data. |
 | M1. Model or endpoint promotion | Scientific owner | Authorization `none`. | Independent scope-specific validation and explicit promotion decision. |
@@ -41,6 +41,9 @@ The conservative default is outcome 1 until review supports outcome 2 or a new
 run resolves the condition. Confirmation is required before Phase 2 begins,
 because the choice changes dataset eligibility and potentially downstream
 morphology/intensity bias.
+
+The current evidence and local-output layout are summarized in
+[`validation/PHASE1_QC_STATUS.md`](../validation/PHASE1_QC_STATUS.md).
 
 ## Non-gates in the current validator
 

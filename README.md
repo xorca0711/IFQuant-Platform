@@ -23,7 +23,7 @@ working-tree changes are not copied into this core.
 | Canonical cell-object package | Initial v1 complete | Image, channel, calibration, annotation, geometry, measurements, model/detector, QC, review, and provenance are bound. |
 | Native QuPath executor | Engineering pilot complete | QuPath 0.7 ran the configured annotation-scoped exporter successfully. |
 | Structural validation CLI | Complete for v1 engineering scope | Referential, canonical, geometry, count, QC, review, and byte-integrity checks pass the pilot and fixtures. |
-| DAPI visual-QC evidence | Phase 1 in progress | Complete candidate dispositions and deterministic overview/overlay/montage rendering are implemented; human geometry review remains a required gate. |
+| DAPI visual-QC evidence | Human review open | The fresh 1,551-candidate evidence package and deterministic images are complete; geometry-policy confirmation remains required. See [Phase 1 QC status](validation/PHASE1_QC_STATUS.md). |
 | StarDist and InstanSeg | Interface candidates | Adapters and validation evidence are not yet implemented; no equivalence is assumed. |
 | Dataset manifests and correction lineage | Architecture defined | Persistent registry, immutable versions, and QuPath correction ingestion are next. |
 | ML baselines and custom models | Planned | DAPI segmentation comparison, then morphology/intensity classifiers; custom CNNs only if justified. |
@@ -165,7 +165,8 @@ not resolve a geometry warning or authorize Phase 2 biological-data use.
 
 ```mermaid
 flowchart LR
-    M0["Foundation<br/>contracts, package, CLI,<br/>native QuPath pilot<br/>CURRENT BASELINE"]
+    M0["Foundation<br/>contracts, package, CLI,<br/>native QuPath pilot<br/>COMPLETE"]
+    Q1["Visual QC stabilization<br/>complete candidate ledger,<br/>DAPI review evidence<br/>CURRENT: HUMAN GATE"]
     M1["Governed data foundation<br/>registry, annotations,<br/>corrections, frozen splits"]
     M2["DAPI segmentation baselines<br/>native QuPath, StarDist,<br/>InstanSeg"]
     M3["Object-classifier baselines<br/>morphology and<br/>compartment intensity"]
@@ -173,7 +174,7 @@ flowchart LR
     M5["Scope-specific custom models<br/>only when baselines expose<br/>a predeclared limitation"]
     M6["Prospective validation<br/>bias, calibration, abstention,<br/>domain shift, endpoints"]
 
-    M0 --> M1 --> M2 --> M3 --> M4 --> M5 --> M6
+    M0 --> Q1 --> M1 --> M2 --> M3 --> M4 --> M5 --> M6
 ```
 
 ### Next architecture priorities

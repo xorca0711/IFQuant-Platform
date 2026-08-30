@@ -1,8 +1,8 @@
 # Validation
 
-The current execution and evidence record is in `PILOT_STATUS.md`. It records
-the completed structurally valid engineering pilot and its explicit
-non-validation boundaries.
+The initial execution record is in `PILOT_STATUS.md`. The current deterministic
+DAPI evidence, geometry-warning statistics, and open human gate are in
+`PHASE1_QC_STATUS.md`. Both records preserve explicit non-validation boundaries.
 
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that

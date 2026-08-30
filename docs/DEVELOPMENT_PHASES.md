@@ -7,7 +7,7 @@ into the next phase's scientific role until its exit gate is satisfied.
 | Phase | Status | Objective | Required exit evidence |
 | --- | --- | --- | --- |
 | 0. Engineering foundation | Complete | Establish contracts, canonical packages, narrow QuPath execution, Python validation, provenance, and tests. | Structurally valid package, exact code/runtime/configuration identities, and passing tests. |
-| 1. Visual QC and pilot stabilization | In progress | Make every DAPI candidate disposition inspectable and resolve geometry-policy ambiguity. | Deterministic overlays and review montage; all candidate counts reconcile; a reviewer confirms the geometry-warning disposition policy. |
+| 1. Visual QC and pilot stabilization | Human review pending | Make every DAPI candidate disposition inspectable and resolve geometry-policy ambiguity. | Deterministic overlays and review montage; all candidate counts reconcile; a reviewer confirms the geometry-warning disposition policy. |
 | 2. Governed biological-data foundation | Blocked by Phase 1 review | Replace synthetic fixtures with governed study inputs and identities. | Reviewed biological annotations; complete artifact provenance; immutable correction lineage; mouse/slide/batch/scanner identities present. |
 | 3. Reference set and split design | Planned | Establish reviewed instance reference data and leakage-safe partitions. | Frozen reference version; group-disjoint split manifest; leakage audit; held-out set locked. |
 | 4. Native QuPath segmentation baseline | Planned | Quantify the native watershed method on frozen observations. | Prospectively declared detection, split/merge, boundary, count, and measurement-bias results. |
