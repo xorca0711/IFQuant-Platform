@@ -21,11 +21,11 @@ working-tree changes are not copied into this core.
 | Clean-slate repository and Python package | Complete | Package, contracts, CLI, tests, and ownership boundaries are in place. |
 | Backend-neutral measurement contracts | Initial v1 complete | Closed schemas bind meaning, parameters, canonical hashes, and provenance. |
 | Canonical cell-object package | Initial v1 complete | Image, channel, calibration, annotation, geometry, measurements, model/detector, QC, review, and provenance are bound. |
-| Native QuPath executor | Engineering pilot complete | QuPath 0.7 ran the configured annotation-scoped exporter successfully. |
+| Native QuPath executor | Full-frame engineering pilot complete | QuPath 0.7 ran the configured exporter on the complete 2048 × 2048 image with a manifest-bound symmetric detector-resolution edge guard. |
 | Structural validation CLI | Complete for v1 engineering scope | Referential, canonical, geometry, count, QC, review, and byte-integrity checks pass the pilot and fixtures. |
-| DAPI visual-QC evidence | Human review open | The fresh 1,551-candidate evidence package and deterministic images are complete; geometry-policy confirmation remains required. See [Phase 1 QC status](validation/PHASE1_QC_STATUS.md). |
+| DAPI visual-QC evidence | Provisionally acceptable; formal H1/H2 records open | The user described the overlay as seemingly acceptable and requested full-image detection. Run 05 retains all 1,803 candidates and independently verifies a four-side image-edge guard; detected-object eligibility still requires a topology-warning decision. See [Phase 1 QC status](validation/PHASE1_QC_STATUS.md). |
 | StarDist and InstanSeg | Interface candidates | Adapters and validation evidence are not yet implemented; no equivalence is assumed. |
-| Dataset manifests and correction lineage | Architecture defined | Persistent registry, immutable versions, and QuPath correction ingestion are next. |
+| Governed observations and correction lineage | Initial Phase 2 contract complete; real intake gated | A closed observation-set contract and strict read-only validator now bind source bytes, canonical manifest identities, producer code, explicit biological/acquisition identity, and annotation lineage with a reviewed selected revision. |
 | ML baselines and custom models | Planned | DAPI segmentation comparison, then morphology/intensity classifiers; custom CNNs only if justified. |
 | Scientific validation | Not established | Requires prospective, scope-specific evaluation by mouse, slide, batch, scanner, and endpoint. |
 
@@ -100,11 +100,13 @@ The full ownership matrix is in
    detector/model identity, QC, review state, and provenance.
 5. Validate the complete package independently in Python. Invalid or ambiguous
    packages stop here; downstream code does not repair them silently.
-6. Publish reviewed objects and corrections into a new immutable dataset
-   version with mouse/slide/batch/scanner-aware split membership.
-7. Train or evaluate a scope-specific model outside Groovy, then return
+6. Publish reviewed identities, images, annotations, and corrections into a new
+   immutable governed observation-set revision.
+7. Freeze a separate mouse/slide/batch/scanner-aware split manifest; never infer
+   groups from paths or assign randomly by tile.
+8. Train or evaluate a scope-specific model outside Groovy, then return
    predictions and uncertainty to QuPath for human review.
-8. Aggregate only compatible, eligible, reviewed packages while retaining
+9. Aggregate only compatible, eligible, reviewed packages while retaining
    failed and abstained units.
 
 The canonical package is the hand-off point, not a scientific approval stamp:
@@ -125,35 +127,40 @@ contracts/
 See [Architecture](docs/ARCHITECTURE.md) and
 [Contracts](contracts/README.md) for the invariants and canonical hashing rules.
 
-## Initial QuPath pilot
+## Current QuPath pilot
 
-The 2026-08-29 pilot exercised the full native-QuPath-to-Python boundary with
-QuPath 0.7.0, a four-channel singleton-Z/T OME-TIFF engineering derivative,
-DAPI-based native watershed detection, and one explicitly synthetic ROI.
+Run 05 exercised the full native-QuPath-to-Python boundary on the complete
+2048 × 2048 four-channel singleton-Z/T OME-TIFF engineering derivative. DAPI
+native watershed detection used one supplied full-image annotation and a
+declared one-processing-pixel boundary guard.
 
-- 1,551 nuclei detected;
-- 1,453 canonical cell objects exported;
-- 45 cells excluded because they crossed the annotation;
-- 53 cells excluded because they touched the annotation boundary;
-- 182 exported objects flagged because normalized nucleus geometry was not
-  covered by cell geometry;
-- 1,453 unique object IDs with contiguous indices;
-- 42 unit tests passing; and
-- Python validator status `valid` for structural, referential, and byte
-  integrity only.
+- 1,803 nuclei detected and retained in the candidate ledger;
+- 1,700 canonical cell objects exported;
+- 103 candidates excluded within the image guard;
+- independently recomputed guard sides: top 33, left 23, right 27, bottom 21;
+- zero accepted candidates inside the guard;
+- 204 topology warnings across all candidates, including 194 accepted objects;
+- deterministic overview, disposition, montage, and manifest bytes across two
+  fresh render destinations; and
+- Python package and candidate validators report `valid` for engineering
+  structure, references, geometry policy, and byte integrity only.
 
 Canonical package SHA-256:
-`977f2780eaa625c8332e886d1a0dbe6c6749b42bd33000a097713125258fae2f`.
+`e086130f68823ef30dd30e4b0f596dcf3842cff215b7b2638e02ecccc5e5125f`.
 
-The detailed, sanitized record is in
-[Pilot status](validation/PILOT_STATUS.md). The microscopy derivative,
-per-cell output, workstation paths, and full evidence bundle remain under the
-Git-ignored local `validation/output/` directory and are **not published in
-this repository**.
+The detailed current record is in
+[Phase 1 QC status](validation/PHASE1_QC_STATUS.md); earlier pilot lineage remains
+in [Pilot status](validation/PILOT_STATUS.md). Microscopy bytes, cell output,
+workstation paths, and full evidence bundles remain under the Git-ignored local
+`validation/output/` directory and are **not published in this repository**.
 
-This pilot does not establish segmentation accuracy, geometry acceptance,
+The user described DAPI appearance as seemingly acceptable and requested
+full-image detection. The symmetric guard is an engineering result that is
+independently verified on all four image sides; a formal reviewer decision is
+not yet recorded. H2 warning disposition is still open, with conservative
+exclusion as the default for downstream eligibility. No pilot establishes
 scientific validity, backend equivalence, endpoint fitness, or authorization
-for biological analysis.
+for biological use.
 
 ## Roadmap
 
@@ -161,14 +168,14 @@ Development advances in evidence-gated phases. The normative order, current
 phase, and exit criteria are in [Development phases](docs/DEVELOPMENT_PHASES.md).
 Machine-verifiable gates and the human-review boundaries are separated in
 [Decision gates](docs/DECISION_GATES.md). In particular, a valid package does
-not resolve a geometry warning or authorize Phase 2 biological-data use.
+not resolve a geometry warning or authorize biological use of detected objects.
 
 ```mermaid
 flowchart LR
     M0["Foundation<br/>contracts, package, CLI,<br/>native QuPath pilot<br/>COMPLETE"]
-    Q1["Visual QC stabilization<br/>complete candidate ledger,<br/>DAPI review evidence<br/>CURRENT: HUMAN GATE"]
-    M1["Governed data foundation<br/>registry, annotations,<br/>corrections, frozen splits"]
-    M2["DAPI segmentation baselines<br/>native QuPath, StarDist,<br/>InstanSeg"]
+    Q1["Visual QC stabilization<br/>full-frame guard verified<br/>formal H1 + H2 gates open"]
+    M1["Governed data foundation<br/>CURRENT: contract, validator,<br/>lineage, identities"]
+    M2["Reference set + safe splits<br/>then DAPI segmentation<br/>backend baselines"]
     M3["Object-classifier baselines<br/>morphology and<br/>compartment intensity"]
     M4["QuPath correction loop<br/>review, lineage,<br/>uncertainty sampling"]
     M5["Scope-specific custom models<br/>only when baselines expose<br/>a predeclared limitation"]
@@ -179,19 +186,21 @@ flowchart LR
 
 ### Next architecture priorities
 
-1. Implement immutable image, annotation, correction, dataset, and split
-   manifests without using filenames as biological identity.
-2. Implement StarDist and InstanSeg adapters that emit the same package shape
+1. Complete governed observation-set intake with user-supplied mouse, slide,
+   batch, and scanner identity plus reviewed annotation/correction lineage.
+2. Freeze reference and split manifests only after governed observations exist;
+   audit leakage without using filenames as biological identity.
+3. Implement StarDist and InstanSeg adapters that emit the same package shape
    while retaining distinct method, weights, preprocessing, and runtime
    identities.
-3. Establish reviewed DAPI instance-segmentation reference sets and evaluate
+4. Establish reviewed DAPI instance-segmentation reference sets and evaluate
    detection, split/merge, boundary, count, and downstream measurement bias.
-4. Add morphology/intensity classifier baselines, calibration, uncertainty,
+5. Add morphology/intensity classifier baselines, calibration, uncertainty,
    and abstention before considering a custom CNN.
-5. Complete the QuPath prediction-review and immutable correction-lineage loop.
-6. Add reproducible pipeline orchestration with fresh destinations, resumable
+6. Complete the QuPath prediction-review and immutable correction-lineage loop.
+7. Add reproducible pipeline orchestration with fresh destinations, resumable
    hash verification, and assigned/succeeded/failed ledgers.
-7. Validate with group-disjoint or blocked designs by mouse, slide, batch, and
+8. Validate with group-disjoint or blocked designs by mouse, slide, batch, and
    scanner—never by random tile—and quantify domain shift and endpoint bias.
 
 The detailed sequence and evaluation requirements are in the
@@ -225,6 +234,8 @@ ifquant-platform validate-method `
   --parameter-set contracts/examples/cell-morphology-intensity-engineering-v1.json
 
 ifquant-platform validate-package validation/fixtures/minimal-cell-package
+ifquant-platform validate-observation-set `
+  validation/fixtures/minimal-governed-observation-set
 ifquant-platform backends
 ```
 

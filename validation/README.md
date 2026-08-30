@@ -1,8 +1,10 @@
 # Validation
 
-The initial execution record is in `PILOT_STATUS.md`. The current deterministic
-DAPI evidence, geometry-warning statistics, and open human gate are in
-`PHASE1_QC_STATUS.md`. Both records preserve explicit non-validation boundaries.
+The initial execution record is in `PILOT_STATUS.md`. The current full-frame,
+deterministic DAPI evidence, geometry-warning statistics, verified engineering
+boundary policy, local paths, and remaining human gates are in
+`PHASE1_QC_STATUS.md`. Both
+records preserve explicit non-validation boundaries.
 
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that
@@ -58,6 +60,11 @@ contract or method-instance identity, produce a machine-readable report, and
 return a nonzero status on failure. Reports distinguish errors, warnings,
 not-evaluable conditions, and observed zeros. Validation must never modify the
 input package.
+
+Phase 2 adds a read-only governed-observation validator. It verifies supplied
+biological/acquisition identity, artifact bytes, cross-manifest linkage, and
+annotation lineage with a reviewed selected revision. It never creates IDs
+from filenames and does not assign Phase 3 splits.
 
 ## Evidence status
 

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/image-manifest.schema.json",
+  "contract_type": "ifquant_platform_image_manifest",
+  "contract_version": "1.0.0",
+  "image_id": "governed-image-001",
+  "biological_unit_id": "governed-unit-001",
+  "source_artifact": {
+    "source_uri": "source-pixels.bin",
+    "sha256": "89fc2cc37ac5fdc16931a2dc99b77fd2058a510686265b3132abb6a7bd9b511f",
+    "size_bytes": 29,
+    "media_type": "application/octet-stream"
+  },
+  "dimensions": {
+    "width_pixels": 100,
+    "height_pixels": 100,
+    "z_planes": 1,
+    "timepoints": 1
+  },
+  "pixel_calibration": {
+    "calibration_id": "governed-calibration-001",
+    "pixel_width_um": 0.5,
+    "pixel_height_um": 0.5,
+    "z_spacing_um": null,
+    "unit": "um"
+  },
+  "coordinate_space": {
+    "coordinate_space_id": "governed-image-pixels-001",
+    "dimension": "2d",
+    "geometry_unit": "pixel",
+    "axis_order": ["x", "y"],
+    "origin": "top_left",
+    "x_axis_direction": "right",
+    "y_axis_direction": "down"
+  },
+  "acquisition": {
+    "mouse_id": "synthetic-mouse-001",
+    "specimen_id": null,
+    "section_id": null,
+    "slide_id": "synthetic-slide-001",
+    "batch_id": "synthetic-batch-001",
+    "scanner_id": "synthetic-scanner-001",
+    "acquired_at": null
+  },
+  "provenance": {
+    "created_at": "2026-08-30T00:00:00Z",
+    "producer_id": "ifquant_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "ingest_config_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  }
+}

@@ -18,6 +18,7 @@ reproducibility, model universality, or authority to use an endpoint.
 | `channel-map.schema.json` | Maps image-local channel indices to stable semantic channel and marker identities. |
 | `annotation-set.schema.json` | Carries the supplied annotation regions used to constrain cell detection. |
 | `segmentation-run.schema.json` | Records one configured segmentation execution and the exact backend, model descriptor, optional weights, configuration, preprocessing, and versioned boundary semantics. Contract 1.1 adds an explicit detector-resolution image-boundary guard while 1.0 remains readable for legacy exact-envelope audits. |
+| `governed-observation-set.schema.json` | Phase 2 aggregate for explicit biological/acquisition identity, immutable image and channel references, annotation lineage with a reviewed selected revision, identity review, byte-bound producer code, and non-claims. It deliberately contains no Phase 3 partition assignment. |
 | `cell-object.schema.json` | Defines one deterministic cell-object record for JSON Lines export. |
 | `cell-object-package.schema.json` | Binds all manifests and exactly one deterministic JSON Lines cell-object artifact. |
 | `canonicalization-vectors.json` | Cross-runtime golden bytes and hashes for Unicode, control escaping, and binary64 number formatting. |
@@ -66,6 +67,9 @@ object identity; a schema pattern alone is insufficient.
 - Every referenced ID has exactly one matching document or record. The image,
   biological-unit, channel-map, annotation-set, coordinate-space, and
   segmentation-run IDs agree across all bound contracts.
+- Governed-observation biological identifiers are study-scoped. A specimen ID
+  cannot move between mice, a section ID cannot change its mouse/specimen/slide
+  parents, and a slide ID cannot span mice within one observation set.
 - Package reference hashes equal recomputed canonical manifest hashes.
 - Package measurement-definition, parameter-set, and method-instance hashes
   equal independently recomputed identities; contract validity carries no

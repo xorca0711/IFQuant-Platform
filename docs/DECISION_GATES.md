@@ -9,21 +9,21 @@ not reinterpret an absent review as approval.
 | Gate | Owner | Current pilot state | Advancement condition |
 | --- | --- | --- | --- |
 | E0. Source and historical boundary | Python/pipeline | Engineering pass; original source remained read-only. Compound VSI companions are not fully attested. | Bind every consumed source artifact for biological work. |
-| E1. Configuration and runtime identity | Groovy + Python | Pass. Script, configuration, method, QuPath runtime, and detector implementation are hash-bound. | Continue to fail closed on identity drift. |
+| E1. Configuration and runtime identity | Groovy + Python | Pass. Script, configuration, method, selected QuPath launcher/core/detector artifacts, and declared environment are hash-bound. This is not a complete Java-classpath or OS attestation. | Continue to fail closed on identity drift and extend runtime coverage before controlled release. |
 | E2. Image and channel eligibility | Groovy | Pass for the engineering derivative: fluorescence, singleton Z/T, calibrated UINT16, DAPI mapped. | Repeat against each governed acquisition domain. |
 | E3. Annotation eligibility | QuPath + Groovy | Pass as a synthetic fixture only. | Use a reviewed biological annotation version with reviewer lineage. |
-| E4. Detector execution | QuPath | Pass: 1,551 native watershed candidates. | Preserve complete success/failure and candidate ledgers. |
-| E5. Candidate disposition | Groovy | Pass for the engineering pilot: all 1,551 candidates are retained; 1,453 accepted, 45 cell-not-covered, and 53 boundary-touching. | Continue retaining and reconciling every candidate geometry and reason. |
+| E4. Detector execution | QuPath | Pass: 1,803 native watershed candidates on the complete 2048 × 2048 image. | Preserve complete success/failure and candidate ledgers. |
+| E5. Candidate disposition | Groovy + Python | Pass: all 1,803 candidates are retained; 1,700 accepted and 103 excluded within a declared symmetric one-processing-pixel image guard. Independent side counts are top 33, left 23, right 27, bottom 21, with zero accepted guard members. | Continue retaining and reconciling every candidate geometry, guard membership, and reason. |
 | E6. Canonical package integrity | Python | Pass for structural, referential, and byte integrity. | Maintain exact hashes, IDs, measurements, counts, QC, and review reconciliation. |
-| H1. Visual DAPI detection review | Human reviewer | Evidence generated; overview, complete disposition overlay, and warning/control montage await confirmation. | Review deterministic overview and zoom evidence against raw DAPI. |
-| H2. Geometry-warning policy | Human reviewer + method owner | Open: 182 accepted objects carry `nucleus_not_covered_by_cell_geometry`; median outside fraction is 0.0377%, maximum 1.2676%. | Confirm exclude, accept under a precise rule, or change the method and rerun. |
-| D1. Dataset and split eligibility | Python governance | Not eligible; acquisition-group identities are absent and objects are unreviewed. | Complete identities, immutable review/correction lineage, and leakage-safe split manifest. |
+| H1. Visual DAPI detection review | Human reviewer | Provisional only: the user described the engineering overlay as seemingly acceptable, but no reviewer identity/date/rationale record has been captured. This is not a sensitivity/specificity result. | Record the review formally, then repeat against governed acquisition domains and reviewed reference objects. |
+| H2. Geometry-warning policy | Human reviewer + method owner | Open: 194 accepted objects carry `nucleus_not_covered_by_cell_geometry`; median outside fraction is 0.0410%, maximum 1.6491%. | Confirm exclude, accept under a precise rule, or change the method and rerun. |
+| D1. Governed-observation eligibility | Python governance | Initial contract and validator complete; the pilot observation is ineligible because mouse/slide/batch/scanner identities are absent and its annotation is synthetic rather than biologically reviewed. Run05 detected objects are separately ineligible while H1/H2 remain open. | Complete user-supplied identities, reviewed annotations, and immutable correction lineage. Resolve H1/H2 before promoting detected objects. Split assignment remains a separate Phase 3 gate. |
 | S1. Segmentation performance | Validation owner | Not evaluated. | Meet prospective detection/boundary/count/bias criteria on frozen reference data. |
 | M1. Model or endpoint promotion | Scientific owner | Authorization `none`. | Independent scope-specific validation and explicit promotion decision. |
 
 ## Geometry-warning confirmation
 
-The 182 geometry warnings are evidence, not an automatic accept or reject
+The 194 accepted geometry warnings are evidence, not an automatic accept or reject
 decision. Phase 1 must not silently delete the objects or relabel them as pass.
 
 The reviewer must choose one of these outcomes after inspecting raw DAPI,
@@ -38,9 +38,10 @@ nucleus outlines, cell outlines, spatial context, and matched unflagged controls
    to the preserved pilot.
 
 The conservative default is outcome 1 until review supports outcome 2 or a new
-run resolves the condition. Confirmation is required before Phase 2 begins,
-because the choice changes dataset eligibility and potentially downstream
-morphology/intensity bias.
+run resolves the condition. Phase 2 observation governance may proceed, but
+confirmation is required before any run05 detected object becomes eligible for
+reference labels, biological object datasets, classifier inputs, or endpoint
+aggregation because the choice can change downstream morphology/intensity bias.
 
 The current evidence and local-output layout are summarized in
 [`validation/PHASE1_QC_STATUS.md`](../validation/PHASE1_QC_STATUS.md).

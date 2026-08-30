@@ -1,0 +1,72 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/governed-observation-set.schema.json",
+  "contract_type": "ifquant_platform_governed_observation_set",
+  "contract_version": "1.0.0",
+  "observation_set_id": "synthetic-governed-observations-001",
+  "study_id": "synthetic-study-001",
+  "revision": 0,
+  "revision_reason": "Initial governed observation-set fixture.",
+  "parent": null,
+  "observations": [
+    {
+      "image": {
+        "image_id": "governed-image-001",
+        "manifest_relative_path": "manifests/image-manifest.json",
+        "manifest_sha256": "c455df148edf125849b8954eab0e84819a0e6fe3ef69b18d0eb87fecc0a5eb1f",
+        "source_sha256": "89fc2cc37ac5fdc16931a2dc99b77fd2058a510686265b3132abb6a7bd9b511f"
+      },
+      "biological_unit": {
+        "biological_unit_id": "governed-unit-001",
+        "mouse_id": "synthetic-mouse-001",
+        "specimen_id": null,
+        "section_id": null,
+        "slide_id": "synthetic-slide-001",
+        "batch_id": "synthetic-batch-001",
+        "scanner_id": "synthetic-scanner-001"
+      },
+      "channel_map": {
+        "channel_map_id": "governed-channel-map-001",
+        "manifest_relative_path": "manifests/channel-map.json",
+        "manifest_sha256": "5b10505a60e6b3ca13f3b65ff4dd1407435941934e62569251378d230300056d"
+      },
+      "annotation_lineage": [
+        {
+          "annotation_set_id": "governed-annotations-001",
+          "revision": 0,
+          "manifest_relative_path": "manifests/annotation-set.json",
+          "manifest_sha256": "92d636436f32cfb692ff8503fda7bb5439684d658b195bf60a1506c467add67b",
+          "parent_manifest_sha256": null,
+          "revision_reason": "Initial reviewed synthetic annotation fixture."
+        }
+      ],
+      "selected_annotation_set_id": "governed-annotations-001",
+      "identity_review": {
+        "state": "accepted",
+        "reviewer_id": "synthetic-reviewer-001",
+        "reviewed_at": "2026-08-30T00:00:00Z",
+        "notes": "Synthetic contract fixture only."
+      }
+    }
+  ],
+  "provenance": {
+    "created_at": "2026-08-30T00:00:00Z",
+    "producer_id": "ifquant_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "1e998631592a85fbf6d775630c990a08c66e0aad9e2d764eee1f1a5d97efacd0",
+    "code_artifact": {
+      "relative_path": "producer-code.txt",
+      "media_type": "text/plain",
+      "sha256": "1e998631592a85fbf6d775630c990a08c66e0aad9e2d764eee1f1a5d97efacd0",
+      "size_bytes": 33
+    },
+    "identity_source": {
+      "kind": "reviewed_manual_assertion",
+      "artifact": null
+    }
+  },
+  "claims": {
+    "scientific_validation": false,
+    "biological_ground_truth": false,
+    "authorization": "none"
+  }
+}

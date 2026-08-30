@@ -73,6 +73,21 @@ Producer-reported summaries are evidence, not unquestioned analytical input.
 Python recomputes derivable values where possible and refuses incomplete,
 ambiguous, duplicated, stale, or hash-inconsistent packages.
 
+### Governed observation boundary
+
+Phase 2 introduces a governed observation-set contract above the individual
+image, channel-map, and annotation-set contracts. It requires user-supplied
+mouse, slide, batch, and scanner identities; binds exact source bytes and
+canonical manifest content identities; preserves ordered annotation revisions
+and parent hashes; and requires reviewer identity and time for the selected
+revision. Optional specimen and section levels remain explicitly null when
+genuinely unavailable.
+
+The validator is read-only. It does not register a directory by guessing names,
+repair missing identity, convert an engineering package into biological ground
+truth, or assign train/test membership. Phase 3 owns a separate frozen reference
+and split design after governed observations exist.
+
 ## Canonical cell-object package
 
 A package represents a configured observation and its detected objects. At a
@@ -154,9 +169,11 @@ predeclared validation and is not assumed by this architecture.
 4. Export objects, measurements, ledgers, hashes, and execution attestation.
 5. Validate and canonicalize with Python before dataset or analysis use.
 6. Route reviewed corrections back through QuPath with explicit lineage.
-7. Build versioned datasets and group-aware splits.
-8. Train or evaluate a scope-specific model outside Groovy.
-9. Aggregate only eligible, compatible, reviewed observations.
+7. Publish a governed observation-set successor with immutable identity and
+   annotation/correction lineage.
+8. Freeze a separate group-aware reference/split manifest.
+9. Train or evaluate a scope-specific model outside Groovy.
+10. Aggregate only eligible, compatible, reviewed observations.
 
 Each stage consumes immutable inputs and publishes to a fresh destination. A
 downstream stage may reject an artifact but may not repair missing identity,

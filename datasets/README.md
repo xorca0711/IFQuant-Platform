@@ -5,19 +5,22 @@ images or labels. Large artifacts may live in an external content-addressed
 store, but a versioned manifest must make every consumed byte and relationship
 resolvable.
 
-A dataset version records:
+Phase 2 begins with a governed observation-set revision. It records:
 
 - source-image ID, content hash, dimensions, and acquisition identity;
-- biological hierarchy, including the available mouse/specimen/slide/section
-  relationships;
-- scanner, staining batch, acquisition batch, and other declared domains;
+- reviewed mouse/specimen/slide/section identity and biological-unit ID;
+- scanner and acquisition-batch identity declared by the image manifest;
 - semantic channel mapping and pixel/Z calibration;
 - annotation and correction revision with parent lineage and review state;
-- preprocessing contract and derived-artifact hashes;
-- inclusion, exclusion, QC, and missingness reasons; and
-- immutable train, tuning, validation, or test assignment.
+- byte-bound producer-code provenance and the declared reviewed identity source;
+- explicit non-claims for scientific validation, biological ground truth, and
+  downstream authorization.
 
-## Split policy
+It does **not** assign train, tuning, validation, test, folds, or tiles. Those
+memberships belong to a separately versioned Phase 3 split manifest after the
+observations and grouping identities are governed.
+
+## Phase 3 split policy
 
 Never assign partitions randomly by tile. Split manifests must prevent leakage
 through mouse, slide, batch, and scanner. The precise strategy is study-specific,

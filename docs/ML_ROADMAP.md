@@ -11,37 +11,53 @@ Training and evaluation run in Python. QuPath remains the environment for image
 inspection, human correction, and prediction review; Groovy does not contain a
 training loop.
 
-## Phase 0 — governed data foundation
+The phase numbering below follows
+[`DEVELOPMENT_PHASES.md`](DEVELOPMENT_PHASES.md); it is not a separate ML-only
+sequence.
+
+## Phase 2 — governed biological-data foundation
 
 - Register source images, biological units, channels, calibration, annotations,
   and acquisition domains with content hashes.
 - Define canonical cell/nucleus geometry and compartment-feature contracts.
 - Establish immutable correction lineage and reviewer states.
-- Freeze train, tuning, and held-out test manifests before model comparison.
 - Record mouse, slide, batch, scanner, and other study-specific grouping keys.
 
-## Phase 1 — DAPI instance-segmentation baselines
+## Phase 3 — reference set and split design
 
-- Implement adapters for native QuPath, StarDist, and InstanSeg behind the
-  common segmentation interface.
-- Run each backend with explicit preprocessing, configuration, software, and
-  model/weights identities.
-- Evaluate detection, split/merge, boundary, size-stratified, and crowded-region
-  behavior against reviewed annotations.
+- Establish reviewed DAPI instance annotations with explicit reviewer lineage.
+- Freeze train, tuning, and held-out test manifests before model comparison.
+- Keep mouse, slide, batch, and scanner groups disjoint as the study design
+  requires; never assign randomly by tile.
+- Run a leakage audit and lock the held-out set before baseline evaluation.
+
+## Phase 4 — native QuPath DAPI baseline
+
+- Run native QuPath watershed with explicit preprocessing, configuration,
+  software, and detector identities.
+- Evaluate detection, split/merge, boundary, size-stratified, crowded-region,
+  count, and downstream measurement behavior against reviewed annotations.
 - Preserve per-object matches and signed errors, not only headline overlap
   scores.
+
+## Phase 5 — replaceable segmentation candidates
+
+- Implement StarDist and InstanSeg adapters behind the same output interface.
+- Bind exact preprocessing, configuration, software, model descriptor, and
+  weights identities for every method instance.
+- Compare each method separately on the frozen Phase 3 observations and splits.
 
 These backends are candidates, not interchangeable implementations. Their
 results remain separate method instances.
 
-## Phase 2 — object-classifier baselines
+## Phase 6 — object-classifier baselines
 
 Build interpretable baselines from verified morphology and compartment-intensity
 features. Establish data quality, endpoint association, calibration, and useful
 abstention behavior before training a custom CNN. Comparisons use the same
 frozen partitions and report uncertainty and subgroup behavior.
 
-## Phase 3 — QuPath correction loop
+## Phase 7 — QuPath correction loop
 
 Expose predictions and uncertainty in QuPath. Human reviewers accept, reject,
 split, merge, redraw, or relabel objects. Every correction creates a new version
@@ -49,7 +65,7 @@ linked to the source prediction, original annotation, reviewer action, and model
 instance. Corrections enter a later dataset version; they do not mutate the
 held-out set or silently feed the run that requested them.
 
-## Phase 4 — scope-specific custom models
+## Phase 8 — scope-specific custom models
 
 Train a custom CNN only when a predeclared limitation of simpler baselines
 justifies it. A model package must include:
@@ -67,7 +83,7 @@ A new scope, acquisition domain, or material preprocessing change requires a new
 method instance and renewed evaluation. Success in one domain is not evidence of
 universality.
 
-## Validation design
+## Phase 9 — prospective validation and controlled release
 
 Partition at the highest leakage-relevant unit. A tile is never the random split
 unit. At minimum, evaluate group-disjoint behavior by mouse, slide, batch, and

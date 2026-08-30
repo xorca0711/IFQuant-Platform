@@ -11,6 +11,7 @@ from typing import Any
 from . import __version__
 from .backends import candidate_backends
 from .canonical import ContractError
+from .dataset_governance import validate_governed_observation_set
 from .method_contracts import (
     load_measurement_definition,
     load_parameter_set,
@@ -64,6 +65,16 @@ def _validate_package(args: argparse.Namespace) -> dict[str, Any]:
     report = validate_cell_package(args.package)
     _expect(report.package_canonical_sha256, args.expect_package_sha256, "package SHA-256")
     _expect(report.method_instance_sha256, args.expect_method_instance_sha256, "method-instance SHA-256")
+    return report.as_dict()
+
+
+def _validate_observation_set(args: argparse.Namespace) -> dict[str, Any]:
+    report = validate_governed_observation_set(args.observation_set)
+    _expect(
+        report.observation_set_sha256,
+        args.expect_observation_set_sha256,
+        "observation-set SHA-256",
+    )
     return report.as_dict()
 
 
@@ -125,6 +136,17 @@ def build_parser() -> argparse.ArgumentParser:
     package_parser.add_argument("--expect-package-sha256")
     package_parser.add_argument("--expect-method-instance-sha256")
     package_parser.set_defaults(handler=_validate_package)
+
+    observation_set_parser = subparsers.add_parser(
+        "validate-observation-set",
+        help="validate a governed observation set and its bound artifacts without modifying them",
+    )
+    observation_set_parser.add_argument(
+        "observation_set",
+        help="observation-set.json or its containing directory",
+    )
+    observation_set_parser.add_argument("--expect-observation-set-sha256")
+    observation_set_parser.set_defaults(handler=_validate_observation_set)
 
     method_parser = subparsers.add_parser(
         "validate-method", help="validate and resolve a measurement definition and parameter set"

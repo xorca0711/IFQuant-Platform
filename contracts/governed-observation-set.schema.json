@@ -1,0 +1,488 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/governed-observation-set.schema.json",
+  "title": "IFQuant Platform governed observation set",
+  "description": "Reviewed biological and acquisition identities, immutable source bindings, and annotation-revision lineage for Phase 2 governance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "observation_set_id",
+    "study_id",
+    "revision",
+    "revision_reason",
+    "parent",
+    "observations",
+    "provenance",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/governed-observation-set.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_governed_observation_set"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "observation_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "study_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "revision": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        {
+          "maximum": 255
+        }
+      ]
+    },
+    "revision_reason": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "parent": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/parent_reference"
+        }
+      ]
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "revision"
+        ],
+        "properties": {
+          "revision": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parent": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "revision": {
+            "minimum": 1
+          },
+          "parent": {
+            "$ref": "#/$defs/parent_reference"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "nullable_identifier": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z$"
+    },
+    "nonnegative_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?![^/]*:)[^\\\\]+$"
+    },
+    "parent_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_set_id",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "observation_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "image_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_id",
+        "manifest_relative_path",
+        "manifest_sha256",
+        "source_sha256"
+      ],
+      "properties": {
+        "image_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "channel_map_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_map_id",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "channel_map_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "biological_unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "biological_unit_id",
+        "mouse_id",
+        "specimen_id",
+        "section_id",
+        "slide_id",
+        "batch_id",
+        "scanner_id"
+      ],
+      "properties": {
+        "biological_unit_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "mouse_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "specimen_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "section_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "slide_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "batch_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "scanner_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "annotation_revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "annotation_set_id",
+        "revision",
+        "manifest_relative_path",
+        "manifest_sha256",
+        "parent_manifest_sha256",
+        "revision_reason"
+      ],
+      "properties": {
+        "annotation_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_manifest_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision_reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "identity_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer_id",
+        "reviewed_at",
+        "notes"
+      ],
+      "properties": {
+        "state": {
+          "const": "accepted"
+        },
+        "reviewer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "reviewed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "biological_unit",
+        "channel_map",
+        "annotation_lineage",
+        "selected_annotation_set_id",
+        "identity_review"
+      ],
+      "properties": {
+        "image": {
+          "$ref": "#/$defs/image_reference"
+        },
+        "biological_unit": {
+          "$ref": "#/$defs/biological_unit"
+        },
+        "channel_map": {
+          "$ref": "#/$defs/channel_map_reference"
+        },
+        "annotation_lineage": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/annotation_revision"
+          }
+        },
+        "selected_annotation_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "identity_review": {
+          "$ref": "#/$defs/identity_review"
+        }
+      }
+    },
+    "artifact_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "media_type",
+        "sha256",
+        "size_bytes"
+      ],
+      "properties": {
+        "relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/nonnegative_integer"
+        }
+      }
+    },
+    "identity_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "artifact"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "registry_artifact",
+            "reviewed_manual_assertion"
+          ]
+        },
+        "artifact": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/artifact_reference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "registry_artifact"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "artifact": {
+                "$ref": "#/$defs/artifact_reference"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "artifact": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "code_artifact",
+        "identity_source"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_artifact": {
+          "$ref": "#/$defs/artifact_reference"
+        },
+        "identity_source": {
+          "$ref": "#/$defs/identity_source"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scientific_validation",
+        "biological_ground_truth",
+        "authorization"
+      ],
+      "properties": {
+        "scientific_validation": {
+          "const": false
+        },
+        "biological_ground_truth": {
+          "const": false
+        },
+        "authorization": {
+          "const": "none"
+        }
+      }
+    }
+  }
+}

@@ -1,105 +1,125 @@
 # Phase 1 DAPI QC status
 
-Status: **engineering evidence complete; human review and geometry-policy
-confirmation open**.
+Status: **full-frame engineering policy verified; formal H1 review and H2
+geometry-warning disposition remain open for biological eligibility**.
 
-This record describes the fresh `pilot-20260830-engineering-03` run. Its full
-package, source derivative, per-candidate ledger, and rendered images are under
-the Git-ignored local `validation/output/` tree. They are not published by this
-document.
+The current evidence is the fresh
+`pilot-20260830-engineering-05-full-crop-guard` run. It uses the complete
+2048 × 2048 image, not an inset ROI. The user described the DAPI overlay as
+seemingly acceptable and requested full-image detection. The symmetric
+full-frame guard is independently verified engineering behavior; it is not
+recorded as a formal human policy approval. Run 04 is retained as a superseded
+engineering audit because it exposed QuPath's positive-edge detector-grid
+rounding; it was not overwritten.
 
-Nothing here establishes segmentation accuracy, biological validity, backend
-equivalence, endpoint fitness, model universality, or authorization for a
-biological dataset.
+The package, source derivative, per-candidate ledger, and rendered images remain
+under the Git-ignored local `validation/output/` tree. Nothing here establishes
+segmentation accuracy, biological validity, backend equivalence, endpoint
+fitness, model universality, or authorization for biological analysis.
 
 ## Bound run
 
 - QuPath: 0.7.0, native `WatershedCellDetection`.
 - Exporter source revision:
-  `926d1768d91c294b3cd44e6ec05c1fa45ea5e15a`.
+  `f8fe27053700f012e91959c5b4aa1f83a0da8224`.
 - Exporter SHA-256:
-  `00b8650a9c1c6d9ea6ebb13db569f013e8a8f719340fa422720fb510e6fd11fd`.
-- Renderer source revision:
-  `8910706ff9fa5a660bbf3f693e54c9e2bf5fff6a`.
+  `7e28147d359efe7a1400c21ef883eec67e016a5dba79f325bde8f31f942950c2`.
 - Renderer-module SHA-256:
-  `a42347f28c7e595f78a733931ae2ce157ec9f1b9abdf1e33cd554515d711147b`.
+  `4eb80e09cb897817c1d2aa22ad0605f564fb5ea6c50d5e5ad1cbd9238786523d`.
 - Source OME-TIFF SHA-256:
   `28e4c767036b0dca540a820096a0f76baa0277c33ed60bbb2cc0099539592eb8`.
 - Canonical package SHA-256:
-  `5baa7e4c02eeac0166b0428f581cbaa7f213d082d5d24b9aaeabc4765d7eefa7`.
+  `e086130f68823ef30dd30e4b0f596dcf3842cff215b7b2638e02ecccc5e5125f`.
 - Candidate-manifest canonical SHA-256:
-  `963753d68d128452ddf6e90f38b5b83ac24317e172c928a477d47b1919c2733a`.
+  `e4a38bceaf10a6d72dfbbffbcd8e889d32ba26a61b5f5e79ca7a92bef6a59a67`.
 
-The canonical package validator reports `valid` for structural, referential,
-and byte integrity. The complete candidate-ledger validator also reports
-`valid`. Fifty Python tests pass with the imaging extras; the core-only run
-passes with the one imaging test skipped. The finalized exporter compiles under
-QuPath 0.7.0. These are engineering checks only.
+The canonical package and complete candidate-ledger validators report `valid`
+for structural, referential, geometric-policy, and byte integrity. The run05
+boundary implementation passed 58 tests when committed; the current branch,
+including the initial Phase 2 contract, passes the full repository test suite.
+These are engineering checks only.
 
-## Candidate reconciliation
+## Candidate reconciliation and boundary decision
 
 | Outcome | Count |
 | --- | ---: |
-| Detected candidates | 1,551 |
-| Accepted canonical objects | 1,453 |
-| Excluded: cell not covered by annotation | 45 |
-| Excluded: cell touches annotation boundary | 53 |
-| Geometry warnings across all candidates | 207 |
-| Geometry warnings among accepted objects | 182 |
-| Geometry warnings among excluded candidates | 25 |
+| Detected candidates | 1,803 |
+| Accepted canonical objects | 1,700 |
+| Excluded: within full-image boundary guard | 103 |
+| Guard members: top | 33 |
+| Guard members: left | 23 |
+| Guard members: right | 27 |
+| Guard members: bottom | 21 |
+| Geometry warnings across all candidates | 204 |
+| Geometry warnings among accepted objects | 194 |
+| Geometry warnings among guard exclusions | 10 |
 
-For the 182 accepted warnings, the nucleus area outside the cell has a median
-fraction of 0.0377%, a 95th-percentile fraction of 0.4593%, and a maximum of
-1.2676%. The maximum outside area is 2.4441 px². Of those warnings, 127 are at
-or below 0.1%, 46 are above 0.1% and at or below 0.5%, seven are above 0.5% and
-at or below 1%, and two exceed 1%.
+The guard is one effective detector-processing pixel: 0.5 µm, or
+1.4492842522051745 native pixels for this image. Top/left coordinates at or
+below the guard and right/bottom coordinates at or above
+`image dimension - guard` are classified symmetrically. Side counts need not be
+equal and can overlap at a corner; the acceptance invariant is **zero accepted
+guard members**, which the independent Python validator confirms.
 
-These values quantify the topology warning; they do not determine whether an
-object is biologically acceptable or whether its measurements are unbiased.
+The earlier right/bottom asymmetry was representational: the 0.5 µm detector
+grid mapped its terminal coordinate to about 2047.84 rather than 2048, while
+the origin remained exactly zero. Exact `>= 2048` comparisons therefore missed
+positive-edge objects. The declared guard corrects this without clipping or
+modifying governed geometry.
+
+## Geometry-warning evidence
+
+For the 194 accepted warnings, nucleus area outside the cell has a median
+fraction of 0.0410%, a 95th-percentile fraction of 0.6187%, and a maximum of
+1.6491%. The maximum outside area is 1.9137 px². Of those warnings, 125 are at
+or below 0.1%, 56 are above 0.1% and at or below 0.5%, 12 are above 0.5% and at
+or below 1%, and one exceeds 1%.
+
+These values quantify a normalized topology warning. They do not decide whether
+an object is biologically acceptable or whether morphology/intensity estimates
+are unbiased.
 
 ## Local review outputs
 
 The primary local directory is:
 
 ```text
-validation/output/pilot-20260830-engineering-03/qc-rendered/
+X:\GitHub\IFQuant-Platform\validation\output\pilot-20260830-engineering-05-full-crop-guard\qc-rendered\
 ```
 
 | File | Purpose | SHA-256 |
 | --- | --- | --- |
-| `dapi-overview.png` | DAPI display, supplied ROI, 100 µm scale bar | `671d86c67892fc7442f75d85c38687736dc52daba86bd458542dfb44e6f7347a` |
-| `dapi-candidate-disposition.png` | Complete cell/nucleus candidate overlay and dispositions | `405e25a94a75b456d008cc54b4f1f968369343dd7deb5b8eb645aa588e6e2244` |
-| `dapi-review-montage.png` | Eight highest-severity accepted warnings and eight deterministic controls | `4a6b711ac838e717d6f6eff9d9387cca0cc2f719d91e52bbf25215c3c5470d36` |
-| `qc-manifest.json` | Input, display, selection, implementation, output, and non-claim bindings | `4c3beaa31616f1801a0e03efe1e9901ad5aa5f97ce5f885768e6d6188c8615be` |
+| `dapi-overview.png` | Full-image DAPI, full-frame cyan ROI, 100 µm scale bar | `c65ad8e726c8d119da812e8bbcaf15e3a0adaea2f514e6dd1487f22939594a23` |
+| `dapi-candidate-disposition.png` | Complete cell/nucleus overlay; four-sided edge exclusions | `e565dbb116a0a6874b5b867e94b989ee6ea9de39c80fcf2ee81fd8a4847318e7` |
+| `dapi-review-montage.png` | Eight highest-fraction accepted warnings and eight deterministic controls | `109200fde452a01b7af9e8ce44921b206059023b1783104dc3dfbd3601883325` |
+| `qc-manifest.json` | Inputs, guard, counts, display, renderer, outputs, and non-claims | `a065d7e014e5f546a8642a44360d2c55dcf529c5aa2c5d2eec5b0610a6a73bdc` |
 
-A second fresh render is byte-identical for all four files. Display windowing is
-the deterministic 1st to 99.8th percentile range, corresponding to native DAPI
-sample values 15 to 3,027 for this derivative.
+A second fresh render under `qc-rendered-repeat-verification/` is byte-identical
+for all four files. Local machine-readable validation evidence is under the
+same run's `attestations/` directory.
 
-Overlay colors are green for accepted cell contours, orange for other excluded
-cells, magenta for boundary-excluded cells, yellow for warning nucleus
-contours, and cyan for the supplied ROI.
+Overlay colors are green for accepted cell contours, magenta for boundary-guard
+exclusions, yellow for warning nucleus contours, and cyan for the full-frame
+ROI. Because this is DAPI-only evidence, it supports inspection of nuclear
+detection and contour placement. Expanded cell contours remain algorithmic
+constructions, not membrane ground truth.
 
-Because this is DAPI-only review evidence, it can support inspection of nuclear
-detection and nucleus contour placement. The expanded cell contours are
-algorithmic constructions, not membrane ground truth, and cannot be declared
-biologically accurate from this image alone.
+## Remaining H2 gate and Phase 2 boundary
 
-## Required human gates
+The DAPI appearance assessment is provisional; H1 still needs reviewer
+identity, date, and rationale. The full-frame edge guard is independently
+verified engineering behavior. H2 requires one recorded outcome for the 194
+accepted topology warnings:
 
-Before Phase 2, a reviewer should check the overview, complete overlay, and
-warning/control montage for obvious missed nuclei, fragments, merges, implausible
-cell expansion, boundary behavior, and systematic dense/sparse-region effects.
-The reviewer and method owner must then record one geometry-policy outcome:
+1. **Exclude conservatively** — keep the objects in immutable evidence but make
+   them ineligible downstream. This is the active default.
+2. **Accept under a precise rule** — declare a machine-testable rule and evaluate
+   morphology/intensity bias under its intended scope.
+3. **Revise and rerun** — change cell construction or geometry handling under a
+   new method/run identity.
 
-1. **Exclude conservatively** — retain all warnings in immutable evidence but
-   make the 182 accepted flagged objects ineligible downstream. This remains
-   the default until another outcome is confirmed.
-2. **Accept under a precise rule** — state a machine-testable topology/severity
-   rule and its scope, then evaluate potential morphology/intensity bias.
-3. **Revise and rerun** — change detector parameters, cell construction, or
-   geometry handling under a new method and run identity.
-
-Confirmation should include reviewer identity, review date, selected outcome,
-rationale, and any declared rule. Until then, Phase 2 remains blocked and all
-objects retain QC `not_evaluated` and review `unreviewed`.
+Phase 2 observation-contract and validator infrastructure may proceed without
+resolving H1/H2. The source observation itself still requires biological
+identities and reviewed-annotation evidence. No run05 detected object may enter
+reference labels, training inputs, biological object datasets, or endpoint
+aggregation until H1/H2 are resolved.
