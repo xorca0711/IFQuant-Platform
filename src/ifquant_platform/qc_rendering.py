@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import platform
 import re
 import shutil
 import tempfile
@@ -1019,6 +1020,12 @@ def render_qc(
         qc_manifest: dict[str, Any] = {
             "schema_version": "ifquant.dapi-qc-render/1.0.0",
             "status": "rendered_unvalidated_engineering_qc",
+            "producer": {
+                "producer_id": "ifquant_platform.qc_rendering",
+                "producer_version": "1.0.0",
+                "implementation_sha256": file_sha256(Path(__file__).resolve()),
+                "python_version": platform.python_version(),
+            },
             "inputs": {
                 "package": {
                     "package_id": ledger.package["package_id"],

@@ -247,6 +247,10 @@ class QcRenderingTests(unittest.TestCase):
             for name in names:
                 self.assertEqual((first / name).read_bytes(), (second / name).read_bytes())
             self.assertEqual(manifest["status"], "rendered_unvalidated_engineering_qc")
+            self.assertEqual(
+                manifest["producer"]["implementation_sha256"],
+                file_sha256(ROOT / "src" / "ifquant_platform" / "qc_rendering.py"),
+            )
             self.assertFalse(manifest["claims"]["scientific_validation"])
             self.assertFalse(manifest["claims"]["human_review_completed"])
             self.assertEqual(

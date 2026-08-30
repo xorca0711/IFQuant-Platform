@@ -61,7 +61,8 @@ warning/control crops per group, and 192 pixels.
   break. Controls use package-seeded SHA-256 ranking.
 - `qc-manifest.json`: canonical input bindings, nearest-rank display percentiles
   and resulting native-sample bounds, dependency versions, scale bar, selection
-  rule and selected IDs, counts, output dimensions/hashes, and non-claims.
+  rule and selected IDs, counts, output dimensions/hashes, exact renderer-module
+  SHA-256 and Python version, and non-claims.
 
 For unsigned 8/16-bit data, percentile bounds use an exact integer histogram and
 nearest-rank selection. The same inputs, options, and Pillow/NumPy versions yield
