@@ -149,6 +149,7 @@
       "enum": [
         "clip_to_annotation",
         "exclude_touching_annotation_boundary",
+        "exclude_touching_annotation_or_image_boundary",
         "include_touching_annotation_boundary"
       ]
     },

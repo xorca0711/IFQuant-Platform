@@ -11,7 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from ifquant_platform.canonical import ContractError, canonical_json_bytes  # noqa: E402
+from ifquant_platform.canonical import (  # noqa: E402
+    ContractError,
+    canonical_json_bytes,
+    canonical_sha256,
+)
 from ifquant_platform.package_validation import validate_cell_package  # noqa: E402
 
 
@@ -275,6 +279,26 @@ class PackageValidationTests(unittest.TestCase):
             package["segmentation_run"]["weights_sha256"] = "f" * 64
             write_json(package_root / "package.json", package)
             with self.assertRaisesRegex(ContractError, "null weights_sha256"):
+                validate_cell_package(package_root)
+
+    def test_symmetric_image_boundary_policy_is_supported_and_unknown_policy_fails(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package_root = self.copy_fixture(temporary)
+            run_path = package_root / "manifests" / "segmentation-run.json"
+            run = read_json(run_path)
+            run["boundary_policy"] = "exclude_touching_annotation_or_image_boundary"
+            write_json(run_path, run)
+            package_path = package_root / "package.json"
+            package = read_json(package_path)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_json(package_path, package)
+            self.assertEqual(validate_cell_package(package_root).status, "valid")
+
+            run["boundary_policy"] = "asymmetric_edge_policy"
+            write_json(run_path, run)
+            package["segmentation_run"]["manifest_sha256"] = canonical_sha256(run)
+            write_json(package_path, package)
+            with self.assertRaisesRegex(ContractError, "boundary_policy"):
                 validate_cell_package(package_root)
 
     def test_cli_success_and_hash_failure_are_machine_readable_without_traceback(self):

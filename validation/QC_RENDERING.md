@@ -19,6 +19,10 @@ The command first runs the canonical package validator. It then requires:
 - exact geometry, centroid, annotation, source-detection, and warning agreement
   for accepted objects;
 - reconciled disposition, reason, and geometry-warning counts;
+- independently recomputed top/right/bottom/left physical-edge contact from
+  candidate WKT and manifest-bound image dimensions;
+- for the symmetric image-boundary policy, exactly one included annotation whose
+  rectangle equals the complete image extent;
 - exact script, run-configuration, source-image, and annotation-content hashes;
 - explicit `false` scientific-validation, backend-equivalence, and
   model-universality claims with authorization `none`.
@@ -49,7 +53,9 @@ warning/control crops per group, and 192 pixels.
 ## Outputs
 
 - `dapi-overview.png`: recorded DAPI display window, included ROI, and calibrated
-  scale bar.
+  scale bar. A full-frame ROI ending at the continuous coordinate equal to image
+  width/height is clamped to the final visible pixel only for display, so all
+  four cyan sides remain visible; governed geometry is unchanged.
 - `dapi-candidate-disposition.png`: all candidate cell/nucleus contours, ROI,
   scale bar, and legend. Cell contours encode disposition: green is accepted,
   orange is another exclusion, and magenta is a boundary exclusion. A yellow
@@ -61,8 +67,9 @@ warning/control crops per group, and 192 pixels.
   break. Controls use package-seeded SHA-256 ranking.
 - `qc-manifest.json`: canonical input bindings, nearest-rank display percentiles
   and resulting native-sample bounds, dependency versions, scale bar, selection
-  rule and selected IDs, counts, output dimensions/hashes, exact renderer-module
-  SHA-256 and Python version, and non-claims.
+  rule and selected IDs, disposition/reason/physical-edge-side counts, output
+  dimensions/hashes, exact renderer-module SHA-256 and Python version, and
+  non-claims.
 
 For unsigned 8/16-bit data, percentile bounds use an exact integer histogram and
 nearest-rank selection. The same inputs, options, and Pillow/NumPy versions yield

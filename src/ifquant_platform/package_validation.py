@@ -552,7 +552,16 @@ def _validate_segmentation_run(value: Mapping[str, Any]) -> str:
     _exact(preprocessing, {"profile_id", "profile_sha256"}, "segmentation_run.preprocessing")
     _identifier(preprocessing["profile_id"], "segmentation_run.preprocessing.profile_id")
     _sha256(preprocessing["profile_sha256"], "segmentation_run.preprocessing.profile_sha256")
-    _enum(value["boundary_policy"], {"clip_to_annotation", "exclude_touching_annotation_boundary", "include_touching_annotation_boundary"}, "segmentation_run.boundary_policy")
+    _enum(
+        value["boundary_policy"],
+        {
+            "clip_to_annotation",
+            "exclude_touching_annotation_boundary",
+            "exclude_touching_annotation_or_image_boundary",
+            "include_touching_annotation_boundary",
+        },
+        "segmentation_run.boundary_policy",
+    )
 
     execution = _object(value["execution"], "segmentation_run.execution")
     _exact(execution, {"script_sha256", "run_config_sha256", "started_at", "completed_at"}, "segmentation_run.execution")

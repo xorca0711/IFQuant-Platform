@@ -33,9 +33,18 @@ equivalence, endpoint validity, or a universal model.
 - `native_qupath` only, using
   `QP.runPlugin(String, ImageData, Map)` with the configured
   `WatershedCellDetection` parameters.
-- `exclude_touching_annotation_boundary` only. Cells wholly covered by one
-  selected annotation and not touching its boundary are exported. Cells that
-  cross or touch the boundary are counted and excluded. New cells with no
+- Two exclusion policies are implemented. The legacy
+  `exclude_touching_annotation_boundary` policy excludes cells crossing or
+  touching a selected annotation. The stricter
+  `exclude_touching_annotation_or_image_boundary` policy requires exactly one
+  selected annotation equal to the complete image extent and derives
+  physical-image contact symmetrically from normalized geometry at top
+  (`minY <= 0`), right (`maxX >= width`), bottom (`maxY >= height`), and left
+  (`minX <= 0`). Unambiguously assigned physical-edge candidates retain their
+  original geometry and use the single reason `cell_touches_image_boundary`;
+  they are never clipped.
+  Cells wholly covered by one selected annotation and eligible under the bound
+  policy are exported. New cells with no
   selected-annotation intersection or an ambiguous multi-annotation
   intersection are also excluded with distinct QC ledger codes; no annotation
   identity is fabricated. Every newly detected `PathCellObject`, accepted or
@@ -151,7 +160,7 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-00b8650a9c1c6d9ea6ebb13db569f013e8a8f719340fa422720fb510e6fd11fd
+8b971f1ae02957a5172e2202bc2ee826c34a016fa2eb15cea9c39793fe8e0dff
 ```
 
 ## Reproducible QuPath 0.7 CLI
@@ -289,7 +298,8 @@ Structural validation is necessary but is not scientific validation.
 - Only a one-file, singleton-z, singleton-time 2D image is accepted. Olympus
   VSI and other compound/multi-file images require a future artifact manifest.
 - Boundary clipping is not implemented. Expanded cells that touch or cross an
-  annotation boundary are excluded, not modified.
+  annotation boundary—or the physical image boundary under the stricter
+  policy—are excluded, not modified.
 - Annotation review, cell review, and QC remain unreviewed/not evaluated.
   Engineering warning flags are not biological QC.
 - Candidate-disposition files are governed QC sidecars, not canonical package

@@ -44,8 +44,10 @@ class QuPathProofOfConceptTests(unittest.TestCase):
         self.assertNotIn("execution", self.config["segmentation"])
         self.assertEqual(
             self.config["segmentation"]["boundary_policy"],
-            "exclude_touching_annotation_boundary",
+            "exclude_touching_annotation_or_image_boundary",
         )
+        self.assertEqual(self.config["execution"]["script_version"], "1.1.0")
+        self.assertEqual(self.config["provenance"]["exporter_version"], "1.1.0")
         self.assertEqual(self.config["segmentation"]["backend"]["kind"], "native_qupath")
 
         method = self.config["measurement_method"]
@@ -84,6 +86,14 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             "server.nZSlices()",
             "server.nTimepoints()",
             "exclude_touching_annotation_boundary",
+            "exclude_touching_annotation_or_image_boundary",
+            "exactly one full-image annotation",
+            "complete image extent",
+            "cell_touches_image_boundary",
+            'sides.add("top")',
+            'sides.add("right")',
+            'sides.add("bottom")',
+            'sides.add("left")',
             "CANDIDATE_BACKEND_NOT_IMPLEMENTED",
             "ifquant_platform_cell_object_package",
             "ifquant_platform_cell_object",

@@ -93,7 +93,9 @@ CLAIM_FIELDS = frozenset(
     {"scientific_validation", "backend_equivalence", "model_universality", "authorization"}
 )
 GEOMETRY_WARNING_CODE = "nucleus_not_covered_by_cell_geometry"
-BOUNDARY_REASON = "cell_touches_annotation_boundary"
+ANNOTATION_BOUNDARY_REASON = "cell_touches_annotation_boundary"
+IMAGE_BOUNDARY_REASON = "cell_touches_image_boundary"
+BOUNDARY_REASONS = frozenset({ANNOTATION_BOUNDARY_REASON, IMAGE_BOUNDARY_REASON})
 CANDIDATE_RECORD_SCHEMA = "ifquant.qc-candidate-disposition/1.0.0"
 CANDIDATE_MANIFEST_SCHEMA = "ifquant.qc-candidate-dispositions-manifest/1.0.0"
 SUPPORTED_PILOT_STATUS = "unvalidated_engineering_pilot"
@@ -125,6 +127,7 @@ class CandidateLedger:
     records: tuple[Mapping[str, Any], ...]
     disposition_counts: Mapping[str, int]
     reason_counts: Mapping[str, int]
+    image_boundary_side_counts: Mapping[str, int]
     warning_count: int
 
 
@@ -311,6 +314,68 @@ def parse_wkt(value: Any, *, location: str = "geometry") -> WktGeometry:
     return _WktParser(wkt[match.end() :], f"{location}.wkt").parse(geometry_type)
 
 
+def image_boundary_sides(
+    geometry: WktGeometry, width_pixels: int, height_pixels: int
+) -> tuple[str, ...]:
+    """Classify physical-image contact symmetrically from normalized coordinates."""
+
+    _require(width_pixels > 0 and height_pixels > 0, "image dimensions must be positive")
+    points = [
+        point
+        for polygon in geometry.polygons
+        for ring in polygon
+        for point in ring
+    ]
+    _require(bool(points), "geometry has no coordinates")
+    minimum_x = min(point[0] for point in points)
+    maximum_x = max(point[0] for point in points)
+    minimum_y = min(point[1] for point in points)
+    maximum_y = max(point[1] for point in points)
+    sides: list[str] = []
+    if minimum_y <= 0:
+        sides.append("top")
+    if maximum_x >= width_pixels:
+        sides.append("right")
+    if maximum_y >= height_pixels:
+        sides.append("bottom")
+    if minimum_x <= 0:
+        sides.append("left")
+    return tuple(sides)
+
+
+def _require_full_image_annotation(
+    annotation_set: Mapping[str, Any], width_pixels: int, height_pixels: int
+) -> None:
+    annotations = _sequence(annotation_set["annotations"], "annotation_set.annotations")
+    _require(
+        len(annotations) == 1,
+        "symmetric image-boundary policy requires exactly one full-image annotation",
+    )
+    annotation = _mapping(annotations[0], "annotation_set.annotations[0]")
+    _require(
+        annotation["inclusion_policy"] == "include",
+        "full-image annotation must use the include policy",
+    )
+    geometry = parse_wkt(
+        annotation["geometry"], location="annotation_set.annotations[0].geometry"
+    )
+    _require(
+        len(geometry.polygons) == 1 and len(geometry.polygons[0]) == 1,
+        "full-image annotation must be one rectangle without holes",
+    )
+    ring = geometry.polygons[0][0]
+    expected = {
+        (0.0, 0.0),
+        (0.0, float(height_pixels)),
+        (float(width_pixels), float(height_pixels)),
+        (float(width_pixels), 0.0),
+    }
+    _require(
+        len(ring) == 5 and ring[0] == ring[-1] and set(ring[:-1]) == expected,
+        "full-image annotation must equal the complete image extent",
+    )
+
+
 def _annotation_content_sha256(annotation_set: Mapping[str, Any]) -> str:
     content = []
     for raw in _sequence(annotation_set["annotations"], "annotation_set.annotations"):
@@ -462,6 +527,16 @@ def validate_candidate_dispositions(
     observed_dispositions: Counter[str] = Counter({"accepted": 0, "excluded": 0})
     observed_reasons: Counter[str] = Counter()
     warning_count = 0
+    image_side_counts: Counter[str] = Counter(
+        {"top": 0, "right": 0, "bottom": 0, "left": 0}
+    )
+    dimensions = _mapping(image["dimensions"], "image_manifest.dimensions")
+    image_width = _integer(dimensions["width_pixels"], "image_manifest.dimensions.width_pixels")
+    image_height = _integer(
+        dimensions["height_pixels"], "image_manifest.dimensions.height_pixels"
+    )
+    if run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary":
+        _require_full_image_annotation(annotation_set, image_width, image_height)
     for row, raw in enumerate(records):
         location = f"candidate_dispositions[{row}]"
         _exact(raw, RECORD_FIELDS, location)
@@ -495,7 +570,10 @@ def validate_candidate_dispositions(
 
         geometry = _mapping(raw["geometry"], f"{location}.geometry")
         _exact(geometry, frozenset({"cell", "nucleus"}), f"{location}.geometry")
-        parse_wkt(geometry["cell"], location=f"{location}.geometry.cell")
+        cell_geometry = parse_wkt(geometry["cell"], location=f"{location}.geometry.cell")
+        physical_sides = image_boundary_sides(cell_geometry, image_width, image_height)
+        for side in physical_sides:
+            image_side_counts[side] += 1
         if geometry["nucleus"] is not None:
             parse_wkt(geometry["nucleus"], location=f"{location}.geometry.nucleus")
         centroids = _mapping(raw["centroids"], f"{location}.centroids")
@@ -544,16 +622,40 @@ def validate_candidate_dispositions(
                 f"{location} positive nucleus-outside-cell metrics require the geometry warning",
             )
         warning_count += int(warning)
-        if reason == BOUNDARY_REASON:
+        if reason == ANNOTATION_BOUNDARY_REASON:
             _require(
                 raw["touches_annotation_boundary"],
                 f"{location} boundary-exclusion reason requires a true boundary flag",
+            )
+        if reason == IMAGE_BOUNDARY_REASON:
+            _require(
+                bool(physical_sides),
+                f"{location} image-boundary reason requires physical image-edge contact",
+            )
+            _require(
+                annotation_id is not None,
+                f"{location} image-boundary reason requires an unambiguous annotation",
+            )
+
+        if (
+            run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary"
+            and physical_sides
+            and annotation_id is not None
+        ):
+            _require(
+                disposition == "excluded" and reason == IMAGE_BOUNDARY_REASON,
+                f"{location} physical image-edge candidate must use image-boundary exclusion",
             )
 
         accepted_object_id = raw["accepted_object_id"]
         if disposition == "accepted":
             _require(reason == "accepted", f"{location} accepted candidate must use reason accepted")
             _require(not raw["touches_annotation_boundary"], f"{location} accepted candidate cannot touch boundary")
+            if run["boundary_policy"] == "exclude_touching_annotation_or_image_boundary":
+                _require(
+                    not physical_sides,
+                    f"{location} accepted candidate cannot touch the physical image boundary",
+                )
             _require(annotation_id is not None, f"{location} accepted candidate requires annotation_id")
             object_id = _string(accepted_object_id, f"{location}.accepted_object_id")
             _require(object_id in objects_by_id, f"{location}.accepted_object_id is absent from package")
@@ -620,6 +722,7 @@ def validate_candidate_dispositions(
         records=tuple(records),
         disposition_counts=dict(observed_dispositions),
         reason_counts=dict(observed_reasons),
+        image_boundary_side_counts=dict(image_side_counts),
         warning_count=warning_count,
     )
 
@@ -742,10 +845,22 @@ def _draw_scale_bar(image: Any, ImageDraw: Any, ImageFont: Any, pixel_width_um: 
 
 def _draw_rois(image: Any, annotation_set: Mapping[str, Any], ImageDraw: Any, *, color: tuple[int, int, int] = (0, 220, 255)) -> None:
     draw = ImageDraw.Draw(image)
+    def visible_pixel_extent(x: float, y: float) -> tuple[float, float]:
+        return (
+            min(max(x, 0.0), float(image.width - 1)),
+            min(max(y, 0.0), float(image.height - 1)),
+        )
+
     for index, annotation in enumerate(annotation_set["annotations"]):
         if annotation["inclusion_policy"] == "include":
             geometry = parse_wkt(annotation["geometry"], location=f"annotation_set.annotations[{index}].geometry")
-            _draw_geometry(draw, geometry, color=color, width=3)
+            _draw_geometry(
+                draw,
+                geometry,
+                color=color,
+                width=3,
+                transform=visible_pixel_extent,
+            )
 
 
 def _draw_legend(image: Any, ImageDraw: Any, ImageFont: Any) -> None:
@@ -770,7 +885,7 @@ def _draw_legend(image: Any, ImageDraw: Any, ImageFont: Any) -> None:
 def _cell_color(record: Mapping[str, Any]) -> tuple[int, int, int]:
     if record["disposition"] == "accepted":
         return (0, 255, 100)
-    if record["reason"] == BOUNDARY_REASON:
+    if record["reason"] in BOUNDARY_REASONS:
         return (255, 0, 200)
     return (255, 100, 0)
 
@@ -1022,7 +1137,7 @@ def render_qc(
             "status": "rendered_unvalidated_engineering_qc",
             "producer": {
                 "producer_id": "ifquant_platform.qc_rendering",
-                "producer_version": "1.0.0",
+                "producer_version": "1.1.0",
                 "implementation_sha256": file_sha256(Path(__file__).resolve()),
                 "python_version": platform.python_version(),
             },
@@ -1084,11 +1199,13 @@ def render_qc(
                     "roi": [0, 220, 255],
                 },
                 "dependency_versions": {"pillow": pillow_version, "numpy": numpy_version},
+                "roi_boundary_display": "clamped_to_visible_pixel_extent",
             },
             "selection": selection,
             "counts": {
                 "dispositions": dict(ledger.disposition_counts),
                 "reasons": dict(ledger.reason_counts),
+                "image_boundary_sides": dict(ledger.image_boundary_side_counts),
                 "geometry_warnings": {GEOMETRY_WARNING_CODE: ledger.warning_count},
             },
             "outputs": output_records,
