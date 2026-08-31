@@ -14,6 +14,7 @@ import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.Envelope
 import org.locationtech.jts.geom.PrecisionModel
 import org.locationtech.jts.geom.util.AffineTransformation
+import org.locationtech.jts.geom.util.GeometryFixer
 import org.locationtech.jts.io.WKTWriter
 import org.locationtech.jts.operation.overlayng.OverlayNG
 import org.locationtech.jts.precision.GeometryPrecisionReducer
@@ -98,6 +99,7 @@ final class IfQuantV1Exporter {
     static final int WKT_PRECISION_DECIMALS = 6
     static final double WKT_PRECISION_SCALE =
         Math.pow(10.0d, WKT_PRECISION_DECIMALS)
+    static final double QC_OVERLAY_PRECISION_SCALE = 1000.0d
     static final BigInteger MAX_SAFE_INTEGER =
         new BigInteger("9007199254740991")
     static final Pattern JSON_NUMBER = Pattern.compile(
@@ -3097,10 +3099,33 @@ final class IfQuantV1Exporter {
         Geometry subtrahend,
         String context
     ) {
-        PrecisionModel precisionModel = new PrecisionModel(WKT_PRECISION_SCALE)
+        PrecisionModel precisionModel = new PrecisionModel(
+            QC_OVERLAY_PRECISION_SCALE
+        )
+        GeometryPrecisionReducer reducer = new GeometryPrecisionReducer(
+            precisionModel
+        )
+        reducer.setChangePrecisionModel(true)
+        reducer.setRemoveCollapsedComponents(true)
+        Geometry repairedMinuend = GeometryFixer.fix(reducer.reduce(minuend))
+        Geometry repairedSubtrahend = GeometryFixer.fix(
+            reducer.reduce(subtrahend)
+        )
+        for (Map<String, Object> candidate : [
+            [geometry: repairedMinuend, label: "minuend"],
+            [geometry: repairedSubtrahend, label: "subtrahend"]
+        ]) {
+            Geometry geometry = (Geometry) candidate.get("geometry")
+            if (geometry == null || geometry.isEmpty() || !geometry.isValid()) {
+                fail(
+                    context + " " + candidate.get("label") +
+                    " failed 0.001-pixel geometry repair"
+                )
+            }
+        }
         Geometry difference = OverlayNG.overlay(
-            minuend,
-            subtrahend,
+            repairedMinuend,
+            repairedSubtrahend,
             OverlayNG.DIFFERENCE,
             precisionModel
         )

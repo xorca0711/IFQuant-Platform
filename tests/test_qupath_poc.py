@@ -187,6 +187,8 @@ class QuPathProofOfConceptTests(unittest.TestCase):
             "nucleus_area_outside_cell_fraction:",
             "fixedPrecisionDifferenceArea(",
             "OverlayNG.DIFFERENCE",
+            "QC_OVERLAY_PRECISION_SCALE = 1000.0d",
+            "GeometryFixer.fix(reducer.reduce(minuend))",
             "source_artifact_sha256: sourceArtifactSha256",
             "annotation_content_sha256: annotationContentSha256",
             "scientific_validation: false",
