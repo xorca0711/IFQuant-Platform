@@ -198,6 +198,16 @@ evaluated, not accepted biological settings. Local percentile normalization is
 known to amplify background-only tiles; a globally frozen normalization profile
 is a later candidate and must receive a distinct preprocessing identity.
 
+At checkpoint `0cad6b0`, StarDist identity preflight and inference have run on
+the preserved full-image engineering project. The observed QuPath intensity
+keys are bound exactly as `Cell: DAPI: Mean`, `Cytoplasm: DAPI: Mean`, and
+`Nucleus: DAPI: Mean`. Export remains incomplete because a valid StarDist
+polygon triggered a JTS `free hole` error in the QC-only
+nucleus-outside-cell-area calculation. Canonical WKT remains at 10^-6-pixel
+precision; a deterministic 0.001-pixel repair is staged only for that QC metric
+and must be exercised under a fresh run identity before this checkpoint can be
+called an engineering smoke pass.
+
 ## Reproducible QuPath 0.7 CLI
 
 Project image (required), Windows PowerShell:
@@ -347,6 +357,8 @@ Structural validation is necessary but is not scientific validation.
   directories may remain after rollback.
 - Detection may exist in memory if a later export check fails, but the CLI
   command omits `--save`.
-- StarDist and InstanSeg adapters, model training, object-classifier training,
-  group-aware splitting, endpoint-bias analysis, calibration, abstention, and
-  domain-shift evaluation remain Python-governed future work.
+- The StarDist adapter is incomplete engineering work; its successful canonical
+  export and reviewed QC remain open. InstanSeg, model training,
+  object-classifier training, group-aware real-data splitting, endpoint-bias
+  analysis, calibration, abstention, and domain-shift evaluation remain
+  Python-governed future work.

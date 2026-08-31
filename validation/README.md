@@ -17,6 +17,13 @@ gates, and exact remaining path to a scored native baseline are recorded in
 artifact was found in the connected microscopy folder, so Phase 4 scientific
 performance remains not evaluated.
 
+The Phase 5 StarDist adapter checkpoint, hash-bound runtime/model inputs,
+preserved failed run identities, QC geometry integration finding, and exact
+resume sequence are recorded in
+[`docs/PHASE5_STATUS.md`](../docs/PHASE5_STATUS.md). StarDist inference has run,
+but no successful canonical StarDist package, visual review, backend comparison,
+or scientific validation is claimed.
+
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that
 the artifact is internally consistent for the identities and local artifacts

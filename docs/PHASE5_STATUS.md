@@ -26,6 +26,11 @@ Preserved ignored run evidence is under
 engineering attempts and are not validated packages. Resume by creating a new
 run identity; do not overwrite them.
 
+The saved source checkpoint is commit `0cad6b0` on branch
+`codex/phase5-stardist`. A clean x64 environment passes all 112 tests and 130
+schema/contract subtests. The checkpoint has not yet demonstrated that the
+staged QC overlay repair succeeds at runtime; that is the first resume action.
+
 Implemented StarDist controls:
 
 - QuPath `StarDist2D` is loaded only for a `stardist` run, so the native

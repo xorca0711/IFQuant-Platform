@@ -24,7 +24,7 @@ working-tree changes are not copied into this core.
 | Native QuPath executor | Full-frame engineering pilot complete | QuPath 0.7 ran the configured exporter on the complete 2048 × 2048 image with a manifest-bound symmetric detector-resolution edge guard. |
 | Structural validation CLI | Complete for v1 engineering scope | Referential, canonical, geometry, count, QC, review, and byte-integrity checks pass the pilot and fixtures. |
 | DAPI visual-QC evidence | Full-image boundary accepted for the engineering pilot; formal H1/H2 records open | Run 05 retains all 1,803 candidates and independently verifies the accepted four-side image-edge guard. The 194 accepted topology-warning objects remain conservatively ineligible pending H2. See [Phase 1 QC status](validation/PHASE1_QC_STATUS.md). |
-| StarDist and InstanSeg | Phase 5 started: StarDist engineering adapter implemented; smoke run pending; InstanSeg remains interface-only | StarDist now has hash-bound extension/model/preprocessing/runtime inputs and a narrow QuPath executor path. No comparison or equivalence is claimed; see [Phase 5 status](docs/PHASE5_STATUS.md). |
+| StarDist and InstanSeg | Phase 5 in progress: StarDist identity preflight and inference reached; export paused at a fail-closed QC geometry integration check; InstanSeg remains interface-only | Exact StarDist measurement keys are now bound. A deterministic 0.001-pixel repair is staged only for the QC nucleus-outside-cell overlay metric and still requires a fresh run, package validation, and visual QC. No comparison or equivalence is claimed; see [Phase 5 status](docs/PHASE5_STATUS.md). |
 | Governed observations and correction lineage | Initial Phase 2 contract complete; real intake gated | A closed observation-set contract and strict read-only validator now bind source bytes, canonical manifest identities, producer code, explicit biological/acquisition identity, and annotation lineage with a reviewed selected revision. |
 | Nuclear references and safe splits | Initial Phase 3 engineering infrastructure passing; real-data gates open | Closed reference-object, ignore-region, reference-set, and split schemas plus strict read-only validators pass a four-image synthetic fixture. Geometry, review readiness, chronology, exact held-out IDs, and held-out reference content are fail-closed. This is not real reference evidence or a leakage proof. |
 | Native QuPath baseline evaluation | Engineering evaluator complete; real performance not evaluated | Frozen-plan and pixel-ledger schemas, independent WKT raster verification, deterministic detection/split-merge/boundary/count/measurement-bias metrics, CLI, and synthetic tests pass. The connected raw-image folder contains no reviewed reference labels; see [Phase 4 status](docs/PHASE4_STATUS.md). |
@@ -190,7 +190,7 @@ flowchart LR
     P2["Phase 2<br/>governance software complete<br/>real intake gated"]
     P3["Phase 3<br/>contracts + synthetic fixture pass<br/>real reference/split gates open"]
     P4["Phase 4<br/>evaluator complete<br/>real scoring gated"]
-    P5["Phase 5<br/>StarDist + InstanSeg<br/>separate method identities"]
+    P5["Phase 5<br/>StarDist adapter in progress<br/>InstanSeg not started"]
     P6["Phase 6<br/>object-classifier baselines"]
     P7["Phase 7<br/>QuPath correction loop"]
     P8["Phase 8<br/>conditional custom models"]
@@ -220,9 +220,10 @@ flowchart LR
 5. Use the implemented Phase 4 evaluation contract and algorithms; approve
    study-specific numeric acceptance criteria before evaluating the native
    QuPath baseline on real frozen references.
-6. Implement StarDist and InstanSeg adapters that emit the same package shape
-   while retaining distinct method, weights, preprocessing, and runtime
-   identities.
+6. Resume StarDist with a new run identity; exercise the staged QC-only
+   geometry repair, validate the canonical package, render deterministic QC,
+   and record review before starting the separate InstanSeg adapter. Keep
+   method, weights, preprocessing, and runtime identities distinct.
 7. Evaluate DAPI instance segmentation using detection, split/merge, boundary,
    count, and downstream measurement-bias evidence.
 8. Add morphology/intensity classifier baselines, calibration, uncertainty,
@@ -304,7 +305,7 @@ held-out ID list
 and held-out reference content
 `a16120a41f7bf114a4c1608cca05757c09a119f50d290abd5e09861645a25900`.
 The current full verification run passes all 112 tests, including the optional
-QC-rendering tests with Pillow/NumPy installed; 122 schema/contract subtests
+QC-rendering tests with Pillow/NumPy installed; 130 schema/contract subtests
 also pass. Without those optional image dependencies, the two rendering-only
 tests skip explicitly; the standard-library runtime checks never skip.
 

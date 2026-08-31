@@ -42,7 +42,12 @@ sequence.
 
 ## Phase 5 — replaceable segmentation candidates
 
-- Implement StarDist and InstanSeg adapters behind the same output interface.
+- StarDist currently has an identity-bound engineering adapter. Runtime
+  preflight and inference have executed; canonical export is paused at a
+  fail-closed QC geometry calculation, with a deterministic QC-only repair
+  staged for a fresh run. InstanSeg has not started.
+- Complete and review a valid StarDist package before implementing InstanSeg
+  behind the same output interface.
 - Bind exact preprocessing, configuration, software, model descriptor, and
   weights identities for every method instance.
 - Compare each method separately on the frozen Phase 3 observations and splits.
