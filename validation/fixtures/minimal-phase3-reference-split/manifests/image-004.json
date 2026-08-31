@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/image-manifest.schema.json",
+  "contract_type": "ifquant_platform_image_manifest",
+  "contract_version": "1.0.0",
+  "image_id": "phase3-image-004",
+  "biological_unit_id": "phase3-unit-004",
+  "source_artifact": {
+    "source_uri": "source-004.bin",
+    "sha256": "21e9e5f9f2ee298421ce59b10de74f3733b79bfcd447b9e0643bd6b5a25d386d",
+    "size_bytes": 28,
+    "media_type": "application/octet-stream"
+  },
+  "dimensions": {"width_pixels": 100, "height_pixels": 100, "z_planes": 1, "timepoints": 1},
+  "pixel_calibration": {"calibration_id": "phase3-calibration-004", "pixel_width_um": 0.5, "pixel_height_um": 0.5, "z_spacing_um": null, "unit": "um"},
+  "coordinate_space": {"coordinate_space_id": "phase3-pixels-004", "dimension": "2d", "geometry_unit": "pixel", "axis_order": ["x", "y"], "origin": "top_left", "x_axis_direction": "right", "y_axis_direction": "down"},
+  "acquisition": {"mouse_id": "phase3-mouse-003", "specimen_id": null, "section_id": null, "slide_id": "phase3-slide-004", "batch_id": "phase3-batch-heldout", "scanner_id": "phase3-scanner-heldout", "acquired_at": null},
+  "provenance": {"created_at": "2026-08-30T00:00:00Z", "producer_id": "ifquant_phase3_fixture_builder", "producer_version": "0.1.0", "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b", "ingest_config_sha256": "3b363c6b5bc28095a7fc068bf750db6166d6034444feedc8d00b6c064a662942"}
+}

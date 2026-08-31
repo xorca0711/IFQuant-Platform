@@ -1,0 +1,225 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/nuclear-reference-set.schema.json",
+  "contract_type": "ifquant_platform_nuclear_reference_set",
+  "contract_version": "1.0.0",
+  "reference_set_id": "phase3-synthetic-nuclear-reference-001",
+  "study_id": "phase3-synthetic-study-001",
+  "revision": 0,
+  "revision_reason": "Initial synthetic Phase 3 nuclear-reference fixture.",
+  "parent": null,
+  "governed_observation_set": {
+    "observation_set_id": "phase3-synthetic-observations-001",
+    "revision": 0,
+    "manifest_relative_path": "observation-set.json",
+    "manifest_sha256": "4b299cde8f8e494adc36ef0f8fbeb9ce3362fb93b1a81b3dd78ad98216f05c1c"
+  },
+  "task": {
+    "task_id": "phase3-dapi-nuclei-001",
+    "task_type": "dapi_nucleus_instance_segmentation",
+    "target": {
+      "object_type": "nucleus",
+      "marker_id": "DAPI",
+      "channel_role": "nuclear"
+    }
+  },
+  "evaluation_policy": {
+    "evaluation_policy_id": "phase3-synthetic-evaluation-001",
+    "evaluation_policy_version": "1.0.0",
+    "detector_guard_inherited": false,
+    "evaluation_extent": "reviewed_reference_regions_only",
+    "ignore_region_handling": "exclude_explicit_reference_ignore_regions_before_scoring",
+    "unreviewed_region_policy": "not_evaluated",
+    "artifact": {
+      "relative_path": "evaluation-policy.txt",
+      "media_type": "text/plain",
+      "sha256": "55afe2da3db42342f8783bae2208066a464bf24320e4e5eddea9f8b2762fbac5",
+      "size_bytes": 103
+    }
+  },
+  "selection_protocol": {
+    "protocol_id": "phase3-synthetic-selection-001",
+    "protocol_version": "1.0.0",
+    "artifact": {
+      "relative_path": "selection-protocol.txt",
+      "media_type": "text/plain",
+      "sha256": "3b363c6b5bc28095a7fc068bf750db6166d6034444feedc8d00b6c064a662942",
+      "size_bytes": 79
+    }
+  },
+  "source_family_ledger": {
+    "completeness": "complete_for_governed_observation_set",
+    "ordering": "source_family_id_ascending_with_image_id_ascending",
+    "families": [
+      {
+        "source_family_id": "phase3-source-family-001",
+        "description": "Synthetic related acquisition family for the shared mouse.",
+        "image_ids": [
+          "phase3-image-001",
+          "phase3-image-002"
+        ]
+      },
+      {
+        "source_family_id": "phase3-source-family-002",
+        "description": "Synthetic tuning acquisition family.",
+        "image_ids": [
+          "phase3-image-003"
+        ]
+      },
+      {
+        "source_family_id": "phase3-source-family-003",
+        "description": "Synthetic held-out acquisition family.",
+        "image_ids": [
+          "phase3-image-004"
+        ]
+      }
+    ]
+  },
+  "region_ledger": {
+    "completeness": "exhaustive_for_governed_observation_set",
+    "ordering": "image_id_annotation_id_region_id_ascending",
+    "regions": [
+      {
+        "region_id": "phase3-region-001",
+        "image_id": "phase3-image-001",
+        "biological_unit_id": "phase3-unit-001",
+        "annotation_id": "phase3-roi-001",
+        "coordinate_space_id": "phase3-pixels-001",
+        "source_family_id": "phase3-source-family-001",
+        "disposition": "include",
+        "exclusion_reason": null,
+        "counts": {
+          "nuclear_reference_objects": 1,
+          "reference_ignore_regions": 0
+        },
+        "review": {
+          "state": "accepted",
+          "reviewer_ids": [
+            "synthetic-reviewer-001"
+          ],
+          "reviewed_at": "2026-08-30T00:00:00Z",
+          "notes": "Synthetic region-completeness review."
+        }
+      },
+      {
+        "region_id": "phase3-region-002",
+        "image_id": "phase3-image-002",
+        "biological_unit_id": "phase3-unit-002",
+        "annotation_id": "phase3-roi-002",
+        "coordinate_space_id": "phase3-pixels-002",
+        "source_family_id": "phase3-source-family-001",
+        "disposition": "include",
+        "exclusion_reason": null,
+        "counts": {
+          "nuclear_reference_objects": 1,
+          "reference_ignore_regions": 1
+        },
+        "review": {
+          "state": "accepted",
+          "reviewer_ids": [
+            "synthetic-reviewer-001"
+          ],
+          "reviewed_at": "2026-08-30T00:00:00Z",
+          "notes": "Synthetic region-completeness review."
+        }
+      },
+      {
+        "region_id": "phase3-region-003",
+        "image_id": "phase3-image-003",
+        "biological_unit_id": "phase3-unit-003",
+        "annotation_id": "phase3-roi-003",
+        "coordinate_space_id": "phase3-pixels-003",
+        "source_family_id": "phase3-source-family-002",
+        "disposition": "include",
+        "exclusion_reason": null,
+        "counts": {
+          "nuclear_reference_objects": 1,
+          "reference_ignore_regions": 0
+        },
+        "review": {
+          "state": "accepted",
+          "reviewer_ids": [
+            "synthetic-reviewer-001"
+          ],
+          "reviewed_at": "2026-08-30T00:00:00Z",
+          "notes": "Synthetic region-completeness review."
+        }
+      },
+      {
+        "region_id": "phase3-region-004",
+        "image_id": "phase3-image-004",
+        "biological_unit_id": "phase3-unit-004",
+        "annotation_id": "phase3-roi-004",
+        "coordinate_space_id": "phase3-pixels-004",
+        "source_family_id": "phase3-source-family-003",
+        "disposition": "include",
+        "exclusion_reason": null,
+        "counts": {
+          "nuclear_reference_objects": 1,
+          "reference_ignore_regions": 0
+        },
+        "review": {
+          "state": "accepted",
+          "reviewer_ids": [
+            "synthetic-reviewer-001"
+          ],
+          "reviewed_at": "2026-08-30T00:00:00Z",
+          "notes": "Synthetic region-completeness review."
+        }
+      }
+    ],
+    "counts": {
+      "regions_total": 4,
+      "include": 4,
+      "exclude": 0,
+      "nuclear_reference_objects": 4,
+      "reference_ignore_regions": 1
+    }
+  },
+  "artifacts": {
+    "nuclear_reference_objects": {
+      "relative_path": "nuclear-reference-objects.jsonl",
+      "media_type": "application/x-ndjson",
+      "sha256": "99e6645bd1caae78289ad6e3b47a2da20d94a49535d47e208fceacf1bb53f00f",
+      "size_bytes": 4233,
+      "record_count": 4,
+      "record_schema": "https://ifquant.org/contracts/platform/v1/nuclear-reference-object.schema.json",
+      "canonicalization_profile": "ifquant_canonical_json_v1",
+      "ordering": "image_id_annotation_id_record_id_ascending"
+    },
+    "reference_ignore_regions": {
+      "relative_path": "reference-ignore-regions.jsonl",
+      "media_type": "application/x-ndjson",
+      "sha256": "84f20bfc5e56766bc3877008f63e8106b9b0d3cce2366745d1d4429fc37281ff",
+      "size_bytes": 923,
+      "record_count": 1,
+      "record_schema": "https://ifquant.org/contracts/platform/v1/reference-ignore-region.schema.json",
+      "canonicalization_profile": "ifquant_canonical_json_v1",
+      "ordering": "image_id_annotation_id_record_id_ascending"
+    }
+  },
+  "state": {
+    "status": "frozen",
+    "frozen_at": "2026-08-30T00:00:00Z",
+    "frozen_by": "synthetic-reviewer-001",
+    "change_policy": "new_reference_set_revision_required"
+  },
+  "provenance": {
+    "created_at": "2026-08-30T00:00:00Z",
+    "producer_id": "ifquant_phase3_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b",
+    "code_artifact": {
+      "relative_path": "producer-code.txt",
+      "media_type": "text/plain",
+      "sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b",
+      "size_bytes": 41
+    }
+  },
+  "claims": {
+    "scientific_validation": false,
+    "biological_ground_truth": false,
+    "backend_equivalence": false,
+    "model_universality": false,
+    "authorization": "none"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://ifquant.org/contracts/platform/v1/split-manifest.schema.json",
+  "contract_type": "ifquant_platform_split_manifest",
+  "contract_version": "1.0.0",
+  "split_manifest_id": "phase3-synthetic-split-001",
+  "study_id": "phase3-synthetic-study-001",
+  "revision": 0,
+  "revision_reason": "Initial synthetic Phase 3 image-level split fixture.",
+  "parent": null,
+  "reference_set": {
+    "reference_set_id": "phase3-synthetic-nuclear-reference-001",
+    "revision": 0,
+    "manifest_relative_path": "nuclear-reference-set.json",
+    "manifest_sha256": "f0137f493ef2cecede86f933729d12ac169a528608bfc69b96d82e457f0fb935"
+  },
+  "design": {
+    "assignment_unit": "image",
+    "partitions": [
+      "train",
+      "tuning",
+      "held_out_test"
+    ],
+    "hard_separation_keys": [
+      "mouse_id",
+      "slide_id",
+      "source_family_id"
+    ],
+    "domain_controls": {
+      "batch_id": {
+        "mode": "leave_values_out",
+        "leave_out_values": [
+          "phase3-batch-heldout"
+        ]
+      },
+      "scanner_id": {
+        "mode": "leave_values_out",
+        "leave_out_values": [
+          "phase3-scanner-heldout"
+        ]
+      }
+    }
+  },
+  "assignment_order": "image_id_ascending",
+  "image_assignments": [
+    {
+      "image_id": "phase3-image-001",
+      "mouse_id": "phase3-mouse-001",
+      "slide_id": "phase3-slide-001",
+      "source_family_id": "phase3-source-family-001",
+      "batch_id": "phase3-batch-shared",
+      "scanner_id": "phase3-scanner-shared",
+      "partition": "train"
+    },
+    {
+      "image_id": "phase3-image-002",
+      "mouse_id": "phase3-mouse-001",
+      "slide_id": "phase3-slide-002",
+      "source_family_id": "phase3-source-family-001",
+      "batch_id": "phase3-batch-shared",
+      "scanner_id": "phase3-scanner-shared",
+      "partition": "train"
+    },
+    {
+      "image_id": "phase3-image-003",
+      "mouse_id": "phase3-mouse-002",
+      "slide_id": "phase3-slide-003",
+      "source_family_id": "phase3-source-family-002",
+      "batch_id": "phase3-batch-shared",
+      "scanner_id": "phase3-scanner-shared",
+      "partition": "tuning"
+    },
+    {
+      "image_id": "phase3-image-004",
+      "mouse_id": "phase3-mouse-003",
+      "slide_id": "phase3-slide-004",
+      "source_family_id": "phase3-source-family-003",
+      "batch_id": "phase3-batch-heldout",
+      "scanner_id": "phase3-scanner-heldout",
+      "partition": "held_out_test"
+    }
+  ],
+  "held_out_test_commitment": {
+    "state": "locked",
+    "partition": "held_out_test",
+    "image_ids": [
+      "phase3-image-004"
+    ],
+    "image_ids_sha256": "44f3c019439012f5f0136129747a02e98a83354a84e42120f565cd9cdaa70f67",
+    "canonicalization_profile": "ifquant_canonical_json_v1",
+    "reference_content_profile": "ifquant_held_out_reference_content_v1",
+    "reference_content_sha256": "a16120a41f7bf114a4c1608cca05757c09a119f50d290abd5e09861645a25900",
+    "ordering": "image_id_ascending",
+    "committed_at": "2026-08-30T00:00:00Z",
+    "committed_by": "synthetic-reviewer-001",
+    "change_policy": "new_split_manifest_revision_required",
+    "successor_assignment_policy": "preserve_all_prior_image_assignments",
+    "successor_new_image_policy": "new_images_may_enter_train_or_tuning_only",
+    "successor_commitment_policy": "preserve_held_out_test_commitment"
+  },
+  "state": {
+    "status": "frozen",
+    "frozen_at": "2026-08-30T00:00:00Z",
+    "frozen_by": "synthetic-reviewer-001",
+    "change_policy": "new_split_manifest_revision_required"
+  },
+  "provenance": {
+    "created_at": "2026-08-30T00:00:00Z",
+    "producer_id": "ifquant_phase3_fixture_builder",
+    "producer_version": "0.1.0",
+    "code_sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b",
+    "code_artifact": {
+      "relative_path": "producer-code.txt",
+      "media_type": "text/plain",
+      "sha256": "93b7271e9192df92b5fa5a2a6aa4207fe77bb629213c7a5c6ba8da3d11ed0d1b",
+      "size_bytes": 41
+    }
+  },
+  "claims": {
+    "scientific_validation": false,
+    "biological_ground_truth": false,
+    "backend_equivalence": false,
+    "model_universality": false,
+    "split_optimality": false,
+    "population_representativeness": false,
+    "domain_generalizability": false,
+    "authorization": "none"
+  }
+}

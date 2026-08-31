@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/reference-ignore-region.schema.json",
+  "title": "IFQuant Platform reference ignore region",
+  "description": "One reviewed, backend-neutral region excluded from DAPI nuclear reference evaluation for a physical-edge, ambiguity, artifact, or unscorable reason.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "ignore_region_id",
+    "reference_set_id",
+    "image_id",
+    "biological_unit_id",
+    "annotation_id",
+    "coordinate_space_id",
+    "geometry",
+    "reason",
+    "review"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/reference-ignore-region.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_reference_ignore_region"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "ignore_region_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "reference_set_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "image_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "biological_unit_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "annotation_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "coordinate_space_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "geometry": {
+      "$ref": "#/$defs/wkt_geometry"
+    },
+    "reason": {
+      "$ref": "#/$defs/reason"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z$"
+    },
+    "nullable_identifier": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullable_nonempty_string": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "wkt_geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "geometry_type",
+        "wkt"
+      ],
+      "properties": {
+        "encoding": {
+          "const": "WKT1"
+        },
+        "geometry_type": {
+          "enum": [
+            "POLYGON",
+            "MULTIPOLYGON"
+          ]
+        },
+        "wkt": {
+          "type": "string",
+          "pattern": "^(POLYGON|MULTIPOLYGON)\\s*\\("
+        }
+      }
+    },
+    "reason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "code",
+        "notes"
+      ],
+      "properties": {
+        "category": {
+          "enum": [
+            "physical_edge",
+            "ambiguity",
+            "artifact",
+            "unscorable"
+          ]
+        },
+        "code": {
+          "enum": [
+            "physical_image_edge",
+            "physical_specimen_edge",
+            "ambiguous_nuclear_boundary",
+            "overlapping_nuclei_not_separable",
+            "acquisition_artifact",
+            "staining_artifact",
+            "processing_artifact",
+            "insufficient_dapi_signal",
+            "saturated_dapi_signal",
+            "out_of_focus",
+            "other_unscorable"
+          ]
+        },
+        "notes": {
+          "$ref": "#/$defs/nullable_nonempty_string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "category"
+            ],
+            "properties": {
+              "category": {
+                "const": "physical_edge"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "physical_image_edge",
+                  "physical_specimen_edge"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "category"
+            ],
+            "properties": {
+              "category": {
+                "const": "ambiguity"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "ambiguous_nuclear_boundary",
+                  "overlapping_nuclei_not_separable"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "category"
+            ],
+            "properties": {
+              "category": {
+                "const": "artifact"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "acquisition_artifact",
+                  "staining_artifact",
+                  "processing_artifact"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "category"
+            ],
+            "properties": {
+              "category": {
+                "const": "unscorable"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "insufficient_dapi_signal",
+                  "saturated_dapi_signal",
+                  "out_of_focus",
+                  "other_unscorable"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewer_ids",
+        "reviewed_at",
+        "adjudication"
+      ],
+      "properties": {
+        "state": {
+          "const": "accepted"
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "reviewed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "adjudication": {
+          "$ref": "#/$defs/adjudication"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "adjudication": {
+                "properties": {
+                  "method": {
+                    "const": "single_reviewer"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reviewer_ids": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adjudication": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "independent_second_review",
+                      "consensus"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reviewer_ids": {
+                "minItems": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    "adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "adjudicator_id",
+        "notes"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "single_reviewer",
+            "independent_second_review",
+            "consensus",
+            "adjudicator_decision"
+          ]
+        },
+        "adjudicator_id": {
+          "$ref": "#/$defs/nullable_identifier"
+        },
+        "notes": {
+          "$ref": "#/$defs/nullable_nonempty_string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "method"
+            ],
+            "properties": {
+              "method": {
+                "const": "adjudicator_decision"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "adjudicator_id": {
+                "$ref": "#/$defs/identifier"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "adjudicator_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

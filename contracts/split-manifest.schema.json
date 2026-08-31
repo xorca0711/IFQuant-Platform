@@ -1,0 +1,579 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/split-manifest.schema.json",
+  "title": "IFQuant Platform image split manifest",
+  "description": "A frozen, revisioned image-level split bound to one exact nuclear reference set. Mouse, slide, and source family are hard separation keys; batch and scanner are explicit domain controls. Tile assignments and cross-validation folds are outside this contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_type",
+    "contract_version",
+    "split_manifest_id",
+    "study_id",
+    "revision",
+    "revision_reason",
+    "parent",
+    "reference_set",
+    "design",
+    "assignment_order",
+    "image_assignments",
+    "held_out_test_commitment",
+    "state",
+    "provenance",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://ifquant.org/contracts/platform/v1/split-manifest.schema.json"
+    },
+    "contract_type": {
+      "const": "ifquant_platform_split_manifest"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "split_manifest_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "study_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "revision": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        {
+          "maximum": 255
+        }
+      ]
+    },
+    "revision_reason": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "parent": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/parent_reference"
+        }
+      ]
+    },
+    "reference_set": {
+      "$ref": "#/$defs/reference_set_reference"
+    },
+    "design": {
+      "$ref": "#/$defs/design"
+    },
+    "assignment_order": {
+      "const": "image_id_ascending"
+    },
+    "image_assignments": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/image_assignment"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "train"
+              }
+            }
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "tuning"
+              }
+            }
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "required": [
+              "partition"
+            ],
+            "properties": {
+              "partition": {
+                "const": "held_out_test"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      ]
+    },
+    "held_out_test_commitment": {
+      "description": "Immutable commitment to exact held-out image identities and the governed reference, ignore, region, observation, and evaluation-policy content used for them.",
+      "$ref": "#/$defs/held_out_test_commitment"
+    },
+    "state": {
+      "$ref": "#/$defs/frozen_state"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "revision"
+        ],
+        "properties": {
+          "revision": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parent": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "revision": {
+            "minimum": 1
+          },
+          "parent": {
+            "$ref": "#/$defs/parent_reference"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z$"
+    },
+    "nonnegative_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?![^/]*:)[^\\\\]+$"
+    },
+    "parent_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "split_manifest_id",
+        "revision",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "split_manifest_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "reference_set_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_set_id",
+        "revision",
+        "manifest_relative_path",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "reference_set_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonnegative_integer"
+        },
+        "manifest_relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "domain_control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "leave_out_values"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "partition_disjoint",
+            "leave_values_out"
+          ]
+        },
+        "leave_out_values": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "const": "partition_disjoint"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "leave_out_values": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "leave_out_values": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assignment_unit",
+        "partitions",
+        "hard_separation_keys",
+        "domain_controls"
+      ],
+      "properties": {
+        "assignment_unit": {
+          "const": "image"
+        },
+        "partitions": {
+          "const": [
+            "train",
+            "tuning",
+            "held_out_test"
+          ]
+        },
+        "hard_separation_keys": {
+          "const": [
+            "mouse_id",
+            "slide_id",
+            "source_family_id"
+          ]
+        },
+        "domain_controls": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "batch_id",
+            "scanner_id"
+          ],
+          "properties": {
+            "batch_id": {
+              "$ref": "#/$defs/domain_control"
+            },
+            "scanner_id": {
+              "$ref": "#/$defs/domain_control"
+            }
+          }
+        }
+      }
+    },
+    "image_assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_id",
+        "mouse_id",
+        "slide_id",
+        "source_family_id",
+        "batch_id",
+        "scanner_id",
+        "partition"
+      ],
+      "properties": {
+        "image_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "mouse_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "slide_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_family_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "batch_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "scanner_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "partition": {
+          "enum": [
+            "train",
+            "tuning",
+            "held_out_test"
+          ]
+        }
+      }
+    },
+    "held_out_test_commitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "partition",
+        "image_ids",
+        "image_ids_sha256",
+        "canonicalization_profile",
+        "reference_content_profile",
+        "reference_content_sha256",
+        "ordering",
+        "committed_at",
+        "committed_by",
+        "change_policy",
+        "successor_assignment_policy",
+        "successor_new_image_policy",
+        "successor_commitment_policy"
+      ],
+      "properties": {
+        "state": {
+          "const": "locked"
+        },
+        "partition": {
+          "const": "held_out_test"
+        },
+        "image_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "image_ids_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "canonicalization_profile": {
+          "const": "ifquant_canonical_json_v1"
+        },
+        "reference_content_profile": {
+          "description": "Canonical descriptor profile used to bind held-out truth and evaluation content across successor reference revisions.",
+          "const": "ifquant_held_out_reference_content_v1"
+        },
+        "reference_content_sha256": {
+          "description": "SHA-256 of the canonical held-out reference-content descriptor for the exact committed image IDs.",
+          "$ref": "#/$defs/sha256"
+        },
+        "ordering": {
+          "const": "image_id_ascending"
+        },
+        "committed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "committed_by": {
+          "$ref": "#/$defs/identifier"
+        },
+        "change_policy": {
+          "const": "new_split_manifest_revision_required"
+        },
+        "successor_assignment_policy": {
+          "const": "preserve_all_prior_image_assignments"
+        },
+        "successor_new_image_policy": {
+          "const": "new_images_may_enter_train_or_tuning_only"
+        },
+        "successor_commitment_policy": {
+          "const": "preserve_held_out_test_commitment"
+        }
+      }
+    },
+    "artifact_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "media_type",
+        "sha256",
+        "size_bytes"
+      ],
+      "properties": {
+        "relative_path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/nonnegative_integer"
+            },
+            {
+              "minimum": 1
+            }
+          ]
+        }
+      }
+    },
+    "frozen_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frozen_at",
+        "frozen_by",
+        "change_policy"
+      ],
+      "properties": {
+        "status": {
+          "const": "frozen"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "frozen_by": {
+          "$ref": "#/$defs/identifier"
+        },
+        "change_policy": {
+          "const": "new_split_manifest_revision_required"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "producer_id",
+        "producer_version",
+        "code_sha256",
+        "code_artifact"
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producer_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "code_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_artifact": {
+          "$ref": "#/$defs/artifact_reference"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scientific_validation",
+        "biological_ground_truth",
+        "backend_equivalence",
+        "model_universality",
+        "split_optimality",
+        "population_representativeness",
+        "domain_generalizability",
+        "authorization"
+      ],
+      "properties": {
+        "scientific_validation": {
+          "const": false
+        },
+        "biological_ground_truth": {
+          "const": false
+        },
+        "backend_equivalence": {
+          "const": false
+        },
+        "model_universality": {
+          "const": false
+        },
+        "split_optimality": {
+          "const": false
+        },
+        "population_representativeness": {
+          "const": false
+        },
+        "domain_generalizability": {
+          "const": false
+        },
+        "authorization": {
+          "const": "none"
+        }
+      }
+    }
+  }
+}

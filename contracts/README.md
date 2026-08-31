@@ -2,7 +2,8 @@
 
 These Draft 2020-12 JSON Schemas define the first canonical interchange
 boundary for image metadata, semantic channels, supplied annotations,
-segmentation runs, cell objects, and cell-object packages.
+segmentation runs, cell objects, cell-object packages, governed observations,
+DAPI nuclear references, and image-level split manifests.
 
 They are clean-slate engineering contracts. Schema validity does not establish
 scientific validation, biological validity, backend equivalence, historical
@@ -19,6 +20,10 @@ reproducibility, model universality, or authority to use an endpoint.
 | `annotation-set.schema.json` | Carries the supplied annotation regions used to constrain cell detection. |
 | `segmentation-run.schema.json` | Records one configured segmentation execution and the exact backend, model descriptor, optional weights, configuration, preprocessing, and versioned boundary semantics. Contract 1.1 adds an explicit detector-resolution image-boundary guard while 1.0 remains readable for legacy exact-envelope audits. |
 | `governed-observation-set.schema.json` | Phase 2 aggregate for explicit biological/acquisition identity, immutable image and channel references, annotation lineage with a reviewed selected revision, identity review, byte-bound producer code, and non-claims. It deliberately contains no Phase 3 partition assignment. |
+| `nuclear-reference-object.schema.json` | One canonical reviewed DAPI nuclear-instance geometry with governed image/ROI identity, creation mode, prediction exposure when model-assisted, and explicit review/adjudication evidence. |
+| `reference-ignore-region.schema.json` | One canonical reviewed region excluded from reference scoring for a controlled truncation, ambiguity, artifact, or unscorable reason; it does not inherit a detector edge rule. |
+| `nuclear-reference-set.schema.json` | Phase 3 aggregate binding a governed observation revision, DAPI task/evaluation policy, selection protocol, source-family coverage, declared exhaustive region ledger, canonical nuclear/ignore artifacts, frozen state, provenance, and non-claims. |
+| `split-manifest.schema.json` | Frozen image-level train/tuning/held-out assignments with hard mouse/slide/source-family separation, declared batch/scanner controls, exact held-out image-ID and reference-content commitments, lineage, and non-claims. |
 | `cell-object.schema.json` | Defines one deterministic cell-object record for JSON Lines export. |
 | `cell-object-package.schema.json` | Binds all manifests and exactly one deterministic JSON Lines cell-object artifact. |
 | `canonicalization-vectors.json` | Cross-runtime golden bytes and hashes for Unicode, control escaping, and binary64 number formatting. |
@@ -118,15 +123,117 @@ object identity; a schema pattern alone is insufficient.
 - `mouse_id`, `slide_id`, `batch_id`, and `scanner_id` remain available for
   grouped dataset splitting. Tile-random validation is outside this contract
   and must not be inferred from package validity.
+- Every nuclear-reference object resolves to one governed image, biological
+  unit, coordinate space, and include annotation, and its target is exactly a
+  DAPI nuclear instance. Its ID is the canonical SHA-256 of the reference set,
+  image, annotation, target, and canonical geometry descriptor.
+- A `human_corrected_prediction` reference binds the prediction package,
+  package hash, segmentation run, predicted object, and predicted geometry.
+  Human-drawn records carry no prediction exposure. Review and adjudication
+  evidence is explicit rather than inferred from creation mode.
+- Every reference-ignore ID binds the reference set, image, annotation,
+  canonical geometry, and controlled reason. Reference evaluation declares
+  explicit ignore handling and must not silently inherit a candidate detector's
+  edge guard.
+- Nuclear and ignore geometry is accepted only in the narrow canonical 2D
+  polygon subset described below. Each geometry must lie within both its image
+  and its governed inclusion ROI. Exact duplicate nuclear geometry and exact
+  duplicate ignore geometry are rejected image-wide rather than only within an
+  annotation scope, even if an alternative WKT representation would otherwise
+  encode the same canonical shape.
+- A nuclear-reference geometry may neither overlap nor touch any same-image
+  ignore geometry. This inclusive separation keeps every positive nucleus
+  scoreable after ignore regions are removed, including in held-out evaluation.
+- An ignore reason of `physical_image_edge` requires the geometry to intersect
+  the physical image boundary. `physical_specimen_edge` requires intersection
+  with the governed inclusion-ROI boundary; v1 uses that boundary because it
+  has no separate specimen-boundary artifact.
+- Source-family coverage assigns every governed image exactly once. The
+  reference region ledger declares exhaustive scope for the governed
+  observation set and reconciles per-region and aggregate
+  nuclear-object/ignore counts against the bound canonical NDJSON artifacts.
+  Validator reconciliation makes the declared scope inspectable; human review
+  must still establish that the declaration is complete and scientifically
+  appropriate.
+- A reference revision must contain at least one nuclear-reference object.
+  Every image assigned to `held_out_test` must itself have at least one positive
+  nuclear reference and confirmatory review readiness.
+- An `adjudicator_decision` must identify an adjudicator distinct from every
+  listed reviewer. Model-assisted records without independent second review,
+  consensus, or a distinct-adjudicator decision are counted in
+  `model_assisted_nonconfirmatory_review_count` and are not held-out ready.
+- Split assignments cover every included reference image exactly once at image
+  level. Any images connected by a shared `mouse_id`, `slide_id`, or
+  `source_family_id` remain in one partition. Connected components are built
+  across every governed image, including excluded or otherwise unassigned
+  images that can transitively bridge assigned partitions. This
+  declared-component check does not discover missing or incorrect relatedness
+  metadata.
+- Batch and scanner controls are declared separately as either
+  `partition_disjoint` or `leave_values_out`; they are not universally treated
+  as interchangeable hard-group rules.
+- The held-out image commitment lists the exact ascending held-out image IDs
+  and binds their canonical SHA-256. A second commitment using
+  `ifquant_held_out_reference_content_v1` binds the full task, evaluation
+  policy, selection protocol, and, for every held-out image, its governed
+  observation record (including biological identities and source/channel/
+  annotation hashes), source family, all region-ledger entries, nuclear
+  records, and ignore records.
+- Successors preserve all earlier assignments and both held-out commitments.
+  Validation therefore rejects held-out truth, source, annotation, biological
+  identity, source-family, or policy drift. Valid train/tuning-only evolution
+  is permitted when it complies with the declared successor and split policy;
+  newly admitted images may enter only `train` or `tuning`.
+- A model-assisted single-review image is not eligible for
+  `held_out_test`. Its presence also causes the reference validator to report
+  that the reference set is not confirmatory-ready, even when structural
+  validation otherwise passes.
+- Chronology is fail-closed and traverses every governed-observation-set
+  revision in the validated parent chain. Each direct parent observation set's
+  `provenance.created_at` must not follow its child's. For the current revision
+  and every ancestor, observation-set, image, channel-map, and annotation-lineage
+  provenance; image acquisition time when present; and every annotation and
+  identity review must not follow the reference freeze. Reference provenance
+  and every region/object/ignore review are bound to that freeze as well. A
+  parent reference or split freeze must not follow its successor's creation,
+  and the current reference freeze must not follow split creation.
+- For an initial split only, the reference must also be frozen before the
+  original held-out commitment. A later reference successor may legitimately
+  freeze after that preserved original commitment when its held-out content is
+  unchanged; this exception enables honest train/tuning-only evolution without
+  weakening the held-out content lock. The commitment and split creation still
+  cannot follow the split freeze.
+- Every governed-observation revision's provenance code artifact, the Phase 3
+  evaluation-policy and selection-protocol artifacts, and the reference/split
+  provenance code artifacts must be nonempty local artifacts whose exact byte
+  size and SHA-256 are verified. Each provenance `code_sha256` must equal its
+  verified code-artifact identity.
+
+### Canonical Phase 3 geometry subset
+
+Phase 3 v1 deliberately implements a narrow, fail-closed 2D `POLYGON`/
+`MULTIPOLYGON` subset rather than a general computational-geometry engine.
+Rings are closed, simple, nonzero-area, and canonicalized to a fixed
+orientation and start vertex; holes and true multipolygon members use stable
+ordering. Repeated non-closing vertices, zero-length segments, self
+intersections, redundant collinear vertices, invalid hole/member topology, and
+a one-member `MULTIPOLYGON` are rejected. This canonical form is what identity
+hashes bind.
+
+The image domain is the closed rectangle `[0, width] x [0, height]` in the
+declared pixel coordinate space. Reference and ignore geometry must be covered
+by both that domain and the resolved governed inclusion ROI. These algorithms
+make the supported cases deterministic; they do not assert biological label
+correctness or numerical equivalence among segmentation backends.
 
 Relative artifact paths use `/`, never an absolute path or a `..` segment.
 Every referenced manifest and method contract is named by such a relative path,
 so a package can be validated without guessing filenames or consulting a
 workstation path.
 WKT is OGC polygon or multipolygon text in the bound image coordinate space;
-the exact WKT bytes are provenance-bearing. Exporters should use stable decimal
-formatting and ring ordering, but these schemas do not claim that geometries
-from different segmentation backends are numerically equivalent.
+the canonical WKT bytes are provenance-bearing. Exporters must use the accepted
+stable decimal formatting and ring ordering. These schemas do not claim that
+geometries from different segmentation backends are numerically equivalent.
 
 Canonical v1 is deliberately 2D and accepts only singleton Z/T source images.
 The validator re-hashes the local source named by `source_uri` (a
@@ -155,3 +262,35 @@ reject duplicate keys, check the exact key sets and scalar types expressed in
 these schemas, recompute hashes with `hashlib`, and enforce the cross-document
 rules above. JSON Schema validation may be added as a convenience, but package
 acceptance must also perform those referential and byte-level checks.
+
+JSON Schema alone does not provide all Phase 3 cross-record, topology,
+containment, chronology, canonical-byte, review-readiness, or successor
+invariants; the read-only runtime validator is authoritative for those checks.
+Conversely, a valid runtime report does not turn declared metadata into an
+independent scientific attestation. In v1, prediction package/run/object/
+geometry hashes in prediction-exposure records are asserted identities, not
+local byte-attestation. Approval that real `source_family_id` assignments are
+complete and scientifically appropriate remains a human study gate.
+
+Phase 3 exposes the same read-only principle through
+`ifquant-platform validate-reference-set` and
+`ifquant-platform validate-split`. The reference command recursively validates
+the governed observation set, canonical nuclear/ignore artifacts, region and
+source-family completeness, review lineage, provenance, and non-claims. The
+split command recursively revalidates the reference set, exact assignments,
+declared grouping/domain rules, frozen state, parent/successor invariants, and
+the held-out lock. A `valid` report describes engineering integrity only; it is
+not scientific validation, biological ground truth, split optimality,
+population representativeness, leakage proof, backend equivalence, model
+universality, or authorization.
+
+Phase 4 adds `segmentation-evaluation-plan.schema.json` and
+`segmentation-evaluation-instance.schema.json`. A frozen plan binds one exact
+native-QuPath method scope to the Phase 3 split/reference hashes, selected
+partitions, reference-raster bytes, matching/boundary/split-merge/size
+thresholds, and prospectively supplied acceptance criteria. The runtime does
+not trust the raster ledger alone: it independently rasterizes each selected
+canonical Phase 3 WKT object by pixel-center inclusion and requires exact
+identity and pixel equality. Prediction ledgers use the same ordered pixel-set
+shape. A valid evaluation report is a reproducible calculation, not scientific
+approval.

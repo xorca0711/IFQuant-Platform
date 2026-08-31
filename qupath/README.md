@@ -30,9 +30,13 @@ equivalence, endpoint validity, or a universal model.
   representation must equal QuPath's image-wide pixel type. Linear or
   normalized intensity export is rejected because QuPath's aggregated
   measurement values are not silently transformed.
-- `native_qupath` only, using
-  `QP.runPlugin(String, ImageData, Map)` with the configured
-  `WatershedCellDetection` parameters.
+- `native_qupath` uses `QP.runPlugin(String, ImageData, Map)` with configured
+  `WatershedCellDetection` parameters. The Phase 5 engineering adapter also
+  supports `stardist` through the separately hash-bound
+  `qupath.ext.stardist.StarDist2D` extension and frozen OpenCV `.pb` weights.
+  StarDist extension, model-descriptor, weight, preprocessing-profile, and
+  QuPath-version identities are checked before inference. This shared export
+  shape is not a backend-equivalence claim.
 - Two exclusion policies are implemented. The legacy
   `exclude_touching_annotation_boundary` policy excludes cells crossing or
   touching a selected annotation. The stricter
@@ -64,8 +68,9 @@ equivalence, endpoint validity, or a universal model.
   sidecar with its geometry and exact disposition reason.
 - Existing detections that intersect, or are children of, a selected
   annotation cause a fail-closed stop before the plugin runs.
-- `stardist` and `instanseg` are interface candidates only and terminate
-  with `CANDIDATE_BACKEND_NOT_IMPLEMENTED`.
+- `instanseg` remains an interface candidate and terminates with
+  `CANDIDATE_BACKEND_NOT_IMPLEMENTED`. StarDist is an engineering adapter;
+  scientific scoring remains blocked on the real Phase 3/4 reference gates.
 - `clip_to_annotation` and `include_touching_annotation_boundary` are
   schema-level candidates only and terminate with
   `CANDIDATE_BOUNDARY_POLICY_NOT_IMPLEMENTED`. The pilot does not fabricate
@@ -172,8 +177,36 @@ Python contract layer governs constrained parameter slots.
 The current script-byte binding is:
 
 ```text
-7e28147d359efe7a1400c21ef883eec67e016a5dba79f325bde8f31f942950c2
+82405b775b0386f243af5107c260fc434d6eae1f4bf0e7eb2134ab0bdea720e0
 ```
+
+### StarDist engineering configuration
+
+`qupath/config/stardist.example.json` uses the official StarDist extension
+v0.6.0 and QuPath fluorescence `dsb2018_heavy_augment.pb` candidate. The
+extension and model are runtime dependencies and remain in the Git-ignored
+`validation/runtime-cache/`; their exact SHA-256 identities are pinned in the
+configuration. Checked-in descriptor and preprocessing-profile files record
+the task, input channel, resolution, normalization, limitations, and explicit
+non-claims.
+
+The adapter uses DAPI-only local 1st/99th percentile normalization as an
+engineering starting point, threshold 0.5, 0.5 micrometers per pixel, explicit
+tiling/threading, cell expansion, shape/intensity measurements, prediction
+probability, and parent-ROI constraint. These are declared parameters to be
+evaluated, not accepted biological settings. Local percentile normalization is
+known to amplify background-only tiles; a globally frozen normalization profile
+is a later candidate and must receive a distinct preprocessing identity.
+
+At checkpoint `0cad6b0`, StarDist identity preflight and inference have run on
+the preserved full-image engineering project. The observed QuPath intensity
+keys are bound exactly as `Cell: DAPI: Mean`, `Cytoplasm: DAPI: Mean`, and
+`Nucleus: DAPI: Mean`. Export remains incomplete because a valid StarDist
+polygon triggered a JTS `free hole` error in the QC-only
+nucleus-outside-cell-area calculation. Canonical WKT remains at 10^-6-pixel
+precision; a deterministic 0.001-pixel repair is staged only for that QC metric
+and must be exercised under a fresh run identity before this checkpoint can be
+called an engineering smoke pass.
 
 ## Reproducible QuPath 0.7 CLI
 
@@ -324,6 +357,8 @@ Structural validation is necessary but is not scientific validation.
   directories may remain after rollback.
 - Detection may exist in memory if a later export check fails, but the CLI
   command omits `--save`.
-- StarDist and InstanSeg adapters, model training, object-classifier training,
-  group-aware splitting, endpoint-bias analysis, calibration, abstention, and
-  domain-shift evaluation remain Python-governed future work.
+- The StarDist adapter is incomplete engineering work; its successful canonical
+  export and reviewed QC remain open. InstanSeg, model training,
+  object-classifier training, group-aware real-data splitting, endpoint-bias
+  analysis, calibration, abstention, and domain-shift evaluation remain
+  Python-governed future work.

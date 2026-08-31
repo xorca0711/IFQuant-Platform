@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/platform/v1/segmentation-evaluation-instance.schema.json",
+  "title": "IFQuant Platform rasterized segmentation evaluation instance",
+  "description": "A deterministic object pixel set for Phase 4 evaluation; records are ordered by image_id then object_id and pixels by x then y.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "image_id", "object_id", "pixels", "crowded", "measurements"],
+  "properties": {
+    "$schema": {"const": "https://ifquant.org/contracts/platform/v1/segmentation-evaluation-instance.schema.json"},
+    "image_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "pixels": {"type": "array", "minItems": 1, "items": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "integer", "minimum": 0}], "items": false}},
+    "crowded": {"type": "boolean"},
+    "measurements": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["measurement_id", "value"],
+        "properties": {"measurement_id": {"type": "string", "minLength": 1}, "value": {"type": "number"}}
+      }
+    }
+  }
+}
