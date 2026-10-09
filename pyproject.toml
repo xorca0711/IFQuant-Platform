@@ -25,6 +25,8 @@ imaging = [
   "zarr>=3.0",
 ]
 wsi-codecs = ["imagecodecs>=2025.3"]
+performance = ["psutil>=7.0"]
+morphology = ["ifquant-platform[imaging]", "shapely>=2.0"]
 spatial = [
   "anndata>=0.12,<0.13",
   "h5py>=3.12",

@@ -1,5 +1,10 @@
 # Phase 1 DAPI QC status
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](../docs/DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 Status: **full-frame engineering policy verified; formal H1 review and H2
 geometry-warning disposition remain open for biological eligibility**.
 

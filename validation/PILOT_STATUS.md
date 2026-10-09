@@ -1,5 +1,10 @@
 # QuPath pilot status
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](../docs/DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 Status: **completed, structurally valid unvalidated engineering pilot**.
 
 The final evidence run completed on 2026-08-29 with QuPath 0.7.0 and is stored

@@ -1,5 +1,7 @@
 # Native spatial interchange and lung replay checkpoint
 
+> Historical saved checkpoint at `2566fc1`. Superseded by the completed development pass in [PROGRESS](../PROGRESS.md) and [the execution report](../docs/EXECUTION_REPORT.md); retain the original in-progress findings below as history.
+
 **Date:** 2026-10-09
 **Status:** draft — implementation saved before final verification
 

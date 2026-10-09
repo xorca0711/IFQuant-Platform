@@ -1,5 +1,7 @@
 # IFQuant Platform contracts
 
+> **Platform scope:** canonical fluorescence v1 is one contract family. `tissue/v1` covers calibrated images, regions, candidates/review and reports; `spatial/v1` covers processed measured RNA, links and context. New optional analysis plans have closed versioned runtime validation documented in [analysis workflows](../docs/ANALYSIS_WORKFLOW.md). Intensities, RNA counts and transcript-genotype/TCR observations retain separate semantics.
+
 These Draft 2020-12 JSON Schemas define the first canonical interchange
 boundary for image metadata, semantic channels, supplied annotations,
 segmentation runs, cell objects, cell-object packages, governed observations,

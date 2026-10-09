@@ -178,3 +178,61 @@ def test_spatialdata_named_frames_scene_and_store_tampering(visium):
 def json_properties(value):
     import json
     return json.loads(value)
+
+
+@pytest.mark.parametrize('encoding', ['csr', 'csc'])
+def test_anndata_rejects_duplicate_backing_coordinates(tmp_path, encoding):
+    ctor = sparse.csr_matrix if encoding == 'csr' else sparse.csc_matrix
+    matrix = ctor(([2, 3], [0, 0], [0, 2, 2]), shape=(2, 2))
+    data = ad.AnnData(X=matrix, obs=pd.DataFrame(index=['a', 'b']),
+                     var=pd.DataFrame({'feature_name': ['A', 'B']}, index=['f1', 'f2']))
+    data.obsm['spatial'] = np.array([[1., 2.], [3., 4.]])
+    data.write_h5ad(tmp_path/'duplicate.h5ad')
+    config = dict(metadata(), schema_version='ifquant.native-spatial-import/1', format='anndata',
+                  inputs={'h5ad': 'duplicate.h5ad'}, options={'counts_layer': 'X', 'coordinates_key': 'spatial',
+                  'feature_name_column': 'feature_name', 'status_column': None, 'default_status': 'measured', 'feature_ids': None})
+    with pytest.raises(ContractError, match='duplicate'):
+        run_import(tmp_path, config)
+
+
+def test_spatialdata_profile_without_image_is_portable(visium):
+    pytest.importorskip('spatialdata')
+    import shutil
+
+    from ifquant_platform.spatial_exchange import export_spatialdata, import_spatialdata
+    root, config = visium
+    original = run_import(root, config)
+    export_spatialdata(root/'native/assay.json', root/'exchange.zarr')
+    shutil.copytree(root/'exchange.zarr', root/'copied.zarr')
+    shutil.copyfile(root/'exchange.zarr.ifquant.json', root/'copied.zarr.ifquant.json')
+    restored = import_spatialdata(root/'copied.zarr', root/'restored')
+    doc = load_strict_json(restored['output'])
+    assert doc['observations'] == original['observations']
+    assert sorted(count_rows(doc)) == sorted(count_rows(original))
+
+
+def test_ann_import_rejects_implicit_rescaling_and_missingness_rewrite(visium):
+    root, config = visium
+    run_import(root, config)
+    export_anndata(root/'native/assay.json', root/'export.h5ad')
+    config.update(format='anndata', inputs={'h5ad': 'export.h5ad'}, options={
+        'counts_layer': 'X', 'coordinates_key': 'spatial', 'feature_name_column': 'feature_name',
+        'status_column': None, 'default_status': 'measured', 'feature_ids': None})
+    with pytest.raises(ContractError, match='status conflicts'):
+        run_import(root, config, 'bad-status')
+    config['options']['status_column'] = STATUS
+    config['coordinate_frame']['frame_id'] = 'other-resolution'
+    with pytest.raises(ContractError, match='metadata conflicts'):
+        run_import(root, config, 'bad-frame')
+
+
+def test_dense_layer_is_rejected_without_loading_counts(tmp_path):
+    data = ad.AnnData(X=np.array([[1, 2]]), obs=pd.DataFrame(index=['a']),
+                     var=pd.DataFrame({'feature_name': ['A', 'B']}, index=['f1', 'f2']))
+    data.obsm['spatial'] = np.array([[1., 2.]])
+    data.write_h5ad(tmp_path/'dense.h5ad')
+    config = dict(metadata(), schema_version='ifquant.native-spatial-import/1', format='anndata',
+                  inputs={'h5ad': 'dense.h5ad'}, options={'counts_layer': 'X', 'coordinates_key': 'spatial',
+                  'feature_name_column': 'feature_name', 'status_column': None, 'default_status': 'measured', 'feature_ids': None})
+    with pytest.raises(ContractError, match='dense arrays are unsupported'):
+        run_import(tmp_path, config)

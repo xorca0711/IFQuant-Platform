@@ -1,10 +1,12 @@
 # Pipeline orchestration
 
+Current runnable orchestration includes `scripts/replay_lung_example.py` (real measured RNA/image interchange), `scripts/demo_development_pipeline.py` (ten synthetic optional analysis workflows), and `scripts/replay_public_qualification.py` (pinned real WSI and published-source checks). H&E candidate/review/report commands work independently of RNA. See [analysis workflows](../docs/ANALYSIS_WORKFLOW.md), [tissue workflows](../docs/TISSUE_WORKFLOW.md) and the [31-job register](../docs/DEVELOPMENT_PLAN.md).
+
 `pipelines/` composes versioned contracts, QuPath executors, Python validation,
 dataset operations, model workflows, and aggregation. A pipeline coordinates
 owners; it does not become a second source of scientific definitions.
 
-A typical flow is:
+The fluorescence cell-object branch is:
 
 1. register image, biological identity, channel map, and calibration;
 2. bind supplied QuPath annotations and a validated execution configuration;

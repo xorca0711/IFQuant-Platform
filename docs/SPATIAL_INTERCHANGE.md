@@ -138,8 +138,9 @@ Limits: 200,000 observations, 100,000 features, 1 million selected sparse count
 rows, 100 million input sparse entries, 1 million entries per HDF5 slice, 5 million
 metadata cells and 8 GiB per input file. These are guards, not performance promises.
 Raw inputs are streamed and feature selection is explicit. Visium HD parquet,
-general dense AnnData conversion, automatic registration, spatial inference and
-paper-level biological validation remain future work.
+general dense AnnData conversion, automatic registration execution and
+paper-level biological validation remain future work. Declared spatial hypothesis
+tests and registration-result QC are now available as separate optional commands.
 
 See [current evidence](../validation/evidence/priorities-1-2-20261009.json) and
 [the execution plan](DEVELOPMENT_PLAN.md). API/format references:
@@ -147,3 +148,9 @@ See [current evidence](../validation/evidence/priorities-1-2-20261009.json) and
 [SpatialData models](https://spatialdata.scverse.org/en/stable/api/models.html),
 [10x spatial outputs](https://www.10xgenomics.com/support/software/space-ranger/latest/analysis/outputs/spatial-outputs),
 [source study](https://www.nature.com/articles/s41467-023-42021-y).
+
+## Additional upstream and analysis boundaries
+
+`import-ngff-window` now imports an explicit NGFF 0.4 YX/CYX calibrated window (up to 16 million pixels), preserving scale, global translation, crop origin and a full local store inventory. It requires micrometer axes and declared grayscale/RGB channel semantics. This is a bounded source bridge, not arbitrary multidimensional NGFF discovery. `import-cell-features` maps declared MCMICRO-compatible CSV columns without treating intensity as RNA. Tests include crop/calibration reconciliation and exact string IDs.
+
+For runnable RNA programs, domain baselines, morphology/RNA associations, VALIS point QC and processed Slide-GoTags, see [analysis workflows](ANALYSIS_WORKFLOW.md). Full-resolution TIFF processing remains the main large-image path.

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import csv
 import gzip
+import itertools
 import math
 from contextlib import contextmanager
 from pathlib import Path
@@ -81,6 +82,27 @@ def _metadata_bounds(obs, var):
     require(obs.size + var.size <= MAX_METADATA_CELLS, 'metadata cell limit exceeded')
     _ids(obs.index, 'observation IDs', MAX_OBSERVATIONS)
     _ids(var.index, 'feature IDs', MAX_FEATURES)
+
+
+def _sparse_layout(group, shape, orientation):
+    """Check canonical backing arrays before native sparse conversions."""
+    _, _, np, _, _ = libraries()
+    require(all(k in group for k in ('indptr', 'indices', 'data')), 'missing sparse backing array')
+    major, minor = shape if orientation == 'csr_matrix' else shape[::-1]
+    ptr, indices, values = group['indptr'], group['indices'], group['data']
+    require(ptr.ndim == indices.ndim == values.ndim == 1 and len(ptr) == major+1,
+            'invalid sparse array dimensions')
+    require(np.issubdtype(ptr.dtype, np.integer) and np.issubdtype(indices.dtype, np.integer),
+            'sparse pointers/indices must be integers')
+    require(len(indices) == len(values) <= MAX_INPUT_NNZ, 'invalid/oversized sparse matrix')
+    pointers = ptr[:]
+    require(pointers[0] == 0 and pointers[-1] == len(values) and
+            np.all(pointers[1:] >= pointers[:-1]), 'invalid sparse pointers')
+    require(np.all(pointers[1:]-pointers[:-1] <= MAX_SLICE_NNZ), 'sparse slice exceeds capacity')
+    for start, end in itertools.pairwise(pointers):
+        selected = indices[int(start):int(end)]
+        require(np.all((selected >= 0) & (selected < minor)) and
+                np.all(selected[1:] > selected[:-1]), 'duplicate, unsorted or out-of-range sparse coordinate')
 
 
 def _finish(root, config, records, obs, var, xy, statuses, rows, details):
@@ -189,6 +211,7 @@ def _anndata(root, config, paths, records):
         if STATUS in obs and status_col != STATUS:
             require(list(obs[STATUS]) == statuses, 'stored assay status conflicts with import options')
         require(len(data['data']) <= MAX_INPUT_NNZ, 'input sparse matrix exceeds capacity')
+        _sparse_layout(data, shape, data.attrs['encoding-type'])
         matrix = ad.io.sparse_dataset(data)
         def rows():
             # A single row is bounded by the declared feature count. No dense N x G array.

@@ -1,5 +1,7 @@
 # QuPath canonical cell-package pilot
 
+> **Expanded tissue scope:** `ExportBrightfield.groovy` exports native RGB/annotations; `ExportPixelClassifier.groovy` exports bounded discrete-label comparison regions with source/model provenance. `CreatePixelClassifierFixture.groovy` is an untrained synthetic threshold fixture. The existing fluorescence executor remains separate. All export-only commands omit `--save`. See [imaging qualification](../docs/IMAGING_QUALIFICATION.md).
+
 Status: **unvalidated engineering pilot**.
 
 This proof of concept is the narrow QuPath execution boundary for IFQuant

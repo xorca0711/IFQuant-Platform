@@ -1,5 +1,10 @@
 # Phase 5 replaceable-backend status
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 ## Current checkpoint — 2026-10-09
 
 Fresh StarDist run `pilot-20261009-engineering-11-stardist` completed export,
@@ -21,7 +26,7 @@ Phase 5 has started with the recommended StarDist-first sequence. The adapter
 engineering boundary is implemented; InstanSeg has not started and no backend
 comparison or selection has been made.
 
-Work is intentionally paused before the next QuPath execution. StarDist
+At the earlier checkpoint, work paused before the next QuPath execution. That pause was superseded by the successful run 11 recorded above. StarDist
 inference and object creation have run successfully on the preserved full-image
 engineering project. Two fail-closed integration findings were recorded:
 

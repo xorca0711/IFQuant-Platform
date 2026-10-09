@@ -898,6 +898,19 @@ imaging = [
     { name = "zarr", version = "3.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "zarr", version = "3.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
+morphology = [
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "pillow" },
+    { name = "shapely" },
+    { name = "tifffile", version = "2026.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "tifffile", version = "2026.9.20", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "zarr", version = "3.1.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "zarr", version = "3.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+performance = [
+    { name = "psutil" },
+]
 qc = [
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
@@ -925,6 +938,7 @@ wsi-codecs = [
 requires-dist = [
     { name = "anndata", marker = "extra == 'spatial'", specifier = ">=0.12,<0.13" },
     { name = "h5py", marker = "extra == 'spatial'", specifier = ">=3.12" },
+    { name = "ifquant-platform", extras = ["imaging"], marker = "extra == 'morphology'" },
     { name = "ifquant-platform", extras = ["spatial"], marker = "extra == 'spatialdata'" },
     { name = "imagecodecs", marker = "extra == 'wsi-codecs'", specifier = ">=2025.3" },
     { name = "jsonschema", marker = "extra == 'dev'", specifier = ">=4.23" },
@@ -932,14 +946,16 @@ requires-dist = [
     { name = "numpy", marker = "extra == 'qc'", specifier = ">=2.0" },
     { name = "pillow", marker = "extra == 'imaging'", specifier = ">=11.0" },
     { name = "pillow", marker = "extra == 'qc'", specifier = ">=11.0" },
+    { name = "psutil", marker = "extra == 'performance'", specifier = ">=7.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
     { name = "scipy", marker = "extra == 'spatial'", specifier = ">=1.14" },
+    { name = "shapely", marker = "extra == 'morphology'", specifier = ">=2.0" },
     { name = "spatialdata", marker = "extra == 'spatialdata'", specifier = ">=0.7,<0.8" },
     { name = "tifffile", marker = "extra == 'imaging'", specifier = ">=2025.1" },
     { name = "zarr", marker = "extra == 'imaging'", specifier = ">=3.0" },
 ]
-provides-extras = ["qc", "imaging", "wsi-codecs", "spatial", "spatialdata", "dev"]
+provides-extras = ["qc", "imaging", "wsi-codecs", "performance", "morphology", "spatial", "spatialdata", "dev"]
 
 [[package]]
 name = "imagecodecs"

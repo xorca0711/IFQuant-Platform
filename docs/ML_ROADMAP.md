@@ -1,5 +1,7 @@
 # Machine-learning roadmap
 
+> **Scope update:** the sequence below is the fluorescence instance-segmentation/model-governance branch. The platform also has an independent H&E classifier/annotation workflow and optional measured-RNA baselines. Current implementation and conditional InstanSeg/cell2location/BANKSY/fusion decisions are in [the register](DEVELOPMENT_PLAN.md). No foundation-model or omics engine is an automatic prerequisite for image analysis.
+
 ## Direction
 
 The first ML task is DAPI-based instance segmentation. The roadmap favors

@@ -98,7 +98,9 @@ class ImageReader:
                 page = selected.pages[0]
                 decoded = page.chunks[0] * page.chunks[1] * page.samplesperpixel * page.dtype.itemsize
                 require(decoded <= 128 * 1024**2, 'decoded TIFF chunk exceeds 128 MiB; retile first')
-                self.store = selected.aszarr()
+                # A level-zero series may itself expose the complete pyramid.
+                # Select its first array explicitly rather than opening a group.
+                self.store = selected.aszarr(level=0)
                 self.array = zarr.open(self.store, mode='r')
             else:
                 from PIL import Image

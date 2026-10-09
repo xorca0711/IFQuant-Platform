@@ -1,5 +1,10 @@
 # Phase 4 native-QuPath baseline status
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 ## Outcome
 
 The Phase 4 **engineering evaluation implementation is complete**. The
