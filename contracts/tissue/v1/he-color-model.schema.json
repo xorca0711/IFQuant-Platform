@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/he-color-model.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.he-color-model/1"
+    },
+    "algorithm": {
+      "enum": [
+        "lab_kmeans",
+        "lab_nearest_centroid"
+      ]
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "ifquant.he-profile/1"
+        },
+        "background_rgb": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 255
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "stain_vectors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "tissue_od_sum_min": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "schema_version",
+        "background_rgb",
+        "stain_vectors",
+        "tissue_od_sum_min",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "centers": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "minItems": 2,
+      "maxItems": 16
+    },
+    "class_names": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 2,
+      "maxItems": 16
+    },
+    "training": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "regions_sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sample_count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "source_sha256",
+          "regions_sha256",
+          "sample_count"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "feature_space": {
+      "const": "srgb_d65_lab_ab"
+    },
+    "scientific_validation": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "algorithm",
+    "profile",
+    "centers",
+    "class_names",
+    "training",
+    "seed",
+    "feature_space",
+    "scientific_validation"
+  ],
+  "additionalProperties": false
+}

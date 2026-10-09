@@ -1,0 +1,101 @@
+{
+  "schema_version": "ifquant.engineering-evidence/1",
+  "date": "2026-10-09",
+  "base_commit": "e4226cd8b1f50b1b406b33a81d68d35d79675384",
+  "scope": "Stage 5/6 initial identity, coordinate, raw-RNA and processed molecular foundation; synthetic engineering data only",
+  "implementation": [
+    "CSV raw RNA assay interchange and exact identity validation",
+    "Provided affine and calibrated fit/evaluation landmark residuals",
+    "Point-center tissue links with boundary/overlap abstention",
+    "Processed transcript genotype and TCR joins retaining missingness"
+  ],
+  "not_implemented": [
+    "Native AnnData/SpatialData/Visium adapters",
+    "Automatic or deformable registration",
+    "Cell2location/BANKSY/LIANA/SpatialGlue execution",
+    "Spatial null-model inference",
+    "Public-paper reproduction"
+  ],
+  "checks": {
+    "focused": {
+      "tests_passed": 22,
+      "subtests_passed": 29,
+      "path": "validation/output/audit-20261009/spatial-tests.log",
+      "sha256": "5044b291cb735048fe5b637d8e235096d7e52c35a23c64b2196104437bc3ed6c"
+    },
+    "integrated": {
+      "tests_passed": 156,
+      "subtests_passed": 144,
+      "path": "validation/output/audit-20261009/pr-full-tests.log",
+      "sha256": "f864a20fc93d82d1ac64a639006fd765a1009e5e6ee723bad5c97e60ee7e5151"
+    },
+    "scoped_ruff": "passed",
+    "package_build": {
+      "status": "passed",
+      "path": "validation/output/audit-20261009/pr-build.log",
+      "sha256": "1d993e2ec818960e75f2effc033db743877b4592f21f8d34038677b27c6de111"
+    },
+    "wheel_spatial_cli_without_optional_libraries": "passed",
+    "lock_check_offline": "passed"
+  },
+  "demo": {
+    "root": "validation/output/spatial-20261009-final",
+    "assay": {
+      "path": "validation/output/spatial-20261009-final/assay.json",
+      "sha256": "aeffd7c2ce578700a7e900f356c7153e2342e9b3145fa896ddc20c9590b82d27"
+    },
+    "assay_canonical_sha256": "68cf0d0944cd0156dcdde0f3c45f73e1d0e2584a01389537cca0f5a30f750d27",
+    "links": {
+      "path": "validation/output/spatial-20261009-final/linked/links.json",
+      "sha256": "a2d6985a1b1059ace5011fb77c30079d4cec39fc6b20edc78a0cf482f8ce1fc0"
+    },
+    "context": {
+      "path": "validation/output/spatial-20261009-final/context.json",
+      "sha256": "0f4c6e07e5ce25b6559681fa4ba9e7768360cdd342c88ee657cd96f3846a1757"
+    },
+    "link_status_counts": {
+      "artifact": 1,
+      "boundary_ambiguous": 1,
+      "linked": 3,
+      "outside_image": 1
+    },
+    "molecular_status_counts": [
+      {
+        "count": 1,
+        "status": "ambiguous"
+      },
+      {
+        "count": 1,
+        "status": "failed"
+      },
+      {
+        "count": 3,
+        "status": "measured"
+      },
+      {
+        "count": 1,
+        "status": "not_assayed"
+      },
+      {
+        "count": 6,
+        "status": "not_reported"
+      }
+    ],
+    "coordinate_roundtrip_max_input_units": 0,
+    "landmark_errors": {
+      "evaluation": {
+        "count": 1,
+        "max_um": 0,
+        "rmse_um": 0
+      },
+      "fit": {
+        "count": 0,
+        "max_um": null,
+        "rmse_um": null
+      }
+    }
+  },
+  "scientific_validation": false,
+  "human_approval": false,
+  "claims": "No biological accuracy, registration qualification, injury severity, genotype/TCR specificity or causal inference."
+}

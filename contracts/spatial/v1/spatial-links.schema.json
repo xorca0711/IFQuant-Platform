@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/spatial/v1/spatial-links.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.spatial-links/1"
+    },
+    "assay_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "regions_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "transform": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "ifquant.affine-transform/1"
+        },
+        "assay_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "from_frame": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to_frame": {
+          "const": "base_image_pixels"
+        },
+        "section_relation": {
+          "enum": [
+            "same_section",
+            "serial_section"
+          ]
+        },
+        "method": {
+          "const": "provided_affine"
+        },
+        "matrix": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "landmarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "landmark_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "enum": [
+                  "fit",
+                  "evaluation"
+                ]
+              },
+              "from": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "to": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "required": [
+              "landmark_id",
+              "role",
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schema_version",
+        "assay_sha256",
+        "source_sha256",
+        "from_frame",
+        "to_frame",
+        "section_relation",
+        "method",
+        "matrix",
+        "landmarks"
+      ],
+      "additionalProperties": false
+    },
+    "landmark_errors": {
+      "type": "object",
+      "properties": {
+        "fit": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rmse_um": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_um": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "count",
+            "rmse_um",
+            "max_um"
+          ],
+          "additionalProperties": false
+        },
+        "evaluation": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rmse_um": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_um": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "count",
+            "rmse_um",
+            "max_um"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "fit",
+        "evaluation"
+      ],
+      "additionalProperties": false
+    },
+    "boundary_uncertainty_um": {
+      "type": "number",
+      "minimum": 0
+    },
+    "numeric_roundtrip_max_input_units": {
+      "type": "number",
+      "minimum": 0
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "entity_type": {
+            "enum": [
+              "spot",
+              "nucleus",
+              "cell"
+            ]
+          },
+          "assay_status": {
+            "enum": [
+              "measured",
+              "not_assayed",
+              "failed"
+            ]
+          },
+          "x_base_px": {
+            "type": "number"
+          },
+          "y_base_px": {
+            "type": "number"
+          },
+          "x_um": {
+            "type": "number"
+          },
+          "y_um": {
+            "type": "number"
+          },
+          "link_status": {
+            "enum": [
+              "outside_image",
+              "artifact",
+              "boundary_ambiguous",
+              "overlapping_references",
+              "outside_reference",
+              "linked"
+            ]
+          },
+          "region_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reference_review": {
+            "anyOf": [
+              {
+                "enum": [
+                  "pending",
+                  "accepted",
+                  "uncertain"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "observation_id",
+          "entity_type",
+          "assay_status",
+          "x_base_px",
+          "y_base_px",
+          "x_um",
+          "y_um",
+          "link_status",
+          "region_id",
+          "reference_review"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "region_rna_counts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "feature_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "raw_count_sum": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "measured_observations": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "region_id",
+          "feature_id",
+          "raw_count_sum",
+          "measured_observations"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "status_counts": {
+      "type": "object",
+      "properties": {
+        "outside_image": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifact": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "boundary_ambiguous": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overlapping_references": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outside_reference": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "linked": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "registration_status": {
+      "enum": [
+        "evaluation_landmarks_supplied",
+        "not_evaluated"
+      ]
+    },
+    "assignment_semantics": {
+      "const": "point_center_to_region_only; no cell identity or spot-area deconvolution"
+    },
+    "scientific_validation": {
+      "const": false
+    },
+    "producer_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "assay_sha256",
+    "source_sha256",
+    "regions_sha256",
+    "transform",
+    "landmark_errors",
+    "boundary_uncertainty_um",
+    "numeric_roundtrip_max_input_units",
+    "links",
+    "region_rna_counts",
+    "status_counts",
+    "registration_status",
+    "assignment_semantics",
+    "scientific_validation",
+    "producer_sha256"
+  ],
+  "additionalProperties": false
+}

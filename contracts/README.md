@@ -32,6 +32,14 @@ Every schema uses `additionalProperties: false`. Contract revisions add fields
 through a new schema and contract version rather than silently accepting
 unknown data.
 
+The separate `tissue/v1/` and `spatial/v1/` families extend these boundaries without
+changing fluorescence v1. Tissue schemas cover calibrated intake, regions, H&E
+models, review and packages. Spatial schemas cover processed RNA, provided affine
+transforms, region links and processed molecular context. Their Python validators
+enforce semantic checks beyond JSON shape. See
+[`docs/STAGES_5_6_PIPELINE.md`](../docs/STAGES_5_6_PIPELINE.md) for the current limited
+adapter scope and planned native AnnData/SpatialData interoperability.
+
 ## Identity and canonical bytes
 
 All SHA-256 values are lowercase hexadecimal over the exact bytes named by the

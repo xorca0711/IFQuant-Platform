@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/spatial/v1/spatial-assay.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.spatial-assay/1"
+    },
+    "assay_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "specimen_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "subject_id",
+        "species",
+        "specimen_id",
+        "section_id"
+      ],
+      "additionalProperties": false
+    },
+    "entity_type": {
+      "enum": [
+        "spot",
+        "nucleus",
+        "cell"
+      ]
+    },
+    "coordinate_frame": {
+      "type": "object",
+      "properties": {
+        "frame_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "pixel",
+            "um"
+          ]
+        },
+        "axes": {
+          "const": [
+            "x",
+            "y"
+          ]
+        },
+        "origin": {
+          "const": "top_left"
+        },
+        "y_direction": {
+          "const": "down"
+        }
+      },
+      "required": [
+        "frame_id",
+        "unit",
+        "axes",
+        "origin",
+        "y_direction"
+      ],
+      "additionalProperties": false
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "observations": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "size_bytes"
+          ],
+          "additionalProperties": false
+        },
+        "features": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "size_bytes"
+          ],
+          "additionalProperties": false
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "size_bytes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "observations",
+        "features",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "assay_status": {
+            "enum": [
+              "measured",
+              "not_assayed",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "observation_id",
+          "x",
+          "y",
+          "assay_status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 200000
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "feature_name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "feature_id",
+          "feature_name"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    },
+    "matrix_semantics": {
+      "const": "raw_rna_counts_sparse_zero_for_measured_observations_only"
+    },
+    "scientific_validation": {
+      "const": false
+    },
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "count_rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nonzero_rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "libraries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "observation_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "total_counts": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "observation_id",
+              "total_counts"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "count_rows",
+        "nonzero_rows",
+        "libraries"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "assay_id",
+    "subject",
+    "entity_type",
+    "coordinate_frame",
+    "inputs",
+    "observations",
+    "features",
+    "matrix_semantics",
+    "scientific_validation",
+    "statistics"
+  ],
+  "additionalProperties": false
+}

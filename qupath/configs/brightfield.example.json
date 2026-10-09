@@ -1,0 +1,13 @@
+{
+  "schema_version": "ifquant.qupath-brightfield/1",
+  "output_directory": "C:/analysis/fresh-brightfield-export",
+  "expected_server_name": "replace-with-exact-QuPath-image-name",
+  "source_members": ["C:/images/slide.vsi", "C:/images/slide/stack1/frame_t.ets"],
+  "subject": {"subject_id": "subject-1", "species": "mouse", "specimen_id": "lung-1", "section_id": "section-1"},
+  "pixel_size_x_um": 0.5,
+  "pixel_size_y_um": 0.5,
+  "z": 0,
+  "t": 0,
+  "script_path": "C:/IFQuant-Platform/qupath/scripts/ExportBrightfield.groovy",
+  "expected_script_sha256": "replace-with-sha256-of-the-script"
+}

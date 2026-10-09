@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/tile-plan.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.tile-plan/1"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tile_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096
+    },
+    "halo": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "ownership": {
+      "const": "nonoverlapping_half_open_core"
+    },
+    "coordinate_frame": {
+      "const": "selected_level_pixels"
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_sha256",
+    "width",
+    "height",
+    "tile_size",
+    "halo",
+    "ownership",
+    "coordinate_frame"
+  ],
+  "additionalProperties": false
+}

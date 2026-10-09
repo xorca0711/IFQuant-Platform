@@ -393,7 +393,7 @@ class PackageValidationTests(unittest.TestCase):
 
     def test_all_schema_objects_are_closed_and_parseable(self):
         schemas = sorted((ROOT / "contracts").rglob("*.schema.json"))
-        self.assertEqual(len(schemas), 15)
+        self.assertEqual(len(schemas), 29)  # 15 core + 9 tissue + 5 spatial contracts
 
         def walk(value):
             if isinstance(value, dict):
