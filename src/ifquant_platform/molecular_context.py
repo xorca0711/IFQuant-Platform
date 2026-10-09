@@ -10,6 +10,15 @@ from .spatial import csv_rows, exact_id, file_record, validate_assay, verify_fil
 
 def attach_context(assay_path, calls_path, output):
     assay = validate_assay(load_strict_json(assay_path))
+    doc = build_context(assay, calls_path)
+    write_json(output, doc)
+    return {'output': str(output), 'observations': len(assay['observations']),
+            'targets': len(doc['targets']), 'status_counts': doc['status_counts'],
+            'scientific_validation': False}
+
+
+def build_context(assay, calls_path):
+    """Reconstruct coverage and missingness from the original processed calls."""
     source = file_record(calls_path)
     ids = {r['observation_id'] for r in assay['observations']}
     calls, targets = {}, set()
@@ -58,6 +67,4 @@ def attach_context(assay_path, calls_path, output):
            'join_semantics': 'exact observation ID within one assay; no coordinate-nearest or cross-section cell matching',
            'interpretation': 'RNA reference-only is not DNA wild type; clonotype presence does not establish antigen specificity',
            'scientific_validation': False, 'producer_sha256': file_sha256(__file__)}
-    write_json(output, doc)
-    return {'output': str(output), 'observations': len(ids), 'targets': len(targets),
-            'status_counts': doc['status_counts'], 'scientific_validation': False}
+    return doc

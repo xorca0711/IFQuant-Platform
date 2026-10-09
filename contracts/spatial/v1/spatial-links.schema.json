@@ -229,7 +229,8 @@
             "enum": [
               "measured",
               "not_assayed",
-              "failed"
+              "failed",
+              "not_reported"
             ]
           },
           "x_base_px": {

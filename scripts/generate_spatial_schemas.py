@@ -12,7 +12,7 @@ number = {'type': 'number'}
 positive = {'type': 'number', 'minimum': 0}
 point = array(number, 2, 2)
 observation = obj(observation_id=text, x=number, y=number,
-                  assay_status=enum('measured', 'not_assayed', 'failed'))
+                  assay_status=enum('measured', 'not_assayed', 'failed', 'not_reported'))
 config = obj(schema_version=const('ifquant.spatial-import/1'), assay_id=text, subject=subject,
              entity_type=enum('spot', 'nucleus', 'cell'), coordinate_frame=frame,
              observations_csv=text, features_csv=text, counts_csv=text)
@@ -33,7 +33,7 @@ transform = obj(schema_version=const('ifquant.affine-transform/1'), assay_sha256
 error = obj(count=integer, rmse_um=nullable(positive), max_um=nullable(positive))
 statuses = ['outside_image', 'artifact', 'boundary_ambiguous', 'overlapping_references', 'outside_reference', 'linked']
 link = obj(observation_id=text, entity_type=enum('spot', 'nucleus', 'cell'),
-           assay_status=enum('measured', 'not_assayed', 'failed'), x_base_px=number, y_base_px=number,
+           assay_status=enum('measured', 'not_assayed', 'failed', 'not_reported'), x_base_px=number, y_base_px=number,
            x_um=number, y_um=number, link_status=enum(*statuses), region_id=nullable(text),
            reference_review=nullable(enum('pending', 'accepted', 'uncertain')))
 links = obj(schema_version=const('ifquant.spatial-links/1'), assay_sha256=sha, source_sha256=sha,

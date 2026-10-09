@@ -25,6 +25,15 @@ imaging = [
   "zarr>=3.0",
 ]
 wsi-codecs = ["imagecodecs>=2025.3"]
+spatial = [
+  "anndata>=0.12,<0.13",
+  "h5py>=3.12",
+  "scipy>=1.14",
+]
+spatialdata = [
+  "ifquant-platform[spatial]",
+  "spatialdata>=0.7,<0.8",
+]
 dev = [
   "jsonschema>=4.23",
   "pytest>=8.3",

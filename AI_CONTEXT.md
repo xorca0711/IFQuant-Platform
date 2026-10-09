@@ -4,6 +4,16 @@ Read `PROGRESS.md`, `docs/STAGES_1_4_STATUS.md`, `docs/STAGES_5_6_PIPELINE.md` a
 expanding scope. Follow the current user's AGENTS instructions; shared AI_Opt
 toolkit operations are separate and not needed for ordinary platform changes.
 
+Current priority: finish priorities 1–2 in `docs/DEVELOPMENT_PLAN.md`. Read
+`notes/2026-10-09-priorities-1-2-checkpoint.md` first for the saved in-progress
+state. Native adapters are now implemented for review; older statements below
+that they are planned describe the previous foundation checkpoint. The real
+Kasmani replay, integrated verification and broad documentation refresh remain.
+Use `.venv-spatial/Scripts/python.exe` for the complete optional spatial stack on
+this ARM64 host: it uses an isolated x64 runtime because pyogrio has no suitable
+ARM64 wheel. The source-data cache is Git-ignored. Do not infer physical image
+calibration, independent animal IDs or biological labels from deposited sample names.
+
 - Repository: `X:/GitHub/IFQuant-Platform`; historical `X:/GitHub/IFQuant-Lung`
   remains read-only. Do not copy cohort identity/hard-coded raw paths into core.
 - User selected MIT, lung injury/regeneration first, optional TME, and future
