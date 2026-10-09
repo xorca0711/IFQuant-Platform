@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/histology-package.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.histology-package/1"
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "model_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "regions_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "plan_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dense_candidate_classes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "producer": {
+          "type": "object",
+          "properties": {
+            "python": {
+              "type": "string",
+              "minLength": 1
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1
+            },
+            "code": {
+              "type": "object",
+              "properties": {
+                "canonical.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "imaging.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "histology.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "tissue_workflow.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "phase3_validation.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "package_validation.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "canonical.py",
+                "imaging.py",
+                "histology.py",
+                "tissue_workflow.py",
+                "phase3_validation.py",
+                "package_validation.py"
+              ],
+              "additionalProperties": false
+            },
+            "dependencies": {
+              "type": "object",
+              "properties": {
+                "numpy": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "Pillow": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "tifffile": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "zarr": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "numpy",
+                "Pillow",
+                "tifffile",
+                "zarr"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "python",
+            "platform",
+            "code",
+            "dependencies"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "source_sha256",
+        "model_sha256",
+        "regions_sha256",
+        "plan_sha256",
+        "dense_candidate_classes",
+        "producer"
+      ],
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "completed_tiles": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "const": "engineering_complete"
+    },
+    "scientific_validation": {
+      "const": false
+    },
+    "severity_authorized": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "binding",
+    "files",
+    "completed_tiles",
+    "status",
+    "scientific_validation",
+    "severity_authorized"
+  ],
+  "additionalProperties": false
+}

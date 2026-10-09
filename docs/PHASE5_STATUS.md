@@ -1,6 +1,21 @@
 # Phase 5 replaceable-backend status
 
-## Current checkpoint
+## Current checkpoint — 2026-10-09
+
+Fresh StarDist run `pilot-20261009-engineering-11-stardist` completed export,
+independent structural validation and deterministic QC rendering. It produced
+2,380 candidates: 2,308 accepted and 72 boundary exclusions. Of the accepted
+objects, 1,322 retain topology warnings; all remain engineering candidates.
+The QC-only 0.001-pixel repair has now been exercised at runtime. No biological
+approval or backend comparison follows from this success.
+
+Evidence: `validation/evidence/stages-1-4-20261009.json`; ignored detailed output
+is in `validation/output/pilot-20261009-engineering-11-stardist`. Run 10 retains
+its sandbox/Java preferences failure. Human H1/H2 review remains pending, and
+InstanSeg still fails explicitly as unimplemented. Stage 1–4 tissue/reporting
+work is described separately in `docs/STAGES_1_4_STATUS.md`.
+
+## Historical checkpoint — before the fresh run
 
 Phase 5 has started with the recommended StarDist-first sequence. The adapter
 engineering boundary is implemented; InstanSeg has not started and no backend
@@ -64,8 +79,8 @@ this first adapter scope.
 
 | Gate | State | Advancement condition |
 | --- | --- | --- |
-| P5-E1 identity-bearing adapter | Static engineering pass; runtime identity preflight and inference reached | Re-run focused/full regression tests at the resume commit. |
-| P5-E2 StarDist smoke execution | In progress, paused after fail-closed QC geometry finding | Create a fresh run identity, exercise the 0.001-pixel QC overlay repair, validate the package, and render deterministic QC without overwriting runs 06-09. |
+| P5-E1 identity-bearing adapter | Engineering pass, including run 11 runtime preflight | Recheck after adapter/runtime changes. |
+| P5-E2 StarDist smoke execution | Passed engineering export, validation and QC in run 11 | Preserve the fresh run and all earlier failed evidence; biological review remains separate. |
 | P5-H1 visual review | Pending after smoke run | Inspect DAPI overlay and failure populations; record reviewer/date/rationale. |
 | P5-S1 comparative scoring | Blocked by real Phase 3/4 gates | Score native and StarDist separately on the same frozen reviewed real references with prospective criteria. |
 | P5-E3 InstanSeg adapter | Not started | Begin only after StarDist export/preflight boundary is stable. |

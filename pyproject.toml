@@ -5,9 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "ifquant-platform"
 version = "0.1.0"
-description = "QuPath-first, Python-governed contracts and tooling for reproducible immunofluorescence cell analysis."
+description = "QuPath-first, governed high-resolution tissue imaging and spatial phenotyping."
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [{ name = "IFQuant contributors" }]
 dependencies = []
 
@@ -16,6 +18,13 @@ qc = [
   "numpy>=2.0",
   "Pillow>=11.0",
 ]
+imaging = [
+  "numpy>=2.0",
+  "Pillow>=11.0",
+  "tifffile>=2025.1",
+  "zarr>=3.0",
+]
+wsi-codecs = ["imagecodecs>=2025.3"]
 dev = [
   "jsonschema>=4.23",
   "pytest>=8.3",

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/spatial/v1/affine-transform.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.affine-transform/1"
+    },
+    "assay_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "from_frame": {
+      "type": "string",
+      "minLength": 1
+    },
+    "to_frame": {
+      "const": "base_image_pixels"
+    },
+    "section_relation": {
+      "enum": [
+        "same_section",
+        "serial_section"
+      ]
+    },
+    "method": {
+      "const": "provided_affine"
+    },
+    "matrix": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "landmarks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "landmark_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "fit",
+              "evaluation"
+            ]
+          },
+          "from": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "required": [
+          "landmark_id",
+          "role",
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "assay_sha256",
+    "source_sha256",
+    "from_frame",
+    "to_frame",
+    "section_relation",
+    "method",
+    "matrix",
+    "landmarks"
+  ],
+  "additionalProperties": false
+}

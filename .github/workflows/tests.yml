@@ -1,0 +1,34 @@
+name: Engineering checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  python:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.17'
+          enable-cache: true
+      - run: uv sync --locked --python ${{ matrix.python }} --extra dev --extra imaging
+      - run: uv run --no-sync pytest -q
+      - run: uv run --no-sync python -m ifquant_platform demo-histology --output validation/output/ci-demo
+      - run: uv run --no-sync python -m ifquant_platform validate-histology validation/output/ci-demo/run
+      - run: uv run --no-sync python -m ifquant_platform report-specimens validation/output/ci-demo/run --output validation/output/ci-specimens
+      - run: uv run --no-sync python -m ifquant_platform report-cells validation/fixtures/minimal-cell-package --output validation/output/ci-cells
+      - run: uv run --no-sync python -m ifquant_platform demo-spatial --output validation/output/ci-spatial
+      - run: uv run --no-sync python -m ifquant_platform validate-spatial validation/output/ci-spatial/assay.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: engineering-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            validation/output/ci-demo/run/
+            validation/output/ci-specimens/
+            validation/output/ci-cells/
+            validation/output/ci-spatial/

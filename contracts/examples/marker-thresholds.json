@@ -1,0 +1,11 @@
+{
+  "schema_version": "ifquant.marker-thresholds/1",
+  "thresholds": [
+    {
+      "name": "example-DAPI-signal",
+      "measurement_id": "dapi_cell_mean",
+      "unit": "native_sample_value",
+      "minimum_inclusive": 100
+    }
+  ]
+}

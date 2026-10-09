@@ -1,35 +1,57 @@
 # IFQuant Platform
 
-IFQuant Platform is the clean-slate, QuPath-first and Python-governed successor
-for reproducible immunofluorescence cell analysis. It separates interactive
-image work from contracts, provenance, dataset governance, validation,
-statistics, and scope-specific machine learning.
+| Claim | Status | Evidence (artefact path) | Notes |
+| --- | --- | --- | --- |
+| Core IF contracts, governance, references, splits and evaluation software run on engineering fixtures | Descriptive only | `validation/evidence/stages-1-4-20261009.json` | Existing fluorescence v1 boundaries retained; real-data gates remain open. |
+| Native QuPath pilot exported and passed structural checks | Descriptive only | `validation/PHASE1_QC_STATUS.md` | Run 05: 1,803 candidates; 194 accepted topology warnings await H2. |
+| StarDist fresh export and deterministic QC succeeded | Descriptive only | `validation/evidence/stages-1-4-20261009.json` | Run 11: 2,380 candidates, 2,308 accepted, 72 excluded; 1,322 accepted topology warnings. |
+| High-resolution intake, H&E candidate workflow and specimen/cell reports execute | Descriptive only | `validation/evidence/stages-1-4-20261009.json` | Synthetic TIFF/pyramid checks and a QuPath RGB bridge; no real H&E accuracy or scanner-scale benchmark. |
+| Scientific accuracy, injury severity, lineage and backend equivalence | Not established | `docs/STAGES_1_4_STATUS.md` | Independent data, reviewer decisions and endpoint-specific evaluation required. |
+| InstanSeg execution and native AnnData/SpatialData adapters | Not established | `docs/STAGES_5_6_PIPELINE.md` | These specific executors/adapters remain planned. |
+| Processed spatial RNA, explicit affine region links and genotype/TCR missingness | Descriptive only | `validation/evidence/stages-5-6-20261009.json` | Initial CSV-based engineering increment; native AnnData/SpatialData adapters and public-paper reproduction remain planned. |
 
-> **Scientific status:** the repository has completed its initial engineering
-> scaffold and a structurally valid QuPath pilot. It is not a scientifically
-> validated measurement system. No detector, backend, endpoint, or model is
-> approved as biologically valid, equivalent, or universal.
+IFQuant Platform is a **QuPath-first high-resolution tissue imaging and spatial
+phenotyping tool**, with lung injury/regeneration as its first application.
+It supports future obtainable images; public and synthetic data are development
+resources. A separate H&E module complements the governed fluorescence workflow.
+Optional spatial-omics and TME extensions are planned after the imaging core.
+The [stage 5–6 pipeline](docs/STAGES_5_6_PIPELINE.md) now defines those extensions;
+its first identity, coordinate and processed-molecular increment is implemented.
 
-The historical `IFQuant-Lung` repository remains a read-only G-SURF record.
-Historical authority files, release outputs, production layout, and unrelated
-working-tree changes are not copied into this core.
+> **Scientific status:** engineering checks do not approve a detector, endpoint,
+> lesion grade or model as biologically valid, equivalent or universal.
 
-## Current status
+Original source is [MIT licensed](LICENSE); [third-party terms](THIRD_PARTY_NOTICES.md)
+remain separate. The historical `IFQuant-Lung` repository remains read-only.
+The current changes are an engineering implementation of roadmap stages 1–4,
+not a scientific release. See [status and remaining gates](docs/STAGES_1_4_STATUS.md).
 
-| Workstream | Status | Evidence or next gate |
-| --- | --- | --- |
-| Clean-slate repository and Python package | Complete | Package, contracts, CLI, tests, and ownership boundaries are in place. |
-| Backend-neutral measurement contracts | Initial v1 complete | Closed schemas bind meaning, parameters, canonical hashes, and provenance. |
-| Canonical cell-object package | Initial v1 complete | Image, channel, calibration, annotation, geometry, measurements, model/detector, QC, review, and provenance are bound. |
-| Native QuPath executor | Full-frame engineering pilot complete | QuPath 0.7 ran the configured exporter on the complete 2048 × 2048 image with a manifest-bound symmetric detector-resolution edge guard. |
-| Structural validation CLI | Complete for v1 engineering scope | Referential, canonical, geometry, count, QC, review, and byte-integrity checks pass the pilot and fixtures. |
-| DAPI visual-QC evidence | Full-image boundary accepted for the engineering pilot; formal H1/H2 records open | Run 05 retains all 1,803 candidates and independently verifies the accepted four-side image-edge guard. The 194 accepted topology-warning objects remain conservatively ineligible pending H2. See [Phase 1 QC status](validation/PHASE1_QC_STATUS.md). |
-| StarDist and InstanSeg | Phase 5 in progress: StarDist identity preflight and inference reached; export paused at a fail-closed QC geometry integration check; InstanSeg remains interface-only | Exact StarDist measurement keys are now bound. A deterministic 0.001-pixel repair is staged only for the QC nucleus-outside-cell overlay metric and still requires a fresh run, package validation, and visual QC. No comparison or equivalence is claimed; see [Phase 5 status](docs/PHASE5_STATUS.md). |
-| Governed observations and correction lineage | Initial Phase 2 contract complete; real intake gated | A closed observation-set contract and strict read-only validator now bind source bytes, canonical manifest identities, producer code, explicit biological/acquisition identity, and annotation lineage with a reviewed selected revision. |
-| Nuclear references and safe splits | Initial Phase 3 engineering infrastructure passing; real-data gates open | Closed reference-object, ignore-region, reference-set, and split schemas plus strict read-only validators pass a four-image synthetic fixture. Geometry, review readiness, chronology, exact held-out IDs, and held-out reference content are fail-closed. This is not real reference evidence or a leakage proof. |
-| Native QuPath baseline evaluation | Engineering evaluator complete; real performance not evaluated | Frozen-plan and pixel-ledger schemas, independent WKT raster verification, deterministic detection/split-merge/boundary/count/measurement-bias metrics, CLI, and synthetic tests pass. The connected raw-image folder contains no reviewed reference labels; see [Phase 4 status](docs/PHASE4_STATUS.md). |
-| ML baselines and custom models | Planned | DAPI segmentation comparison, then morphology/intensity classifiers; custom CNNs only if justified. |
-| Scientific validation | Not established | Requires prospective, scope-specific evaluation by mouse, slide, batch, scanner, and endpoint. |
+| If you want… | Read |
+| --- | --- |
+| Run H&E, correction/review, cell or specimen workflows | [Tissue workflow guide](docs/TISSUE_WORKFLOW.md) |
+| Develop spatial RNA and optional multimodal/TME pipelines | [Stage 5–6 plan and initial commands](docs/STAGES_5_6_PIPELINE.md) |
+| See implementation evidence and remaining work | [Stage status](docs/STAGES_1_4_STATUS.md), [progress](PROGRESS.md) |
+| Review papers and the future omics/TME pipeline | [Methodology roadmap](notes/2026-10-09-development-roadmap.md) |
+| Understand governance and backend gates | [Responsibilities](docs/RESPONSIBILITY_BOUNDARIES.md), [StarDist status](docs/PHASE5_STATUS.md) |
+| Inspect human decisions and AI contributions | [Development record](DEVELOPMENT.md) |
+| Continue development | [Agent context](AI_CONTEXT.md) |
+
+## Try it yourself
+
+From a clean clone, with Python 3.11+ and uv installed; no image download required:
+
+```powershell
+uv sync --locked --extra dev --extra imaging
+uv run --no-sync python -m ifquant_platform demo-histology --output validation/output/demo
+uv run --no-sync python -m ifquant_platform validate-histology validation/output/demo/run
+uv run --no-sync python -m ifquant_platform report-specimens validation/output/demo/run --output validation/output/specimen-demo
+```
+
+Open `validation/output/demo/run/report.html` and
+`validation/output/specimen-demo/report.html`. Use fresh destination names for
+subsequent runs. The demo is entirely synthetic and deliberately leaves review
+pending. For real-image intake, QuPath export, immutable corrections, marker
+thresholds and ordinal forms, follow the [guide](docs/TISSUE_WORKFLOW.md).
 
 ## Architecture
 
@@ -190,7 +212,7 @@ flowchart LR
     P2["Phase 2<br/>governance software complete<br/>real intake gated"]
     P3["Phase 3<br/>contracts + synthetic fixture pass<br/>real reference/split gates open"]
     P4["Phase 4<br/>evaluator complete<br/>real scoring gated"]
-    P5["Phase 5<br/>StarDist adapter in progress<br/>InstanSeg not started"]
+    P5["Phase 5<br/>StarDist engineering export complete<br/>InstanSeg not started"]
     P6["Phase 6<br/>object-classifier baselines"]
     P7["Phase 7<br/>QuPath correction loop"]
     P8["Phase 8<br/>conditional custom models"]
@@ -220,10 +242,10 @@ flowchart LR
 5. Use the implemented Phase 4 evaluation contract and algorithms; approve
    study-specific numeric acceptance criteria before evaluating the native
    QuPath baseline on real frozen references.
-6. Resume StarDist with a new run identity; exercise the staged QC-only
-   geometry repair, validate the canonical package, render deterministic QC,
-   and record review before starting the separate InstanSeg adapter. Keep
-   method, weights, preprocessing, and runtime identities distinct.
+6. Review the successful StarDist run 11 package and QC, especially its 1,322
+   topology warnings, before a biological-use decision or backend comparison.
+   InstanSeg remains separate; keep method, weights, preprocessing, and runtime
+   identities distinct.
 7. Evaluate DAPI instance segmentation using detection, split/merge, boundary,
    count, and downstream measurement-bias evidence.
 8. Add morphology/intensity classifier baselines, calibration, uncertainty,
@@ -304,10 +326,11 @@ held-out ID list
 `44f3c019439012f5f0136129747a02e98a83354a84e42120f565cd9cdaa70f67`,
 and held-out reference content
 `a16120a41f7bf114a4c1608cca05757c09a119f50d290abd5e09861645a25900`.
-The current full verification run passes all 112 tests, including the optional
-QC-rendering tests with Pillow/NumPy installed; 130 schema/contract subtests
-also pass. Without those optional image dependencies, the two rendering-only
-tests skip explicitly; the standard-library runtime checks never skip.
+The latest 2026-10-09 integrated regression passes **156 tests and 144 subtests**,
+including tissue and spatial foundations; see the checked-in evidence records.
+Install the dev and imaging extras for the full suite. The standard-library core
+CLI still runs without optional imaging or omics libraries. Earlier checkpoints
+(112/130 baseline and 135/139 tissue tranche) remain in the historical records.
 
 Phase 3 v1 deliberately accepts only a narrow, fail-closed 2D polygon subset.
 It enforces canonical topology, containment in the closed image domain and the

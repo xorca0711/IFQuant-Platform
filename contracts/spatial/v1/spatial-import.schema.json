@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/spatial/v1/spatial-import.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.spatial-import/1"
+    },
+    "assay_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "specimen_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "subject_id",
+        "species",
+        "specimen_id",
+        "section_id"
+      ],
+      "additionalProperties": false
+    },
+    "entity_type": {
+      "enum": [
+        "spot",
+        "nucleus",
+        "cell"
+      ]
+    },
+    "coordinate_frame": {
+      "type": "object",
+      "properties": {
+        "frame_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "pixel",
+            "um"
+          ]
+        },
+        "axes": {
+          "const": [
+            "x",
+            "y"
+          ]
+        },
+        "origin": {
+          "const": "top_left"
+        },
+        "y_direction": {
+          "const": "down"
+        }
+      },
+      "required": [
+        "frame_id",
+        "unit",
+        "axes",
+        "origin",
+        "y_direction"
+      ],
+      "additionalProperties": false
+    },
+    "observations_csv": {
+      "type": "string",
+      "minLength": 1
+    },
+    "features_csv": {
+      "type": "string",
+      "minLength": 1
+    },
+    "counts_csv": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "assay_id",
+    "subject",
+    "entity_type",
+    "coordinate_frame",
+    "observations_csv",
+    "features_csv",
+    "counts_csv"
+  ],
+  "additionalProperties": false
+}

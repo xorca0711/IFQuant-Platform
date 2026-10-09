@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/regions.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.regions/1"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "coordinate_frame": {
+      "const": "base_image_pixels"
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "region_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "reference",
+              "artifact",
+              "lesion",
+              "training"
+            ]
+          },
+          "anatomy": {
+            "enum": [
+              "alveolar_parenchyma",
+              "airway",
+              "vessel",
+              "pleura",
+              "unresolved"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "wkt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "review": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "enum": [
+                  "pending",
+                  "accepted",
+                  "rejected",
+                  "uncertain"
+                ]
+              },
+              "reviewer": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "at": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "reviewer",
+              "at",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "region_id",
+          "role",
+          "anatomy",
+          "label",
+          "wkt",
+          "review"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_sha256",
+    "coordinate_frame",
+    "parent",
+    "regions"
+  ],
+  "additionalProperties": false
+}

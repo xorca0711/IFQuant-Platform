@@ -272,6 +272,11 @@ def build_parser() -> argparse.ArgumentParser:
     qc_parser.add_argument("--montage-per-group", type=int, default=8)
     qc_parser.add_argument("--montage-crop-size", type=int, default=192)
     qc_parser.set_defaults(handler=_render_qc)
+    # Optional imaging dependencies are loaded only by the selected command.
+    from .tissue_cli import add_commands
+    add_commands(subparsers)
+    from .spatial_cli import add_commands as add_spatial_commands
+    add_spatial_commands(subparsers)
     return parser
 
 

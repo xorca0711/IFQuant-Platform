@@ -1,0 +1,150 @@
+{
+  "schema_version": "ifquant.engineering-evidence/1",
+  "date": "2026-10-09",
+  "scope": "engineering implementation of stages 1-4; no scientific validation or human review acceptance",
+  "base_commit": "fad4c18f71f849b7d7b4479269cac6bf1279e8c7",
+  "working_tree_changes": true,
+  "environment": {
+    "os": "Windows ARM64",
+    "python": "3.12.10",
+    "uv": "0.11.17",
+    "qupath": "0.7.0",
+    "dependency_lock": {
+      "path": "uv.lock",
+      "sha256": "a52e52d875cb788a49cea30f4f6bc1e72eb1833477381de0fcd5e18925e4d11e"
+    }
+  },
+  "checks": {
+    "baseline": "112 tests, 130 subtests passed",
+    "full_regression": {
+      "passed": 134,
+      "failed": 1,
+      "subtests_passed": 115,
+      "failure": "Expected schema inventory was 15, now 24",
+      "path": "validation/output/audit-20261009/full-tests.log",
+      "sha256": "35e345f74074ed3c8a47b43a23c55effe102b16c19e2ca480d75b3f70f26ed9e"
+    },
+    "affected_repair_run": {
+      "passed": 24,
+      "subtests_passed": 24,
+      "path": "validation/output/audit-20261009/tissue-final-tests.log",
+      "sha256": "ce5ffe279e2c2049fa28571c133f4d6d8151a67c14e8c4b3a8d9ded4fc56f56f"
+    },
+    "final_report_changes": {
+      "passed": 4,
+      "path": "validation/output/audit-20261009/report-final-tests.log",
+      "sha256": "6a221d7dd3accb4104bde90a800bea45cfd01f7580b075074746a13c30dd6d52"
+    },
+    "accounted_test_total": 135,
+    "accounted_subtest_total": 139,
+    "lint": {
+      "status": "passed",
+      "path": "validation/output/audit-20261009/lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    "locked_offline_sync": "passed",
+    "sdist_and_wheel_build": "passed",
+    "remote_ci": "configured; not observed",
+    "accepted_ordinal_and_invalid_review_dates": {
+      "passed": 1,
+      "path": "validation/output/audit-20261009/ordinal-final-test.log",
+      "sha256": "f99ab34c7165142f25e63204d8e1705f02e178f2539062a1dffdb0b7ebac980e"
+    }
+  },
+  "stardist": {
+    "run": "validation/output/pilot-20261009-engineering-11-stardist",
+    "candidates": 2380,
+    "accepted": 2308,
+    "boundary_exclusions": 72,
+    "accepted_topology_warnings": 1322,
+    "package_canonical_sha256": "b917816d6ae4c75d21493d2ecb94649a444bd100763c925f6ac4d6f022ffcd4a",
+    "structural_status": "valid",
+    "validation": {
+      "path": "validation/output/pilot-20261009-engineering-11-stardist/validation.json",
+      "sha256": "7f7b564fae9119f8a798287b6032139fac100427fdd7848227b83d00a642eeab"
+    },
+    "qc": {
+      "path": "validation/output/pilot-20261009-engineering-11-stardist/qc-render/qc-manifest.json",
+      "sha256": "bbddedacaf6a8c09259e61e75635d12bd2ad71d91209e045210b18edcb93733f"
+    },
+    "human_review_completed": false
+  },
+  "histology": {
+    "run": "validation/output/tissue-release-20261009-final",
+    "package_canonical_sha256": "aae8f0c9fcdec6eed9c24bb77846552d5525175fc5647ded9e344ee49d1a1fca",
+    "runtime": {
+      "invocation_elapsed_seconds": 1.672000000020489,
+      "process_peak_resident_bytes": 156135424,
+      "schema_version": "ifquant.run-metrics/1",
+      "scope": "process high-water memory; resume elapsed covers only this invocation",
+      "total_verified_tiles": 4,
+      "verified_tiles_per_second": 2.392344497578339
+    },
+    "measurements": {
+      "regions": [
+        {
+          "airspace_candidate_fraction": 0.35815168574532086,
+          "airspace_candidate_pixels": 274327,
+          "anatomy": "alveolar_parenchyma",
+          "annotated_lesion_fraction_of_tissue": null,
+          "artifact_pixels": 20480,
+          "class_pixels": [
+            258591,
+            201637,
+            31397
+          ],
+          "dense_candidate_area_um2": null,
+          "dense_candidate_fraction_of_tissue": null,
+          "eligible_reference_area_um2": 191488,
+          "reference_pixels": 786432,
+          "reference_review": "pending",
+          "region_id": "synthetic-reference",
+          "reviewed_lesion_tissue_pixels": 0,
+          "scientific_validation": false,
+          "severity_score": null,
+          "tissue_material_area_um2": 122906.25,
+          "tissue_pixels": 491625
+        }
+      ]
+    },
+    "report": {
+      "path": "validation/output/tissue-release-20261009-final/run/report.html",
+      "sha256": "edf4a18618414940ac7e291b41feda9aba6684696faf8c646b0b3c0f7cf8ef6f"
+    },
+    "specimen_report": {
+      "path": "validation/output/tissue-release-20261009-final/specimen-report-final/summary.json",
+      "sha256": "c2b90bcbc1109f204ed51442d5339a5ae2f43905a9ad747d659d033d6d35fff7"
+    },
+    "pending_review": {
+      "path": "validation/output/tissue-release-20261009-final/pending-review.json",
+      "sha256": "51c46d773d86b4a7407117edbf1f8b513051262d19a0985c74e2d7a2753482ac"
+    },
+    "cell_report": {
+      "path": "validation/output/tissue-release-20261009-final/cell-report-final/summary.json",
+      "sha256": "d7d56889fdd3fb381e456593ba2023436d0ddd3ec08360b55730fd962c446c95"
+    }
+  },
+  "qupath_brightfield_bridge": {
+    "height": 768,
+    "native_rgb_pixels_equal": true,
+    "scope": "synthetic RGB only; vendor WSI untested",
+    "status": "passed",
+    "width": 1024,
+    "source": {
+      "path": "validation/output/brightfield-bridge-20261009-02/source.json",
+      "sha256": "a7408188bd34d207922f31f46a23d2514f50b40992ac4c4974f396ea2122944e"
+    },
+    "script": {
+      "path": "qupath/scripts/ExportBrightfield.groovy",
+      "sha256": "5ebd91dddbf010ee12d7c9480f21a51814bd505e001b18bd6b976209d4eb6a38"
+    }
+  },
+  "remaining": [
+    "Real vendor H&E/large-slide intake and performance",
+    "Independent tissue, artifact, anatomy and lesion reference labels",
+    "Human segmentation warning and pathology review",
+    "Scientific accuracy and ordinal agreement",
+    "IF-H&E transforms and omics adapters"
+  ],
+  "data_policy": "Detailed runtime/images are local Git-ignored evidence; this portable summary is checked in."
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "ifquant.ordinal-rubric/1",
+  "rubric_id": "synthetic-workflow-demonstration",
+  "description": "Software demonstration only. Replace with a prospectively defined, anatomy-specific study rubric before biological use.",
+  "reference": "Synthetic fixture; no biological severity scale is claimed.",
+  "endpoints": [
+    {
+      "endpoint_id": "synthetic-review-example",
+      "anatomies": ["alveolar_parenchyma"],
+      "levels": [
+        {"score": 0, "label": "Example level zero", "definition": "Synthetic code for testing the form, not absence of injury."},
+        {"score": 1, "label": "Example level one", "definition": "Synthetic code for testing the form, not an injury grade."}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/image-source.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.image-source/1"
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "species": {
+          "type": "string",
+          "minLength": 1
+        },
+        "specimen_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "subject_id",
+        "species",
+        "specimen_id",
+        "section_id"
+      ],
+      "additionalProperties": false
+    },
+    "modality": {
+      "enum": [
+        "he",
+        "fluorescence"
+      ]
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "size_bytes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "reader": {
+          "enum": [
+            "tiff",
+            "pillow"
+          ]
+        },
+        "series": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "reader",
+        "series",
+        "level"
+      ],
+      "additionalProperties": false
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "base_width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "base_height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dtype": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scale_x": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "scale_y": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "pixel_size_x_um": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "pixel_size_y_um": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "base_width",
+        "base_height",
+        "channels",
+        "dtype",
+        "scale_x",
+        "scale_y",
+        "pixel_size_x_um",
+        "pixel_size_y_um"
+      ],
+      "additionalProperties": false
+    },
+    "calibration_source": {
+      "const": "user_declared_base_pixel_size"
+    }
+  },
+  "required": [
+    "schema_version",
+    "subject",
+    "modality",
+    "files",
+    "selection",
+    "grid",
+    "calibration_source"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/spatial/v1/molecular-context.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.molecular-context/1"
+    },
+    "assay_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "entity_type": {
+      "enum": [
+        "spot",
+        "nucleus",
+        "cell"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "modality": {
+            "enum": [
+              "transcript_genotype",
+              "tcr"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "modality",
+          "target_id"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modality": {
+            "enum": [
+              "transcript_genotype",
+              "tcr"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "measured",
+              "not_assayed",
+              "failed",
+              "ambiguous",
+              "not_reported"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "coverage": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "observation_id",
+          "modality",
+          "target_id",
+          "status",
+          "value",
+          "coverage"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 1000000
+    },
+    "status_counts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "measured",
+              "not_assayed",
+              "failed",
+              "ambiguous",
+              "not_reported"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "status",
+          "count"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "join_semantics": {
+      "const": "exact observation ID within one assay; no coordinate-nearest or cross-section cell matching"
+    },
+    "interpretation": {
+      "const": "RNA reference-only is not DNA wild type; clonotype presence does not establish antigen specificity"
+    },
+    "scientific_validation": {
+      "const": false
+    },
+    "producer_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "assay_sha256",
+    "entity_type",
+    "input",
+    "targets",
+    "observations",
+    "status_counts",
+    "join_semantics",
+    "interpretation",
+    "scientific_validation",
+    "producer_sha256"
+  ],
+  "additionalProperties": false
+}

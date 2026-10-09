@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ifquant.org/contracts/tissue/v1/he-profile.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "ifquant.he-profile/1"
+    },
+    "background_rgb": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 255
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "stain_vectors": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "tissue_od_sum_min": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "background_rgb",
+    "stain_vectors",
+    "tissue_od_sum_min",
+    "description"
+  ],
+  "additionalProperties": false
+}
