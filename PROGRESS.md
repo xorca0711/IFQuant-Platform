@@ -8,6 +8,52 @@ commit, push and new PR for the stage 1–4 work plus stage 5–6 initiation. Gi
 PR and workflow pages are authoritative for publication and remote CI state;
 no merge or deployment is included in this request.
 
+## Saved checkpoint — native interchange and lung replay in progress
+
+The user authorized priorities 1–2 of the current development order, then asked
+to refresh legacy-focused documentation and save progress. These priorities are
+distinct from the historical fluorescence Phase 2. See
+[the active execution plan](docs/DEVELOPMENT_PLAN.md) and
+[checkpoint note](notes/2026-10-09-priorities-1-2-checkpoint.md).
+
+Implemented for review: completed links/context validators; bounded sparse
+AnnData and classic Visium HDF5/Matrix Market adapters; AnnData export; a named-frame
+SpatialData exchange profile with optional RGB pyramids and region metadata;
+CLI commands; explicit `not_reported` for positions missing from a supplied
+matrix; optional locked dependencies; native adapter regression tests.
+
+Current checks: initial focused run **38 passed, 1 failed** on SpatialData's
+double-underscore column restriction. Generated fields were renamed; the failed
+scene/round-trip/tampering test then **passed**. Scoped Ruff and compilation pass.
+The full integrated suite has not been rerun for this checkpoint. The prior
+156-test/144-subtest result below belongs to the earlier committed foundation.
+
+GSM6108348 (Kasmani Day 3 young lung) source files are downloaded and pinned in
+`datasets/examples/kasmani-day3-young.json`. The image is a 2000×1834 derivative;
+the matrix has 32,285 features, 2,486 barcodes and 8,404,880 nonzero entries.
+The five-gene replay script is written but **not yet executed end to end**.
+No physical calibration, pathology regions or paper-level reproduction is claimed.
+
+SpatialData installation on Windows ARM64 failed at pyogrio's missing GDAL build.
+An isolated x64 environment at `.venv-spatial` now has the locked dependencies;
+its interpreter is under ignored `validation/runtime-cache/python`. The original
+`.venv` remains available. No raw data or environment files should be committed.
+
+Remaining work, in order:
+
+1. Run/debug `scripts/replay_lung_example.py` on the pinned cache; verify counts,
+   both interchange round trips, overlay and memory/time report.
+2. Complete edge-case/capacity checks and optional-dependency CI coverage.
+3. Refresh README, architecture, workflow/subdirectory docs and phase-record
+   navigation to the broader product scope; preserve historical evidence.
+4. Run the appropriate integrated checks, record portable evidence, and update
+   existing PR #2 with the final implementation. Do not merge.
+
+The saved evidence record is
+`validation/evidence/priorities-1-2-20261009.json`; its status is in progress.
+
+## Earlier foundation checkpoint
+
 Stages 1–4 have an implemented engineering workflow: locked dependencies/CI,
 successful StarDist export, windowed high-resolution TIFF intake, QuPath
 brightfield bridge, separate H&E candidates/corrections, IF cell neighborhoods,

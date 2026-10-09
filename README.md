@@ -1,5 +1,11 @@
 # IFQuant Platform
 
+> **Current development:** native spatial interchange and a real lung intake
+> example are in progress. See the [active plan](docs/DEVELOPMENT_PLAN.md),
+> [interchange guide](docs/SPATIAL_INTERCHANGE.md) and [saved state](PROGRESS.md).
+> The broader documentation refresh is underway; the claims below describe the
+> preceding stage 1–6 foundation until the new evidence is finalized.
+
 | Claim | Status | Evidence (artefact path) | Notes |
 | --- | --- | --- | --- |
 | Core IF contracts, governance, references, splits and evaluation software run on engineering fixtures | Descriptive only | `validation/evidence/stages-1-4-20261009.json` | Existing fluorescence v1 boundaries retained; real-data gates remain open. |

@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-09",
+  "status": "in_progress_checkpoint",
+  "scope": "development priorities 1-2; not historical fluorescence Phase 2",
+  "focused_checks": [
+    {
+      "result": "38 passed, 1 failed; generated SpatialData names rejected",
+      "log": "validation/output/spatial-adapter-tests.log",
+      "sha256": "e157a916465b943cea2f313746fcc7ad300daa479f3845f048132324d36c6a19"
+    },
+    {
+      "result": "failed SpatialData scene test passed after naming correction; 1 passed",
+      "log": "validation/output/spatial-scene-test.log",
+      "sha256": "801ce325317ba11dbb016bdb46b9d0999ece937c47264844abba653649260531"
+    }
+  ],
+  "lint": "scoped Ruff passed",
+  "compile": "new adapter/exchange/replay files compiled",
+  "integrated_suite": "not run for this checkpoint",
+  "real_lung_replay": "script written, inputs downloaded; not executed end to end",
+  "scientific_validation": false
+}

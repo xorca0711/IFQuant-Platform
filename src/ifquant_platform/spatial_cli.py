@@ -30,7 +30,63 @@ def _demo(args):
     return demo_spatial(args.output)
 
 
+def _validate_links(args):
+    from .spatial_validation import validate_links
+    return validate_links(args.package, args.assay, args.source, args.regions)
+
+
+def _validate_context(args):
+    from .spatial_validation import validate_context
+    return validate_context(args.context, args.assay)
+
+
+def _native(args):
+    from .spatial_adapters import import_native
+    return import_native(args.config, args.output)
+
+
+def _export_anndata(args):
+    from .spatial_adapters import export_anndata
+    return export_anndata(args.assay, args.output)
+
+
+def _export_spatialdata(args):
+    from .spatial_exchange import export_spatialdata
+    return export_spatialdata(args.assay, args.output, scene_path=args.scene)
+
+
+def _import_spatialdata(args):
+    from .spatial_exchange import import_spatialdata
+    return import_spatialdata(args.store, args.output)
+
+
 def add_commands(parsers):
+    p = parsers.add_parser('validate-spatial-links', help='recompute and verify a completed spatial link package')
+    p.add_argument('package')
+    for name in ('assay', 'source', 'regions'):
+        p.add_argument('--'+name, required=True)
+    p.set_defaults(handler=_validate_links)
+    p = parsers.add_parser('validate-molecular-context', help='verify processed molecular calls and missingness')
+    p.add_argument('context')
+    p.add_argument('--assay', required=True)
+    p.set_defaults(handler=_validate_context)
+    p = parsers.add_parser('import-spatial-native', help='bounded AnnData or classic Visium import')
+    p.add_argument('config')
+    p.add_argument('--output', required=True)
+    p.set_defaults(handler=_native)
+    p = parsers.add_parser('export-anndata', help='export sparse raw counts, selected XY and observation metadata')
+    p.add_argument('assay')
+    p.add_argument('--output', required=True)
+    p.set_defaults(handler=_export_anndata)
+    p = parsers.add_parser('export-spatialdata', help='export a named-frame SpatialData store with optional image/regions')
+    p.add_argument('assay')
+    p.add_argument('--output', required=True)
+    p.add_argument('--scene', help='explicit pixel image/region scene and transformations')
+    p.set_defaults(handler=_export_spatialdata)
+    p = parsers.add_parser('import-spatialdata', help='reimport an IFQuant-profile SpatialData store')
+    p.add_argument('store')
+    p.add_argument('--output', required=True)
+    p.set_defaults(handler=_import_spatialdata)
     p = parsers.add_parser('import-spatial', help='import explicit XY observations and sparse raw RNA counts')
     p.add_argument('config')
     p.add_argument('--output', required=True)

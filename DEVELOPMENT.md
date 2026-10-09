@@ -21,6 +21,9 @@ certify that history. Human pathology review has not been supplied.
 | 2026-10-09 | Structure and initiate stages 5–6 | User | User | Authorized planning and initial implementation | Shared spatial/assay foundation first; lung scope and optional TME retained. |
 | 2026-10-09 | Commit, push and open a GitHub PR | User | User | Authorized | Explicit follow-up request; no merge authorization inferred. |
 | 2026-10-09 | CSV/affine foundation before native spatial libraries | Codex | Pending human review | Implemented for review | Test identity, coordinate and missingness behavior before adding heavy adapters or inference methods. |
+| 2026-10-09 | Proceed through priorities 1–2 | User | User | Authorized implementation | Native interchange and one real lung intake replay; not the historical fluorescence Phase 2. |
+| 2026-10-09 | Refresh legacy-focused repository materials and save progress | User | User | Authorized documentation/checkpoint | Preserve historical evidence while making current scope and remaining jobs explicit. |
+| 2026-10-09 | Native adapters and named-frame SpatialData exchange | Codex | Pending human review | In-progress checkpoint | Focused fixtures exercised; real replay and integrated verification remain. |
 
 ## Rejected or substantially revised AI proposals
 
@@ -29,6 +32,8 @@ certify that history. Human pathology review has not been supplied.
 | 2026-10-09 | Constrain identity to a public-data research tool | User | Rejected explicitly. Product targets future high-resolution images; public and synthetic data are development resources. |
 | 2026-10-09 | Treat annotated lesion area as a generally reviewed lesion fraction | Codex implementation review | Renamed to annotated lesion fraction; accepted polygons do not establish exhaustive negative coverage. |
 | 2026-10-09 | Use Groovy JSON imports for QuPath brightfield bridge | Runtime evidence / Codex | QuPath lacked those classes. Switched to bundled GsonTools; fresh synthetic export succeeded. |
+| 2026-10-09 | Double-underscore generated table fields | SpatialData runtime / Codex | SpatialData rejects names beginning with double underscores. Renamed generated fields; scene round-trip test passed. |
+| 2026-10-09 | Native ARM64 installation for the full SpatialData stack | Dependency build / Codex | pyogrio required unavailable GDAL build inputs. Used an isolated x64 binary environment without changing the user's default Python. |
 
 No human scientific approval, model equivalence decision, or code acceptance is
 inferred from test completion. See [current progress](PROGRESS.md) and
