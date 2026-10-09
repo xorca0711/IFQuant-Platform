@@ -277,6 +277,8 @@ def build_parser() -> argparse.ArgumentParser:
     add_commands(subparsers)
     from .spatial_cli import add_commands as add_spatial_commands
     add_spatial_commands(subparsers)
+    from .analysis_cli import add_commands as add_analysis_commands
+    add_analysis_commands(subparsers)
     return parser
 
 

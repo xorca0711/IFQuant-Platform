@@ -1,5 +1,7 @@
 # Stages 1–4 engineering checkpoint — 2026-10-09
 
+> **Later qualification:** the real WSI reader benchmark, pixel-classifier bridge, calibrated 2D profiles and reviewer agreement now extend this stage 1–4 foundation. See [the execution report](EXECUTION_REPORT.md) and [imaging qualification](IMAGING_QUALIFICATION.md). Historical run evidence below remains valid within its stated scope.
+
 The user authorized implementation of stages 1–4 and MIT licensing. These stages
 map to roadmap WP0–WP3; the older Phase 1–5 validation/backend labels describe a
 different axis and retain their scientific gates.

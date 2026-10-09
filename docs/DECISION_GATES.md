@@ -1,5 +1,7 @@
 # Decision gates
 
+> **Platform scope:** these historical fluorescence gates remain applicable to canonical cell backends. H&E, RNA, registration and TME gates are now listed per job in [the current register](DEVELOPMENT_PLAN.md); independent branches need not wait for omics or fluorescence model promotion.
+
 Decision gates distinguish machine-verifiable engineering facts from human
 review and scientific promotion. A downstream stage may reject evidence; it may
 not reinterpret an absent review as approval.

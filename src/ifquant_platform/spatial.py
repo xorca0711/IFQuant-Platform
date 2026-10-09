@@ -61,7 +61,7 @@ def _observations(path):
         oid = exact_id(row['observation_id'], 'observation_id')
         require(oid not in seen, 'duplicate observation ID')
         seen.add(oid)
-        require(row['assay_status'] in ('measured', 'not_assayed', 'failed'), 'invalid RNA assay status')
+        require(row['assay_status'] in ('measured', 'not_assayed', 'failed', 'not_reported'), 'invalid RNA assay status')
         try:
             x, y = float(row['x']), float(row['y'])
         except ValueError as exc:
@@ -288,6 +288,21 @@ def link_spatial(assay_path, source_path, regions_path, transform_path, output, 
     source = validate_source(load_strict_json(source_path))
     regions = validate_regions(load_strict_json(regions_path), source)
     transform = load_strict_json(transform_path)
+    doc = build_links(assay, source, regions, transform, uncertainty_um)
+    validate_source(source)
+    for record in assay['inputs'].values():
+        verify_file(record)
+    root = Path(output)
+    root.mkdir(parents=True, exist_ok=False)
+    write_json(root/'links.json', doc)
+    (root/'links.csv').write_text(links_csv(doc), encoding='utf-8', newline='')
+    (root/'report.html').write_text(links_html(doc), encoding='utf-8')
+    return {'output': str(root), 'observations': len(doc['links']),
+            'status_counts': doc['status_counts'], 'scientific_validation': False}
+
+
+def build_links(assay, source, regions, transform, uncertainty_um):
+    """Recompute all scientific fields from validated inputs, without publishing files."""
     errors = validate_transform(transform, assay, source)
     links = _link(assay, source, regions, transform, uncertainty_um)
     inverse = inverse_affine(transform['matrix'])
@@ -316,23 +331,24 @@ def link_spatial(assay_path, source_path, regions_path, transform_path, output, 
            'registration_status': 'evaluation_landmarks_supplied' if errors['evaluation']['count'] else 'not_evaluated',
            'assignment_semantics': 'point_center_to_region_only; no cell identity or spot-area deconvolution',
            'scientific_validation': False, 'producer_sha256': file_sha256(__file__)}
-    validate_source(source)
-    for record in assay['inputs'].values():
-        verify_file(record)
-    root = Path(output)
-    root.mkdir(parents=True, exist_ok=False)
-    write_json(root/'links.json', doc)
-    with (root/'links.csv').open('w', newline='', encoding='utf-8') as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(links[0]))
-        writer.writeheader()
-        writer.writerows(links)
+    return doc
+
+
+def links_csv(doc):
+    import io
+    stream = io.StringIO(newline='')
+    writer = csv.DictWriter(stream, fieldnames=list(doc['links'][0]))
+    writer.writeheader()
+    writer.writerows(doc['links'])
+    return stream.getvalue()
+
+
+def links_html(doc):
     body = '<!doctype html><html lang="en"><meta charset="utf-8"><title>Spatial region links</title>'
     body += '<style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:1rem}pre{white-space:pre-wrap}</style>'
     body += '<h1>Spatial RNA and tissue regions</h1><p>Engineering associations of point centers with supplied regions. '
     body += 'No cell identity, lesion severity, or causal molecular phenotype is inferred. Serial sections do not identify the same cells.</p>'
-    body += '<p>Registration: '+html.escape(doc['registration_status'])+'. Boundary uncertainty: '+str(uncertainty_um)+' µm.</p>'
+    body += '<p>Registration: '+html.escape(doc['registration_status'])+'. Boundary uncertainty: '+str(doc['boundary_uncertainty_um'])+' µm.</p>'
     body += '<pre>'+html.escape(str(doc['status_counts']))+'</pre><p><a href="links.csv">Observation links</a> · '
     body += '<a href="links.json">Counts, landmarks and provenance</a></p></html>'
-    (root/'report.html').write_text(body, encoding='utf-8')
-    return {'output': str(root), 'observations': len(links), 'status_counts': doc['status_counts'],
-            'scientific_validation': False}
+    return body

@@ -19,6 +19,7 @@ from ifquant_platform.spatial import (
     validate_transform,
 )
 from ifquant_platform.spatial_demo import demo_spatial
+from ifquant_platform.spatial_validation import validate_context, validate_links
 
 
 @pytest.fixture
@@ -30,6 +31,33 @@ def sample(tmp_path):
 
 def inputs(root):
     return [load_strict_json(root/name) for name in ('assay.json', 'source.json', 'regions.json', 'transform.json')]
+
+
+def test_completed_products_validate_without_rewriting(sample):
+    assert validate_links(sample/'linked', sample/'assay.json', sample/'source.json', sample/'regions.json')['status'] == 'valid'
+    assert validate_context(sample/'context.json', sample/'assay.json')['status'] == 'valid'
+
+
+@pytest.mark.parametrize('product', ['links', 'context', 'csv', 'report'])
+def test_completed_product_tampering_is_rejected(sample, product):
+    if product == 'links':
+        path = sample/'linked/links.json'
+        doc = load_strict_json(path)
+        doc['region_rna_counts'][0]['raw_count_sum'] += 1
+        write_json(path, doc, replace=True)
+    elif product == 'context':
+        path = sample/'context.json'
+        doc = load_strict_json(path)
+        doc['observations'][0]['coverage'] = 999
+        write_json(path, doc, replace=True)
+    else:
+        path = sample/'linked'/('links.csv' if product == 'csv' else 'report.html')
+        path.write_text(path.read_text(encoding='utf-8')+'changed', encoding='utf-8')
+    with pytest.raises(ContractError, match='differs'):
+        if product == 'context':
+            validate_context(sample/'context.json', sample/'assay.json')
+        else:
+            validate_links(sample/'linked', sample/'assay.json', sample/'source.json', sample/'regions.json')
 
 
 def test_roundtrip_rotation_reflection_anisotropy():

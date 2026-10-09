@@ -1,0 +1,27 @@
+{
+  "schema_version": "ifquant.public-example/1",
+  "study": "Kasmani et al. 2023, A spatial sequencing atlas of age-induced changes in the lung during influenza infection",
+  "paper_url": "https://www.nature.com/articles/s41467-023-42021-y",
+  "series": "GSE202322",
+  "sample": "GSM6108348",
+  "sample_url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM6108348",
+  "author_code": "https://github.com/ryanjbrown21/Flu_Spatial_Sequencing/blob/main/Visum_Flu_3_timepoints_RJB.Rmd",
+  "scope": "One Day 3 young C57BL/6 mouse lung Visium library; software interoperability and descriptive selected raw RNA counts only",
+  "identity_limit": "The deposited library is the available grouping identity. An independent animal identifier and section number are not supplied; the sample proxy must not be used to claim subject-level replication.",
+  "image_limit": "2000 x 1834 RGB tissue_hires_image is a downsampled H&E derivative, not native microscope resolution. Independent pixel calibration and registration landmarks are unavailable.",
+  "terms": "Public GEO supplementary data retrieved for this example with attribution. No dataset-specific license was found in the inspected GEO metadata. The repository MIT license does not relicense source data or author code. Raw downloads are excluded from Git.",
+  "genes": [
+    {"feature_id": "ENSMUSG00000056370", "feature_name": "Sftpb"},
+    {"feature_id": "ENSMUSG00000000805", "feature_name": "Car4"},
+    {"feature_id": "ENSMUSG00000053977", "feature_name": "Cd8a"},
+    {"feature_id": "ENSMUSG00000023274", "feature_name": "Cd4"},
+    {"feature_id": "ENSMUSG00000030786", "feature_name": "Itgam"}
+  ],
+  "gene_selection": "Five named genes plotted in the authors' analysis script; a declared engineering panel, not a regeneration program or injury classifier.",
+  "files": [
+    {"name": "GSM6108348_Day3_Young_filtered_feature_bc_matrix.h5", "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_filtered_feature_bc_matrix.h5", "size_bytes": 11641726, "sha256": "34ba72860ee308c3d883dfb09a2e6b00b814dd013bc7250cd56933ee654432ed"},
+    {"name": "GSM6108348_Day3_Young_scalefactors_json.json.gz", "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_scalefactors_json.json.gz", "size_bytes": 170, "sha256": "7223cc0bc132c80c84e60463d72bae7cd95d0914a9259b3d6223f8551b16b72d"},
+    {"name": "GSM6108348_Day3_Young_tissue_hires_image.png.gz", "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_tissue_hires_image.png.gz", "size_bytes": 3074775, "sha256": "ae08a7303e00d9641a77227bb2c1f8d97055100b60c922d08e5c1e0dbd8974a8"},
+    {"name": "GSM6108348_Day3_Young_tissue_positions_list.csv.gz", "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_tissue_positions_list.csv.gz", "size_bytes": 71287, "sha256": "90dffd6d05bde59cec6e3b77e3935d7072957bd81ca070d48c2fffb372df0974"}
+  ]
+}

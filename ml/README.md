@@ -4,8 +4,7 @@
 portable model packages. It does not contain Groovy training code or implicit
 datasets.
 
-Initial segmentation candidates are native QuPath, StarDist, and InstanSeg.
-Adapters expose a common input/output contract, while each backend retains its
+Implemented cell executors are native QuPath and StarDist. InstanSeg remains a conditional unimplemented executor; shared model descriptors do not imply execution support. Implemented adapters use a common contract while each backend retains its
 own configuration, preprocessing, code, runtime, and model identity. Common
 packaging is not a backend-equivalence claim.
 
@@ -21,7 +20,7 @@ package records:
 - known failure modes and unsupported domains; and
 - parent model or fine-tuning lineage when applicable.
 
-Begin with DAPI instance segmentation. Before introducing a custom CNN for
+Within the fluorescence branch, begin with DAPI instance segmentation. The independent H&E branch has a frozen appearance baseline, a QuPath pixel-classifier export bridge and reviewed-mask comparisons. Optional RNA program/domain baselines are separate from model training; see [the current register](../docs/DEVELOPMENT_PLAN.md). Before introducing a custom CNN for
 object classification, establish morphology/intensity baselines from validated
 canonical features. Models are replaceable within declared scopes; no artifact
 in this directory should be labeled universal.

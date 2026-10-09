@@ -1,0 +1,176 @@
+{
+  "schema_version": "ifquant.engineering-evidence/1",
+  "date": "2026-10-09",
+  "scope": "development priorities 1–5; software and real-source checks, no scientific acceptance",
+  "scientific_validation": false,
+  "baseline_checkpoint": "2566fc1",
+  "merged_foundation": "c9531faf422d70cad10d90bc6ab2f09a4d908e9f",
+  "environment": {
+    "host": "Windows ARM64",
+    "python": "3.12.13",
+    "interpreter_architecture": "AMD64",
+    "uv": "0.11.17",
+    "qupath": "0.7.0",
+    "lock": {
+      "path": "uv.lock",
+      "sha256": "d9969096c349154071bb57a52fefaf52dbdc640f273c3662c5cc9590bfba2fc0",
+      "size_bytes": 827278
+    }
+  },
+  "register": {
+    "jobs": 31,
+    "status_counts": {
+      "implemented": 6,
+      "demonstrated": 9,
+      "revised_implemented": 4,
+      "implemented_with_gate": 9,
+      "conditional": 3
+    },
+    "artifact": {
+      "path": "docs/DEVELOPMENT_REGISTER.json",
+      "sha256": "bba7aa5c2404addf2e0c7d6bfc051457ed6402e53dbbb9d50a21acd53700fd04",
+      "size_bytes": 12887
+    }
+  },
+  "checks": {
+    "full_regression": {
+      "passed": 202,
+      "subtests_passed": 144,
+      "upstream_warnings": 41,
+      "seconds": 95.98,
+      "log": {
+        "path": "validation/output/priorities-1-5-integrated.log",
+        "sha256": "282b560233ad36f8f461ee2c82bb0aca1982803d9381d962c5285586e3c75d7f",
+        "size_bytes": 1150
+      }
+    },
+    "scoped_lint": {
+      "status": "passed",
+      "log": {
+        "path": "validation/output/priorities-1-5-scoped-lint.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "size_bytes": 19
+      }
+    },
+    "build": {
+      "status": "passed",
+      "log": {
+        "path": "validation/output/priorities-1-5-build-retry.log",
+        "sha256": "b339a638450295e83705d3ae6956c4d944381c82fc4aafc813fe8f5b0020bf60",
+        "size_bytes": 265
+      },
+      "artifacts": [
+        {
+          "path": "validation/output/build-priorities-1-5/.gitignore",
+          "sha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+          "size_bytes": 1
+        },
+        {
+          "path": "validation/output/build-priorities-1-5/ifquant_platform-0.1.0-py3-none-any.whl",
+          "sha256": "70b7c453b8b319a352c4ade0678c179c56a5b5d638db3750a075259a690aabf8",
+          "size_bytes": 152331
+        },
+        {
+          "path": "validation/output/build-priorities-1-5/ifquant_platform-0.1.0.tar.gz",
+          "sha256": "94aae28682eb9b67b6b8a53f51798f4126b0b3aebab7e57bc80c0b88c4c3236b",
+          "size_bytes": 617175
+        }
+      ]
+    },
+    "wheel_core_import": "passed with -S and optional modules absent",
+    "remote_ci": "Not part of this local evidence snapshot; GitHub workflow results are authoritative for the published head."
+  },
+  "lung_replay": "validation/evidence/priorities-1-2-20261009.json",
+  "whole_slide": {
+    "source_manifest": {
+      "path": "datasets/examples/public-qualification.json",
+      "sha256": "3fb17f95ad42cc6c8f78f8b518b8151077fc07352b1655fa2d6447944600ec02",
+      "size_bytes": 1320
+    },
+    "dimensions": [
+      46000,
+      32914
+    ],
+    "levels": 3,
+    "base_pixel_um": 0.499,
+    "source_bytes": 177552579,
+    "tiles": 64,
+    "tile_size": [
+      512,
+      512
+    ],
+    "median_read_seconds": 0.015159850037889555,
+    "sampled_peak_rss_bytes": 94547968,
+    "first_success": {
+      "path": "validation/output/whole-slide-run02/benchmark.json",
+      "sha256": "09688d4c7360e42dcb08a1063668a37fcb994d66206a5f8137ceb7abf2911570",
+      "size_bytes": 3988
+    },
+    "combined_command_replay": {
+      "path": "validation/output/public-qualification-run01/report.json",
+      "sha256": "7f7bff9b0c887846fc9e0d09e59e010ac52c5febc9bca51968057ea7c7bc5023",
+      "size_bytes": 1837
+    },
+    "combined_replay_median_read_seconds": 0.012125450011808425,
+    "combined_replay_peak_rss_bytes": 94924800,
+    "scope": "one-source reproducible window decoding, no full-slide analysis throughput or lung pathology accuracy"
+  },
+  "qupath_classifier": {
+    "status": "synthetic threshold exact pixel match",
+    "comparison": {
+      "path": "validation/output/pixel-classifier-run01/export/comparison-result.json",
+      "sha256": "3a8b8fa611a24c4aa038b50e693fed3c091f71dbf18009f4830e246fce244b2d",
+      "size_bytes": 1309
+    },
+    "runtime_log": {
+      "path": "validation/output/pixel-classifier-run01/export-retry.log",
+      "sha256": "0591948c75349b651d28e4377834257233072062139f3bc77dcabb3cd919692e",
+      "size_bytes": 1130
+    },
+    "bridge": {
+      "path": "qupath/scripts/ExportPixelClassifier.groovy",
+      "sha256": "2c4e1436d3e3fa31590bd343f048fa7e91c31e8f7a054ca41372a2358618cc05",
+      "size_bytes": 6395
+    },
+    "training": "none; untrained fixture"
+  },
+  "synthetic_analysis": {
+    "workflows": 10,
+    "result": {
+      "path": "validation/output/development-demo-run01/report.json",
+      "sha256": "9f75a710a2d9737b8a4b9c2e6359a891ab51d009c33f6fd0fa98a2a36386e659",
+      "size_bytes": 2387
+    }
+  },
+  "gotags_source": {
+    "rows": 240,
+    "pairs": 6,
+    "status": "matched",
+    "report": {
+      "path": "validation/output/public-qualification-run01/published-table-check.json",
+      "sha256": "680a8b9c242ee8d85943240904157e3bb48b0150a85abcb425e09f41b30df57f",
+      "size_bytes": 1007
+    },
+    "scope": "reported table/figure statistics; no cell-level NMS recomputation",
+    "source_analysis_revision": "4fb295bb0cce2a0fb238e70585a4769285694a6a",
+    "processed_cells": "not downloaded; portal requires sign-in"
+  },
+  "preserved_failures": [
+    {
+      "path": "validation/output/whole-slide-run01.log",
+      "sha256": "8f256abf8c459f01ef3cad243e3292a857a2a8ac62b9098584c345da81addab7",
+      "size_bytes": 582
+    },
+    {
+      "path": "validation/output/pixel-classifier-run01/export.log",
+      "sha256": "5beb22651ea3159a2c0f52d9fb43fba145fad005b7030da07b60d6ce963fe7df",
+      "size_bytes": 5095
+    },
+    {
+      "path": "validation/output/priorities-1-5-build.log",
+      "sha256": "41a01990a77343e34c3f23ab82c355d26b1594ef40669465394c898cfce41201",
+      "size_bytes": 883
+    }
+  ],
+  "remaining_scientific_gates": "See docs/DEVELOPMENT_REGISTER.json; independent pathology, biological programs/replicates, actual registration and processed-cell TME reproduction remain open"
+}

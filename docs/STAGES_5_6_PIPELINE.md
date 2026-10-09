@@ -1,20 +1,23 @@
 # Stages 5–6: spatial RNA and optional multimodal applications
 
-Plan and initial implementation: 2026-10-09. Stage 5 = roadmap WP4; stage 6 =
-WP5. These names do not replace the older Phase 5 segmentation/backend gate.
-The intended product remains a tool for future high-resolution tissue images,
-lung injury/regeneration first. Omics is optional; the imaging workflow stays usable alone.
+Updated 2026-10-09 after implementation through priorities 1–5. Stage 5 is
+roadmap WP4; stage 6 is WP5. These names do not replace the historical fluorescence
+Phase 5 backend gate. The imaging product targets future high-resolution images;
+RNA and TME remain optional.
 
-**Started in this change:** processed RNA interchange, exact IDs, affine coordinate
-checks, tissue-region links, and processed transcript-genotype/TCR missingness.
-**Not yet implemented:** native AnnData/SpatialData/Visium adapters, automatic
-registration, deconvolution, spatial inference or reproduction of a public paper.
-The runnable example is synthetic. This document defines the remaining pipeline
-and the evidence required to move each part beyond an engineering prototype.
+**Implemented:** exact-ID processed RNA/context, supplied affine links, native
+AnnData/Visium/SpatialData, the real Kasmani intake replay, RNA program/filtering
+and domain baselines, biological-unit associations, portable VALIS point export/QC,
+a processed MC38-OVA author-column adapter and frozen mixing hypotheses/nulls.
+**Still conditional:** real expert/reference qualification, actual paired-slide
+registration, full processed-cell TME reproduction, reference deconvolution,
+BANKSY and interaction/fusion comparisons. See the [31-job register](DEVELOPMENT_PLAN.md)
+and [analysis commands](ANALYSIS_WORKFLOW.md).
 
-Local verification: **156 tests and 144 subtests passed**, plus scoped Ruff and
-the synthetic CLI import/link/context demonstration. Exact input/output identities
-and logs are recorded in `validation/evidence/stages-5-6-20261009.json`.
+Local integrated verification: **202 tests and 144 subtests passed**. The real lung
+replay and public WSI/source-table checks are recorded in
+[the execution report](EXECUTION_REPORT.md). Public source-statistic reconciliation
+is not cell-level biological reproduction.
 
 ## Dependency graph
 
@@ -36,7 +39,7 @@ flowchart TD
 ```
 
 Registration checks are a dependency of spatial linkage, even though automatic
-registration is scheduled in stage 6. Stage 5 can use a supplied, measured transform
+registration qualification is represented in stage 6. Stage 5 can use a supplied, measured transform
 or a documented same-image scale conversion. Adjacent sections can support
 regional correspondence; they do not establish identical individual cells.
 
@@ -45,19 +48,17 @@ regional correspondence; they do not establish identical individual cells.
 | Step / status | Inputs and operations | Output | Exit evidence |
 | --- | --- | --- | --- |
 | **5A.1 Implemented foundation** | Explicit subject/specimen/section, spot/nucleus/cell entity, XY frame, observation table, feature IDs and sparse integer RNA counts. Validate exact IDs, duplicates, finite coordinates, assay status and input hashes. | `spatial-assay/1`, library totals, source inventory. | Unknown/duplicate IDs and noninteger counts rejected; measured zero distinguished from unassayed/failed; byte drift detected. |
-| **5A.2 Next adapter milestone** | Read an explicitly named raw-count layer from AnnData; read Visium positions, barcode/feature tables, sparse matrix and scale factors. Preserve barcode suffixes, duplicate gene symbols with unique feature IDs, and excluded observations. | Round-trip AnnData plus SpatialData elements mapped to named coordinate systems. | Exact observation/feature order and counts survive export/reimport; sparse storage remains sparse; no silent `.var_names_make_unique()` or barcode rewriting. |
+| **5A.2 Implemented native interchange** | Read an explicitly named raw-count layer from AnnData; read Visium positions, barcode/feature tables, sparse matrix and scale factors. Preserve barcode suffixes, duplicate gene symbols with unique feature IDs, and excluded observations. | Round-trip AnnData plus SpatialData elements mapped to named coordinate systems. | Exact observation/feature order and counts survive export/reimport; sparse storage remains sparse; no silent `.var_names_make_unique()` or barcode rewriting. |
 | **5B.1 Implemented foundation** | Provided affine from assay frame to base-image pixels; bind both identities and section relationship. Evaluate supplied fit and held-out landmark roles separately in micrometers. | Transform record, inverse round-trip check, per-role RMSE/max error. | Rotation/reflection/anisotropic calibration tests; singular transforms and cross-subject/specimen joins rejected; absence of evaluation landmarks remains `not_evaluated`. |
-| **5B.2 Registration qualification** | Review landmark distribution, plane/section pairing, spatial uncertainty and residuals on locations not used for fitting. Record image provenance and downsampling explicitly. | Scope-specific registration acceptance record and uncertainty field. | Numeric tolerance and local landmark coverage prospectively defined for the endpoint. Synthetic zero error is not empirical registration accuracy. |
+| **5B.2 QC implemented; real qualification gated** | Review landmark distribution, plane/section pairing, spatial uncertainty and residuals on locations not used for fitting. Record image provenance and downsampling explicitly. | Scope-specific registration acceptance record and uncertainty field. | Numeric tolerance and local landmark coverage prospectively defined for the endpoint. Synthetic zero error is not empirical registration accuracy. |
 | **5C.1 Implemented foundation** | Transform point centers to reviewed/pending reference regions; exclude supplied artifacts; abstain at uncertain boundaries and reference overlaps. Reconcile raw RNA totals only over measured linked observations. | `spatial-links/1`, observation CSV, region/feature raw sums and report. | Counts reconcile; holes/edges tested; no hard cell assignment for spots; no numeric aggregate from unassayed observations. |
-| **5C.2 Biological feature layer** | Bind lung marker/gene-set versions, species/ID mapping, count filtering and normalization. Retain raw counts alongside normalized summaries; choose section/subject as sampling units. | Versioned region-level RNA programs linked to H&E/IF descriptors. | Held-out gene/protein or independently annotated agreement; gene-set coverage and unknown labels retained. Morphology association does not establish lineage or regenerative fate. |
-| **5D Optional composition/domain methods** | Branch on assay resolution. Use supplied single-cell labels or reference mapping for cell/nucleus assays. Consider cell2location for mixed-cell spots with an appropriate reference. Compare simple spatial neighborhoods with BANKSY domains. | Cell abundance estimates with uncertainty, or candidate spatial domains with method identity. | Independent reference suitability; subject-level holdout; stable results across radius/registration choices; new methods outperform a declared baseline for the selected endpoint. |
-| **5E Public example and future-image handoff** | Select one manageable influenza-lung spatial-RNA example; inventory accessible files, terms, resolution, preprocessing and biological grouping. Replay the same adapters on future image/assay inputs. | Reproducible acquisition manifest, commands, expected checks and report. | Public example actually reproduced with hashes; limitations and missing native-resolution images explicit. No public-data-only product restriction. |
+| **5C.2 Software implemented; biological programs gated** | Bind lung marker/gene-set versions, species/ID mapping, count filtering and normalization. Retain raw counts alongside normalized summaries; choose section/subject as sampling units. | Versioned region-level RNA programs linked to H&E/IF descriptors. | Held-out gene/protein or independently annotated agreement; gene-set coverage and unknown labels retained. Morphology association does not establish lineage or regenerative fate. |
+| **5D Baselines implemented; advanced engines conditional** | Branch on assay resolution. Use supplied single-cell labels or reference mapping for cell/nucleus assays. Consider cell2location for mixed-cell spots with an appropriate reference. Compare simple spatial neighborhoods with BANKSY domains. | Cell abundance estimates with uncertainty, or candidate spatial domains with method identity. | Independent reference suitability; subject-level holdout; stable results across radius/registration choices; new methods outperform a declared baseline for the selected endpoint. |
+| **5E Real intake replay demonstrated** | Select one manageable influenza-lung spatial-RNA example; inventory accessible files, terms, resolution, preprocessing and biological grouping. Replay the same adapters on future image/assay inputs. | Reproducible acquisition manifest, commands, expected checks and report. | Public example actually reproduced with hashes; limitations and missing native-resolution images explicit. No public-data-only product restriction. |
 
-The current interchange uses small explicit CSVs so identity/coordinate tests do
-not require installing a large omics stack. The next adapter milestone adds
-AnnData/SpatialData as optional extras with their own lock and CI coverage.
-Their APIs support annotated matrices and named spatial transformations;
-IFQuant will retain additional review and provenance bindings. Sources:
+The dependency-light CSV interchange remains available. AnnData/SpatialData and
+classic Visium now have locked optional extras, sparse limits, real round trips
+and Linux/Windows CI coverage. Named frames and provenance bindings are retained. Sources:
 [AnnData](https://anndata.readthedocs.io/en/stable/generated/anndata.AnnData.html),
 [SpatialData transformations](https://spatialdata.scverse.org/en/stable/tutorials/notebooks/notebooks/examples/transformations.html).
 
@@ -78,18 +79,19 @@ because a dataset has coordinates. Keep estimates distinct from direct measureme
 
 | Step / status | Inputs and operations | Output | Exit evidence |
 | --- | --- | --- | --- |
-| **6A Registration adapter — planned** | Wrap an external registration result such as VALIS; retain source/target image identity, full-resolution direction, affine/deformation representation and independent landmarks. | Adapter-specific transform plus common registration QC. | Transform direction and native coordinate round trips checked; deformation grid/Jacobian and landmark errors inspected; adjacent sections never joined as identical cells. Current implementation accepts supplied 2D affine only. |
+| **6A Point adapter/QC implemented; real run gated** | Wrap an external registration result such as VALIS; retain source/target image identity, full-resolution direction, affine/deformation representation and independent landmarks. | Adapter-specific transform plus common registration QC. | Transform direction and native coordinate round trips checked; deformation grid/Jacobian and landmark errors inspected; adjacent sections never joined as identical cells. The core links retain supplied 2D affines; a separate portable VALIS point-result boundary now preserves nonrigid outputs without flattening them into an affine. |
 | **6B.1 Implemented foundation** | Attach processed transcript genotype and TCR observations by exact observation ID within one assay. Preserve measured, unassayed, failed, ambiguous and unreported states. | `molecular-context/1`, per-target coverage and missingness counts. | Unknown IDs and duplicate target observations rejected; measured calls require positive coverage; no geometric nearest-cell join or fabricated negative call. |
-| **6B.2 Slide-GoTags-specific adapter — planned** | Audit one deposited processed sample, its barcode namespaces, spatial coordinates, RNA layer, targeted-variant calls and TCR chains/clonotypes. Preserve dataset sample and preprocessing identities. | Source-specific mapping manifest and processed multimodal bundle. | Every retained join traced to original tables; counts and missingness reconcile with source processing. Current generic interchange is not a completed Slide-GoTags adapter. |
-| **6C Hypothesis declaration — planned** | Predeclare variant-expressing population, clonotype/immune population, region, radius/distance, quality exclusions and independent antigen-specificity evidence if available. | Frozen analysis plan and observed distance/neighborhood statistics. | Explicit tested pair set; no post-hoc radius selection masquerading as confirmation. Spatial proximity alone does not establish antigen recognition, contact or signaling. |
-| **6D Null and sensitivity analysis — planned** | Randomize labels within appropriate specimen/region/coverage strata while retaining spatial structure; specify exchangeability assumptions. Perturb coordinates using measured registration uncertainty and vary predeclared masks/radii. | Empirical null distribution, effect size, multiple-testing correction and sensitivity envelope. | Null calibration on simulated negatives; subject-level replication; results not driven by density, boundary exclusion or assay coverage. A zero null variance triggers an undefined/abstained result, not an infinite score. |
-| **6E Narrow reproduction and optional fusion — planned** | Reproduce one source-defined genotype/clonotype spatial association before broadening. Add protein if measured. Consider LIANA+ only for compatible molecular communication hypotheses; SpatialGlue only for suitably paired spatial modalities. | A reproducible source comparison with explicit discrepancies and optional extension report. | Agreement assessed against the chosen source output, documented exclusions and matched scope. Any inferred interaction or fused domain remains a hypothesis/model result. |
+| **6B.2 Processed source profile implemented; real cells gated** | Audit one deposited processed sample, its barcode namespaces, spatial coordinates, RNA layer, targeted-variant calls and TCR chains/clonotypes. Preserve dataset sample and preprocessing identities. | Source-specific mapping manifest and processed multimodal bundle. | Every retained join traced to original tables; counts and missingness reconcile with source processing. The MC38-OVA author-column profile is tested on synthetic inputs; actual processed-cell replay and source coverage audit remain required. |
+| **6C Hypothesis software implemented** | Predeclare variant-expressing population, clonotype/immune population, region, radius/distance, quality exclusions and independent antigen-specificity evidence if available. | Frozen analysis plan and observed distance/neighborhood statistics. | Explicit tested pair set; no post-hoc radius selection masquerading as confirmation. Spatial proximity alone does not establish antigen recognition, contact or signaling. |
+| **6D Conditioned null/sensitivity software implemented** | Randomize labels within appropriate specimen/region/coverage strata while retaining spatial structure; specify exchangeability assumptions. Perturb coordinates using measured registration uncertainty and vary predeclared masks/radii. | Empirical null distribution, effect size, multiple-testing correction and sensitivity envelope. | Null calibration on simulated negatives; subject-level replication; results not driven by density, boundary exclusion or assay coverage. A zero null variance triggers an undefined/abstained result, not an infinite score. |
+| **6E Reported-source reconciliation demonstrated; cell replay/fusion gated** | Reproduce one source-defined genotype/clonotype spatial association before broadening. Add protein if measured. Consider LIANA+ only for compatible molecular communication hypotheses; SpatialGlue only for suitably paired spatial modalities. | A reproducible source comparison with explicit discrepancies and optional extension report. | Agreement assessed against the chosen source output, documented exclusions and matched scope. Any inferred interaction or fused domain remains a hypothesis/model result. |
 
 The supplied [Slide-GoTags paper](https://www.nature.com/articles/s41587-026-03194-1)
 motivates measured RNA/genotype/TCR linkage. Its data statement lists SCP3655,
 SCP3657, SCP3660 and SCP3667; [the authors' code](https://github.com/amitsud/Slide-GoTags)
-is the source-specific processing reference. This plan does not claim those
-files were downloaded or a paper result reproduced. RNA `reference_only` is a
+is the source-specific processing reference. Processed cell files have not been
+downloaded because the portal requires sign-in. Public source workbooks were
+retrieved and 240 reported rows reconciled; this does not reproduce cell-level NMS. RNA `reference_only` is a
 coverage-qualified transcript observation, not a DNA wild-type diagnosis.
 TCR presence and clonotype identity require separate antigen-specificity evidence.
 
@@ -104,11 +106,11 @@ The detailed null design is an IFQuant proposal, not an asserted default of thes
 | Increment | Dependency | Concrete work | State |
 | --- | --- | --- | --- |
 | **A — Shared identities/coordinates** | Stage 2 source and stage 3 regions | Five closed schemas, raw-RNA import/validation, affine checks, exact region joins, molecular missingness, tests, synthetic CLI example. | Implemented in this PR; engineering validation only. |
-| **B — Native spatial interchange** | A | Explicit raw-layer AnnData import/export, selected Visium format profiles, SpatialData named-frame round trips, sparse-memory checks and adapter-specific fixtures. | Next. |
-| **C — Lung public replay** | B | Audit one Kasmani influenza example; ingest metadata/counts/coordinates and available histology; reproduce region/spot overlay and a narrow measured gene summary. | Planned; no download yet. |
-| **D — Biological context branch** | C plus appropriate reference/labels | Freeze gene programs and baseline, then conditionally compare reference mapping/cell2location/BANKSY. | Data-dependent; software work need not wait for private images. |
-| **E — Registration and processed TME replay** | A/B and paired/source-specific data | VALIS-result adapter, registration uncertainty, Slide-GoTags processed sample schema, exact genotype/TCR joins. | Planned. |
-| **F — Spatial hypotheses and nulls** | E plus frozen question and sufficient coverage | Distance/neighborhood tests, stratified nulls, uncertainty sensitivity, one-source reproduction; optional interaction/fusion branches afterward. | Planned. |
+| **B — Native spatial interchange** | A | Explicit raw-layer AnnData import/export, selected Visium format profiles, SpatialData named-frame round trips, sparse-memory checks and adapter-specific fixtures. | Implemented and real round trips passed. |
+| **C — Lung public replay** | B | Audit one Kasmani influenza example; ingest metadata/counts/coordinates and available histology; reproduce region/spot overlay and a narrow measured gene summary. | Demonstrated on pinned GSM6108348 inputs; all selected gene sums reconcile. |
+| **D — Biological context branch** | C plus appropriate reference/labels | Freeze gene programs and baseline, then conditionally compare reference mapping/cell2location/BANKSY. | Program/domain/association software implemented; curated biological references and advanced comparisons remain conditional. |
+| **E — Registration and processed TME replay** | A/B and paired/source-specific data | VALIS-result adapter, registration uncertainty, Slide-GoTags processed sample schema, exact genotype/TCR joins. | Implemented boundaries; actual paired slides/processed source cells still required. |
+| **F — Spatial hypotheses and nulls** | E plus frozen question and sufficient coverage | Distance/neighborhood tests, stratified nulls, uncertainty sensitivity, one-source reproduction; optional interaction/fusion branches afterward. | Mixing/null software implemented; 240 reported source rows reconciled, full cell-level reproduction gated. |
 
 Future intended-use evaluation remains roadmap WP6/stage 7. Scientific thresholds
 are prospectively specified per endpoint once the relevant acquisition and labels
@@ -146,7 +148,7 @@ registered image's base pixels, and bind canonical assay/source hashes.
 
 | CSV | Exact header | Semantics |
 | --- | --- | --- |
-| Observations | `observation_id,x,y,assay_status` | Every supplied observation has coordinates; RNA status is `measured`, `not_assayed`, or `failed`. |
+| Observations | `observation_id,x,y,assay_status` | Every supplied observation has coordinates; RNA status is `measured`, `not_assayed`, `failed`, or `not_reported`. |
 | Features | `feature_id,feature_name` | IDs unique; display names can repeat. No silent species/gene conversion. |
 | Counts | `observation_id,feature_id,count` | Sparse nonnegative raw integer RNA counts. Omitted pairs are zero detected counts only for a measured observation; they are not proof of absent expression. |
 | Molecular context | `observation_id,modality,target_id,status,value,coverage` | `transcript_genotype` or `tcr`; status measured/not_assayed/failed/ambiguous. A missing row becomes `not_reported`. Positive coverage is required for measured calls; blanks stay null. |

@@ -1,5 +1,10 @@
 # Phase 3 engineering status
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 The initial Phase 3 engineering contract infrastructure is implemented on the
 local `codex/phase3-wip` branch. Closed schemas, strict read-only validators,
 CLI commands, tamper tests, and a synthetic reference/split fixture now agree

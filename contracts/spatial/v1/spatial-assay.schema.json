@@ -179,7 +179,8 @@
             "enum": [
               "measured",
               "not_assayed",
-              "failed"
+              "failed",
+              "not_reported"
             ]
           }
         },

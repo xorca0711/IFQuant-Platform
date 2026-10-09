@@ -1,5 +1,7 @@
 # Validation
 
+Current tissue/spatial execution evidence is in [PROGRESS](../PROGRESS.md), [the execution report](../docs/EXECUTION_REPORT.md), and `evidence/priorities-1-5-20261009.json`. The fluorescence records below remain scoped subsystem evidence. Scientific acceptance remains separate from engineering success.
+
 The initial execution record is in `PILOT_STATUS.md`. The current full-frame,
 deterministic DAPI evidence, geometry-warning statistics, verified engineering
 boundary policy, local paths, and remaining human gates are in
@@ -20,9 +22,7 @@ performance remains not evaluated.
 The Phase 5 StarDist adapter checkpoint, hash-bound runtime/model inputs,
 preserved failed run identities, QC geometry integration finding, and exact
 resume sequence are recorded in
-[`docs/PHASE5_STATUS.md`](../docs/PHASE5_STATUS.md). StarDist inference has run,
-but no successful canonical StarDist package, visual review, backend comparison,
-or scientific validation is claimed.
+[`docs/PHASE5_STATUS.md`](../docs/PHASE5_STATUS.md). StarDist run 11 exported a structurally valid canonical package and deterministic QC. Its 1,322 accepted topology warnings, independent review, scored backend comparison and scientific validation remain open.
 
 Validation separates structural conformance from scientific claims. The initial
 CLI checks contracts and canonical cell-object packages; passing it means that

@@ -23,6 +23,8 @@ jobs:
       - run: uv run --no-sync python -m ifquant_platform report-cells validation/fixtures/minimal-cell-package --output validation/output/ci-cells
       - run: uv run --no-sync python -m ifquant_platform demo-spatial --output validation/output/ci-spatial
       - run: uv run --no-sync python -m ifquant_platform validate-spatial validation/output/ci-spatial/assay.json
+      - run: uv run --no-sync python -m ifquant_platform validate-spatial-links validation/output/ci-spatial/linked --assay validation/output/ci-spatial/assay.json --source validation/output/ci-spatial/source.json --regions validation/output/ci-spatial/regions.json
+      - run: uv run --no-sync python -m ifquant_platform validate-molecular-context validation/output/ci-spatial/context.json --assay validation/output/ci-spatial/assay.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -32,3 +34,37 @@ jobs:
             validation/output/ci-specimens/
             validation/output/ci-cells/
             validation/output/ci-spatial/
+  spatial:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.11'
+          - os: windows-latest
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.17'
+          enable-cache: true
+      - run: uv sync --locked --python ${{ matrix.python }} --extra dev --extra imaging --extra morphology --extra performance --extra spatialdata
+      - run: uv run --no-sync pytest -q tests/test_spatial.py tests/test_spatial_adapters.py tests/test_lung_replay.py tests/test_analysis_pipeline.py tests/test_public_qualification.py
+      - run: uv run --no-sync python scripts/demo_development_pipeline.py --output validation/output/ci-development
+      - run: >-
+          uv run --no-sync ruff check src/ifquant_platform/spatial*.py
+          src/ifquant_platform/analysis_cli.py src/ifquant_platform/associations.py
+          src/ifquant_platform/gotags_adapter.py src/ifquant_platform/imaging.py
+          src/ifquant_platform/imaging_evaluation.py src/ifquant_platform/molecular_programs.py
+          src/ifquant_platform/molecular_context.py src/ifquant_platform/morphology_profiles.py
+          src/ifquant_platform/registration_qc.py src/ifquant_platform/upstream_interchange.py
+          tests/test_spatial*.py tests/test_lung_replay.py tests/test_analysis_pipeline.py
+          tests/test_public_qualification.py scripts/replay_lung_example.py
+          scripts/demo_development_pipeline.py scripts/replay_public_qualification.py
+          scripts/reconcile_gotags_source.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spatial-development-${{ matrix.os }}-${{ matrix.python }}
+          path: validation/output/ci-development/

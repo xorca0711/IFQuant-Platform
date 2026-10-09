@@ -1,5 +1,10 @@
 # Development phases
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 IFQuant Platform advances through evidence gates rather than feature count. A
 phase may prepare later infrastructure in parallel, but no artifact is promoted
 into the next phase's scientific role until its exit gate is satisfied.
@@ -11,7 +16,7 @@ into the next phase's scientific role until its exit gate is satisfied.
 | 2. Governed biological-data foundation | Initial contract complete; real intake gated | Replace synthetic fixtures with governed study inputs and user-supplied identities. | Reviewed biological annotations; complete artifact provenance; immutable annotation/correction lineage; mouse/slide/batch/scanner identities present. Detected-object H1/H2 eligibility remains a separate gate. |
 | 3. Reference set and split design | Initial engineering infrastructure passing; real-data gates open | Establish reviewed instance reference data and leakage-controlled partitions. | Real frozen reference revision; human-approved source-family ledger and region completeness; image-level split manifest; declared leakage/domain audit; exact held-out IDs and reference content locked. The synthetic fixture cannot satisfy this exit gate. |
 | 4. Native QuPath segmentation baseline | Engineering evaluator complete; real scoring blocked by Phase 3/H1/H2 and study-criteria gates | Quantify the native watershed method on frozen observations. | Prospectively declared detection, split/merge, boundary, count, and measurement-bias results on frozen reviewed real references. Synthetic metrics and run05 execution do not satisfy this exit gate. |
-| 5. Replaceable segmentation backends | In progress: StarDist identity preflight and inference reached; export paused at a fail-closed QC geometry check; InstanSeg not started | Implement StarDist and InstanSeg as distinct method instances. | Exact weights/preprocessing/runtime identities, successful validated packages and reviewed QC, then frozen-observation comparisons and scope-specific backend decisions. |
+| 5. Replaceable segmentation backends | StarDist run 11 export and structural QC succeeded; scientific review/comparison open; InstanSeg not executed | Implement StarDist and InstanSeg as distinct method instances. | Exact weights/preprocessing/runtime identities, successful validated packages and reviewed QC, then frozen-observation comparisons and scope-specific backend decisions. |
 | 6. Morphology/intensity classifier baselines | Planned | Establish interpretable object classifiers before deep models. | Calibrated group-aware performance, uncertainty, abstention, and endpoint-bias evidence. |
 | 7. QuPath correction and iterative-learning loop | Planned | Operationalize human review without mutating frozen evidence. | Reproducible prediction/correction round trip, immutable lineage, and held-out isolation. |
 | 8. Conditional custom models | Conditional | Train a scope-specific CNN only for a predeclared baseline limitation. | Reproducible model package and improvement on frozen data without unacceptable subgroup or domain degradation. |

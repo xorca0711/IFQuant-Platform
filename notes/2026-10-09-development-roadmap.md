@@ -1,5 +1,11 @@
 # IFQuant Platform development roadmap
 
+> The repository-status table below is the **pre-implementation audit** preserved
+> with the original methodology research. Its statements that H&E, CI, licensing
+> and spatial adapters are absent have been superseded. Current execution order:
+> [active plan](../docs/DEVELOPMENT_PLAN.md); current evidence: [PROGRESS](../PROGRESS.md).
+
+
 **Date:** 2026-10-09
 **Status:** draft proposal; implementation and scientific claims are unchanged
 **Inspected baseline:** `fad4c18`, branch `codex/phase5-stardist`
@@ -207,13 +213,14 @@ WP0 and the design work in WP1 come first. H&E engineering can then progress alo
 - **Biological comparisons:** keep mouse/patient/study groups separate; never treat tiles, cells or adjacent sections as independent biological replicates. For fractions, pool eligible raw components only under a declared sampling/aggregation rule; preserve ordinal components rather than inventing averages.
 - **Model comparisons:** freeze preprocessing and test partitions, audit public-data/pretrained-model overlap, compare against simple baselines and report calibration/coverage where probabilities are used. No numeric scientific pass threshold is invented from the available unlabeled material.
 
-## Next steps
+## Updated execution and next steps
 
-1. Adopt or revise the proposed working identity: high-resolution tissue imaging and spatial phenotyping, lung-first, with optional omics.
-2. Start WP0 with reproducible installation/CI and the fresh StarDist engineering run; keep formal biological-review gates visibly open.
-3. Specify the WP1 source, region and coordinate contracts before adding H&E outputs to the current cell-only path.
-4. Build one H&E workflow that produces inspectable masks and a complete lesion-context report, including explicit unevaluated fields where references are unavailable.
-5. Use small, manifest-bound public examples to exercise supported functionality now; retain future high-resolution images as the intended input domain.
-6. Add the influenza atlas as the first molecular-context example, and defer the Slide-GoTags TME adapter until the spatial identity and reporting layers work.
+The user authorized implementation through all current priorities 1–5. The [31-job register](../docs/DEVELOPMENT_PLAN.md) and [execution report](../docs/EXECUTION_REPORT.md) now supersede this note's original start-up order. Native interchange, the real lung replay, imaging qualification tools and optional molecular/statistical boundaries execute. Three conditional method branches remain explicitly unimplemented; several implemented tools still need scientific reference data.
 
-The portfolio deliverable should show an installable tool, one-command reproducible examples, transparent measurements, correction lineage and documented performance boundaries. Its scope is determined by the intended future imaging workflow; its claims are determined by the evidence actually obtained.
+1. Obtain representative future high-resolution images and independent pathology/cell references under the frozen sampling protocol. Review native/StarDist warnings and score the trained QuPath comparison before adding another unscored segmentation engine.
+2. Curate source-bound lung programs and broad-feature inputs with independently verified biological units. The five-gene Kasmani panel is an interchange example, not evidence for biological domains or deconvolution.
+3. Execute registration on actual paired images with held-out landmarks. Obtain processed Slide-GoTags cells through supported authenticated access and select a narrow cell-level reproduction. Current public source evidence reconciles 240 reported rows, not cell-level spatial inference.
+4. Activate cell2location/Tangram, BANKSY, InstanSeg, LIANA+, SpatialGlue, CODEX, UNI or HEST only when a compatible input/question/reference supports a meaningful comparison. Those references are mapped to jobs in the register.
+5. Evaluate intended-use accuracy, sampling bias and acquisition-domain robustness as WP6. Independent image analysis remains a complete product branch while omics/TME extensions are optional.
+
+Revisions include explicit TIFF pyramid-array selection, partial-download detection, bounded NGFF/cell-feature bridges, calibrated 2D cuff/transect semantics, explicit RNA normalization, specimen-level association, conditioned finite-sample nulls and abstention for unsupported calls. The [execution report](../docs/EXECUTION_REPORT.md) gives the evidence and rationale. No biological validity, expert acceptance or universal severity score is inferred from software tests.

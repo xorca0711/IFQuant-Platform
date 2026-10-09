@@ -1,11 +1,13 @@
 # Dataset governance
 
+The platform covers future high-resolution H&E/fluorescence images and optional measured spatial assays. `examples/` holds pinned public acquisition manifests for the Kasmani lung replay and WSI/Slide-GoTags source qualification. Downloads and outputs are ignored; public sample accessions do not establish independent animal/patient identities. These examples support development, not a restriction on future input data.
+
 `datasets/` governs identities and manifests; it is not an untracked dump of
 images or labels. Large artifacts may live in an external content-addressed
 store, but a versioned manifest must make every consumed byte and relationship
 resolvable.
 
-Phase 2 begins with a governed observation-set revision. It records:
+Historical fluorescence Phase 2 begins with a governed observation-set revision. It records:
 
 - source-image ID, content hash, dimensions, and acquisition identity;
 - reviewed mouse/specimen/slide/section identity and biological-unit ID;

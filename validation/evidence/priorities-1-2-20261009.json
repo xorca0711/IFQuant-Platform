@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-09",
+  "status": "engineering_replay_completed",
+  "scope": "priorities 1–2; scientific validation not established",
+  "scientific_validation": false,
+  "prior_checkpoint": {
+    "date": "2026-10-09",
+    "status": "in_progress_checkpoint",
+    "scope": "development priorities 1-2; not historical fluorescence Phase 2",
+    "focused_checks": [
+      {
+        "result": "38 passed, 1 failed; generated SpatialData names rejected",
+        "log": "validation/output/spatial-adapter-tests.log",
+        "sha256": "e157a916465b943cea2f313746fcc7ad300daa479f3845f048132324d36c6a19"
+      },
+      {
+        "result": "failed SpatialData scene test passed after naming correction; 1 passed",
+        "log": "validation/output/spatial-scene-test.log",
+        "sha256": "801ce325317ba11dbb016bdb46b9d0999ece937c47264844abba653649260531"
+      }
+    ],
+    "lint": "scoped Ruff passed",
+    "compile": "new adapter/exchange/replay files compiled",
+    "integrated_suite": "not run for this checkpoint",
+    "real_lung_replay": "script written, inputs downloaded; not executed end to end",
+    "scientific_validation": false
+  },
+  "real_lung_replay": {
+    "anndata_roundtrip": "passed",
+    "context_region_counts": [
+      {
+        "assay_status": "not_reported",
+        "region": "image-footprint",
+        "source_in_tissue": 0,
+        "spots": 2506
+      },
+      {
+        "assay_status": "measured",
+        "region": "image-footprint",
+        "source_in_tissue": 1,
+        "spots": 2486
+      }
+    ],
+    "elapsed_seconds": 188.654,
+    "full_source_matrix_features_by_spots": [
+      32285,
+      2486
+    ],
+    "full_source_raw_count_sum": 26079373,
+    "gene_sums": [
+      {
+        "feature_id": "ENSMUSG00000056370",
+        "feature_name": "Sftpb",
+        "raw_count_sum": 84600,
+        "source_raw_count_sum": 84600
+      },
+      {
+        "feature_id": "ENSMUSG00000000805",
+        "feature_name": "Car4",
+        "raw_count_sum": 6111,
+        "source_raw_count_sum": 6111
+      },
+      {
+        "feature_id": "ENSMUSG00000053977",
+        "feature_name": "Cd8a",
+        "raw_count_sum": 75,
+        "source_raw_count_sum": 75
+      },
+      {
+        "feature_id": "ENSMUSG00000023274",
+        "feature_name": "Cd4",
+        "raw_count_sum": 64,
+        "source_raw_count_sum": 64
+      },
+      {
+        "feature_id": "ENSMUSG00000030786",
+        "feature_name": "Itgam",
+        "raw_count_sum": 185,
+        "source_raw_count_sum": 185
+      }
+    ],
+    "image_dimensions": [
+      2000,
+      1834
+    ],
+    "observation_status_counts": {
+      "measured": 2486,
+      "not_reported": 2506
+    },
+    "pathology_review": "not supplied; image footprint is not anatomical annotation",
+    "physical_calibration": "unavailable",
+    "registration": "deposited image scaling only; no independent landmarks",
+    "sample": "GSM6108348",
+    "sampled_peak_rss_bytes": 389857280,
+    "schema_version": "ifquant.lung-replay/1",
+    "scientific_validation": false,
+    "selected_panel_statistics": {
+      "count_rows": 4601,
+      "libraries": "see native/assay.json",
+      "nonzero_rows": 4601
+    },
+    "source_files": [
+      {
+        "name": "GSM6108348_Day3_Young_filtered_feature_bc_matrix.h5",
+        "sha256": "34ba72860ee308c3d883dfb09a2e6b00b814dd013bc7250cd56933ee654432ed",
+        "size_bytes": 11641726,
+        "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_filtered_feature_bc_matrix.h5"
+      },
+      {
+        "name": "GSM6108348_Day3_Young_scalefactors_json.json.gz",
+        "sha256": "7223cc0bc132c80c84e60463d72bae7cd95d0914a9259b3d6223f8551b16b72d",
+        "size_bytes": 170,
+        "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_scalefactors_json.json.gz"
+      },
+      {
+        "name": "GSM6108348_Day3_Young_tissue_hires_image.png.gz",
+        "sha256": "ae08a7303e00d9641a77227bb2c1f8d97055100b60c922d08e5c1e0dbd8974a8",
+        "size_bytes": 3074775,
+        "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_tissue_hires_image.png.gz"
+      },
+      {
+        "name": "GSM6108348_Day3_Young_tissue_positions_list.csv.gz",
+        "sha256": "90dffd6d05bde59cec6e3b77e3935d7072957bd81ca070d48c2fffb372df0974",
+        "size_bytes": 71287,
+        "url": "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM6108nnn/GSM6108348/suppl/GSM6108348_Day3_Young_tissue_positions_list.csv.gz"
+      }
+    ],
+    "source_nonzero_counts": 8404880,
+    "source_raw_count_reconciliation": "passed",
+    "spatialdata_roundtrip": "passed"
+  },
+  "report": {
+    "path": "validation/output/kasmani-day3-run01/report.json",
+    "sha256": "9818eb88e2c850a6c1a834da5a8852fbbb40e0d494915e0e1f2ddb35b517cd35",
+    "size_bytes": 2672
+  },
+  "html": {
+    "path": "validation/output/kasmani-day3-run01/report.html",
+    "sha256": "a3f89497485018be5e462b9e100f8fc37a9c479e2355ca560bfce02fad687724",
+    "size_bytes": 2191
+  },
+  "overlay": {
+    "path": "validation/output/kasmani-day3-run01/overlay.png",
+    "sha256": "0fc9fa07f4c7e3bddbc82ad56a825486589c1881d323cd73e88b7e327ed804a6",
+    "size_bytes": 3211869
+  },
+  "integrated_check_before_later_analysis": {
+    "passed": 181,
+    "subtests_passed": 144,
+    "log": {
+      "path": "validation/output/priorities-1-2-integrated.log",
+      "sha256": "e128afc0c9440c70d63c4c4261e8173cadf3195e1d99b9a4caadf88490f842bb",
+      "size_bytes": 1150
+    }
+  },
+  "latest_verification": "validation/evidence/priorities-1-5-20261009.json"
+}

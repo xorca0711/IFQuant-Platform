@@ -1,5 +1,7 @@
 # Responsibility boundaries
 
+> **Current platform responsibilities:** QuPath handles image-native export, supplied annotations and selected classifiers; Python owns H&E candidates, calibration-aware profiles, interchange, declared statistics and reports. Human reviewers establish pathology references, disease-specific rubrics and intended-use acceptance. The same separation extends the fluorescence details below; see [analysis workflows](ANALYSIS_WORKFLOW.md).
+
 Clear ownership prevents executable code from becoming hidden scientific
 authority. Every new feature should have one primary owner and an explicit
 artifact at each boundary.

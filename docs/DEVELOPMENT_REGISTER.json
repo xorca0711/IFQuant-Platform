@@ -1,0 +1,255 @@
+{
+  "schema_version": "ifquant.development-register/1",
+  "date": "2026-10-09",
+  "scope": "All current development priorities 1–5 addressed; scientific gates and conditional methods remain explicit",
+  "jobs": [
+    {
+      "id": "1.1",
+      "title": "Completed product validation",
+      "status": "implemented",
+      "delivered": "Rebuild and verify links, context, reports and byte bindings.",
+      "evidence": "tests/test_spatial.py",
+      "remaining_or_rationale": "No biological acceptance inferred."
+    },
+    {
+      "id": "1.2",
+      "title": "AnnData interchange",
+      "status": "demonstrated",
+      "delivered": "Sparse selected raw counts, exact IDs, obs/var and status; real round trip.",
+      "evidence": "src/ifquant_platform/spatial_adapters.py",
+      "remaining_or_rationale": "Dense matrices rejected; declared raw layer required."
+    },
+    {
+      "id": "1.3",
+      "title": "Classic Visium interchange",
+      "status": "demonstrated",
+      "delivered": "10x v3 HDF5 and integer MTX; headered/legacy positions; one scale conversion.",
+      "evidence": "scripts/replay_lung_example.py",
+      "remaining_or_rationale": "Visium HD and automatic unit inference remain outside this profile."
+    },
+    {
+      "id": "1.4",
+      "title": "SpatialData exchange",
+      "status": "demonstrated",
+      "delivered": "Named frames, RNA points/table, optional image/regions, portable store hashes.",
+      "evidence": "src/ifquant_platform/spatial_exchange.py",
+      "remaining_or_rationale": "IFQuant-profile import, not arbitrary store discovery."
+    },
+    {
+      "id": "1.5",
+      "title": "Dependencies, capacity and CI",
+      "status": "implemented",
+      "delivered": "Locked optional environments, sparse/size guards and Linux/Windows CI.",
+      "evidence": ".github/workflows/tests.yml",
+      "remaining_or_rationale": "Full optional stack uses x64 on this ARM64 host; one benchmark is not universal capacity evidence."
+    },
+    {
+      "id": "1.6",
+      "title": "OME-NGFF / MCMICRO intake",
+      "status": "revised_implemented",
+      "delivered": "Calibrated bounded NGFF 0.4 YX/CYX window bridge; explicit numeric cell-feature mapping.",
+      "evidence": "src/ifquant_platform/upstream_interchange.py",
+      "remaining_or_rationale": "General multidimensional/version-discovery reader deferred; full high-resolution execution continues through tiled TIFF. Avoid ambiguous axis/coordinate inference."
+    },
+    {
+      "id": "2.1",
+      "title": "Lung resource audit",
+      "status": "demonstrated",
+      "delivered": "Kasmani GSM6108348 selected; deposited derivative, identity limits and matrix scope recorded.",
+      "evidence": "datasets/examples/kasmani-day3-young.json",
+      "remaining_or_rationale": "Accession proxy is not an independent mouse identity."
+    },
+    {
+      "id": "2.2",
+      "title": "Pinned acquisition",
+      "status": "demonstrated",
+      "delivered": "Four public files verified; compressed and decoded cache drift rejected.",
+      "evidence": "scripts/replay_lung_example.py",
+      "remaining_or_rationale": "No source images/counts committed."
+    },
+    {
+      "id": "2.3",
+      "title": "Image correspondence",
+      "status": "demonstrated",
+      "delivered": "Deposited scale and in_tissue flags, real H&E overlay, all 4,992 positions retained.",
+      "evidence": "validation/evidence/priorities-1-2-20261009.json",
+      "remaining_or_rationale": "Visual correspondence only; no physical calibration or independent registration landmarks."
+    },
+    {
+      "id": "2.4",
+      "title": "Counts and round trips",
+      "status": "demonstrated",
+      "delivered": "2,486 measured and 2,506 not reported; five source gene totals reconciled and both native round trips passed.",
+      "evidence": "validation/evidence/priorities-1-2-20261009.json",
+      "remaining_or_rationale": "Five-gene panel is an interchange test, not biological domain evidence."
+    },
+    {
+      "id": "2.5",
+      "title": "Reusable lung replay",
+      "status": "demonstrated",
+      "delivered": "Fresh-output command, pinned inputs, HTML/overlay, memory and timing record.",
+      "evidence": "docs/SPATIAL_INTERCHANGE.md",
+      "remaining_or_rationale": "Source paper biological comparisons not reproduced."
+    },
+    {
+      "id": "3.1",
+      "title": "Real high-resolution qualification",
+      "status": "demonstrated",
+      "delivered": "46,000 x 32,914 Aperio source; 64 reproducible reads; fixed base-pyramid reader bug.",
+      "evidence": "scripts/replay_public_qualification.py",
+      "remaining_or_rationale": "Single-source read benchmark, not complete slide-analysis throughput or lung accuracy."
+    },
+    {
+      "id": "3.2",
+      "title": "Annotation and sampling protocol",
+      "status": "implemented",
+      "delivered": "Anatomy, lesion, artifact, uncertainty, exhaustive-negative coverage and biological-unit protocol.",
+      "evidence": "docs/IMAGING_QUALIFICATION.md",
+      "remaining_or_rationale": "Acquisition-specific independent expert annotations still needed."
+    },
+    {
+      "id": "3.3",
+      "title": "Appearance / QuPath classifier comparison",
+      "status": "implemented_with_gate",
+      "delivered": "Existing frozen appearance baseline plus discrete-label QuPath bridge and mask metrics; real runtime threshold-fixture pass.",
+      "evidence": "qupath/scripts/ExportPixelClassifier.groovy",
+      "remaining_or_rationale": "Supervised pathology model and held-out reference comparison still required."
+    },
+    {
+      "id": "3.4",
+      "title": "Native / StarDist qualification",
+      "status": "implemented_with_gate",
+      "delivered": "Previously repaired geometry export, frozen warning evidence and independent object-evaluation framework retained.",
+      "evidence": "docs/PHASE5_STATUS.md",
+      "remaining_or_rationale": "1,322 accepted StarDist topology warnings still need boundary review; no scientific equivalence claim."
+    },
+    {
+      "id": "3.5",
+      "title": "InstanSeg executor / comparison",
+      "status": "conditional",
+      "delivered": "Common label comparison boundary and model identity requirements specified.",
+      "evidence": "docs/IMAGING_QUALIFICATION.md",
+      "remaining_or_rationale": "Canonical InstanSeg executor not implemented. Activate after suitable image/reference/weight terms and a declared comparison question; avoid another unscored backend."
+    },
+    {
+      "id": "3.6",
+      "title": "Morphology endpoints",
+      "status": "revised_implemented",
+      "delivered": "Qualified area endpoints; calibrated cuff area per inner perimeter and reviewed septal transects.",
+      "evidence": "src/ifquant_platform/morphology_profiles.py",
+      "remaining_or_rationale": "Replaced unsupported automatic thickness/stereology interpretation with explicit 2D profile measurements."
+    },
+    {
+      "id": "3.7",
+      "title": "Severity / reviewer agreement",
+      "status": "implemented_with_gate",
+      "delivered": "Versioned ordinal forms retained; paired agreement, weighted kappa and missingness added.",
+      "evidence": "src/ifquant_platform/imaging_evaluation.py",
+      "remaining_or_rationale": "Model-specific rubric and real blinded reviewers still needed; no universal score."
+    },
+    {
+      "id": "4.1",
+      "title": "Gene/program registry",
+      "status": "implemented_with_gate",
+      "delivered": "Versioned species/exact-ID registry, source reference and coverage thresholds.",
+      "evidence": "src/ifquant_platform/molecular_programs.py",
+      "remaining_or_rationale": "Only synthetic example program shipped. Niethamer-derived biological programs require source-table curation and intended-use justification."
+    },
+    {
+      "id": "4.2",
+      "title": "RNA filtering / normalization",
+      "status": "implemented",
+      "delivered": "Sparse raw data retained; explicit panel or external full-library denominator, log1p(CP10k), coverage/filter abstention.",
+      "evidence": "src/ifquant_platform/molecular_programs.py",
+      "remaining_or_rationale": "Simple measured-RNA summary, not lineage or deconvolution."
+    },
+    {
+      "id": "4.3",
+      "title": "Spatial graph and null baseline",
+      "status": "implemented",
+      "delivered": "Bounded radius graph, explicit units/window, region/coverage-conditioned permutations and effect reports.",
+      "evidence": "src/ifquant_platform/spatial_statistics.py",
+      "remaining_or_rationale": "Conditional within-specimen inference only."
+    },
+    {
+      "id": "4.4",
+      "title": "Reference mapping / cell2location / Tangram",
+      "status": "conditional",
+      "delivered": "Input, leakage and baseline activation gates specified.",
+      "evidence": "docs/ANALYSIS_WORKFLOW.md",
+      "remaining_or_rationale": "No compatible independent reference selected; engines not installed/executed. A small panel cannot justify deconvolution."
+    },
+    {
+      "id": "4.5",
+      "title": "Domain baseline / BANKSY comparison",
+      "status": "implemented_with_gate",
+      "delivered": "Seeded expression-only and graph-smoothed clustering with explicit eligibility and limits.",
+      "evidence": "src/ifquant_platform/spatial_domains.py",
+      "remaining_or_rationale": "Real broad-feature lung replay and BANKSY comparison remain conditional; cluster smoothness is not accuracy."
+    },
+    {
+      "id": "4.6",
+      "title": "Morphology–RNA association",
+      "status": "implemented_with_gate",
+      "delivered": "Within-stratum biological-unit aggregation, rank effect, permutation and BH; repeated-group designs rejected.",
+      "evidence": "src/ifquant_platform/associations.py",
+      "remaining_or_rationale": "Requires matched endpoints and verified independent biological units; current source replay does not provide those."
+    },
+    {
+      "id": "5.1",
+      "title": "VALIS result adapter",
+      "status": "implemented_with_gate",
+      "delivered": "Live Slide forward-point exporter with explicit level-zero direction and portable CSV.",
+      "evidence": "src/ifquant_platform/registration_qc.py",
+      "remaining_or_rationale": "API boundary tested with fixture; actual paired-slide VALIS registration still unexecuted."
+    },
+    {
+      "id": "5.2",
+      "title": "Registration qualification",
+      "status": "implemented_with_gate",
+      "delivered": "Separate fit/evaluation errors, sampled folds/area change and local held-out support.",
+      "evidence": "src/ifquant_platform/registration_qc.py",
+      "remaining_or_rationale": "Independent real landmarks and representative local deformation coverage required."
+    },
+    {
+      "id": "5.3",
+      "title": "Processed Slide-GoTags intake",
+      "status": "implemented_with_gate",
+      "delivered": "MC38-OVA author-column profile, exact IDs, observed coverage, expression/nanopore distinction and clonotype missingness.",
+      "evidence": "src/ifquant_platform/gotags_adapter.py",
+      "remaining_or_rationale": "Synthetic source-profile fixture only; processed cell download requires portal sign-in. Coverage-free author calls are not promoted."
+    },
+    {
+      "id": "5.4",
+      "title": "Frozen spatial hypotheses",
+      "status": "implemented",
+      "delivered": "Hashes, pairs, radii, units, seed, coverage strata, boundary policy and sensitivity are explicit inputs.",
+      "evidence": "src/ifquant_platform/spatial_statistics.py",
+      "remaining_or_rationale": "No post-hoc biological hypothesis supplied by the tool."
+    },
+    {
+      "id": "5.5",
+      "title": "Nulls / multiplicity / uncertainty",
+      "status": "revised_implemented",
+      "delivered": "Finite-sample corrected conditioned permutations, undefined/degenerate abstention, BH and jitter ranges.",
+      "evidence": "tests/test_analysis_pipeline.py",
+      "remaining_or_rationale": "Revision of author global shuffle/zero substitution; jitter range is not a confidence interval."
+    },
+    {
+      "id": "5.6",
+      "title": "Narrow source reproduction",
+      "status": "revised_implemented",
+      "delivered": "240 RCC_1_A reported-statistic rows / six pairs match across supplement and figure source.",
+      "evidence": "scripts/reconcile_gotags_source.py",
+      "remaining_or_rationale": "Full cell-level NMS/p-value reproduction remains gated by authenticated processed data; source tables lack coordinates/edge counts."
+    },
+    {
+      "id": "5.7",
+      "title": "LIANA+ / SpatialGlue / CODEX extensions",
+      "status": "conditional",
+      "delivered": "Activation criteria and comparative evidence requirements retained in methodology roadmap.",
+      "evidence": "notes/2026-10-09-development-roadmap.md",
+      "remaining_or_rationale": "No paired compatible assays/question/reference that justify these engines yet; not installed or claimed implemented."
+    }
+  ]
+}

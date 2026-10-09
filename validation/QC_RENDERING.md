@@ -1,5 +1,10 @@
 # Deterministic DAPI engineering QC rendering
 
+> **Scope:** fluorescence governance/backend evidence. Its phase numbers are
+> distinct from the current tissue/spatial development priorities. See the
+> [active plan](../docs/DEVELOPMENT_PLAN.md) and [current progress](../PROGRESS.md).
+
+
 `ifquant-platform render-qc` turns a structurally valid canonical cell-object
 package and its complete candidate-disposition sidecar into review aids. It does
 not change the package, make a QC decision, or constitute scientific validation.
