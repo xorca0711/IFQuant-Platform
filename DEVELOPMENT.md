@@ -26,6 +26,8 @@ certify that history. Human pathology review has not been supplied.
 | 2026-10-09 | Native adapters and named-frame SpatialData exchange | Codex | Pending human review | In-progress checkpoint | Focused fixtures exercised; real replay and integrated verification remain. |
 | 2026-10-09 | Execute all proposed jobs through priority 5 and revise implausible pipelines | User | User | Authorized development pass | Scope expanded beyond the saved priority 1–2 checkpoint; retain scientific gates and rationale. |
 | 2026-10-09 | Implemented optional analysis tools and 31-job status register | Codex | Pending human review | Implemented for review | Real-source and synthetic execution evidence are separated from intended-use validation. |
+| 2026-10-11 | Complete feasible software/public-data work and publish a follow-up PR | User | User | Authorized development and publication | No private validation data available; no merge or scientific acceptance authorized. |
+| 2026-10-11 | Pinned H&E nuclei executor, broad RNA/BANKSY replay, explicit NGFF planes and throughput qualification | Codex | Pending human review | Implemented for review | Reproducibility evidence remains separate from independent pathology validation. |
 
 ## Rejected or substantially revised AI proposals
 
@@ -45,3 +47,7 @@ certify that history. Human pathology review has not been supplied.
 No human scientific approval, model equivalence decision, or code acceptance is
 inferred from test completion. See [current progress](PROGRESS.md) and
 [local evidence](validation/evidence/stages-1-4-20261009.json).
+
+| 2026-10-11 | Leave all InstanSeg/BANKSY/program work conditional on private validation data | Codex implementation review | Revised: public resources suffice for scoped execution and source curation; independent accuracy remains open. |
+| 2026-10-11 | Use 500 variable genes in the initial public RNA plan | Capacity check / Codex | Exceeded the existing million-row import guard; reduced to 300 plus cited markers (308 total), retaining full-library denominators. |
+| 2026-10-11 | Fit brightfield nuclei into the existing fluorescence-v1 cell executor immediately | Codex implementation review | Revised to an explicit bounded H&E tissue result; whole-slide stitching and a deliberate canonical adapter remain separate work. |

@@ -1,0 +1,12 @@
+{
+  "schema_version": "ifquant.public-example/1",
+  "scope": "CPU model conformance and calibrated public H&E inference; no independent expert accuracy reference",
+  "code_version": "instanseg-torch 0.1.2",
+  "model_version": "brightfield_nuclei 0.1.1",
+  "model_license": "Apache-2.0 per bundled rdf.yaml",
+  "example_terms": "Official InstanSeg repository example at a pinned revision; repository Apache-2.0. Original tissue identity and independent annotations not provided. Raw example and model excluded from Git.",
+  "files": [
+    {"name": "brightfield_nuclei.zip", "url": "https://github.com/instanseg/instanseg/releases/download/instanseg_models_v0.1.1/brightfield_nuclei.zip", "size_bytes": 15054316, "sha256": "427aa9cfe961b6d0012e2abf6befc6a9f76398db5d28dc2302ad911327d1c448"},
+    {"name": "HE_example.tif", "url": "https://raw.githubusercontent.com/instanseg/instanseg/414fbc9e8039c1d049cc27871d66409084ded21c/instanseg/examples/HE_example.tif", "size_bytes": 469660, "sha256": "7c9c10e85363119d6f28cf01fadfef76d03b7ad0fa5bbad3c95720ee0a2320eb"}
+  ]
+}

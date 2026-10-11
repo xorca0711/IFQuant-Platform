@@ -1,11 +1,11 @@
 """Versioned measured-RNA program summaries with an explicit normalization basis."""
 from __future__ import annotations
 
-import csv
 from pathlib import Path
 
 from .canonical import canonical_sha256, load_strict_json
 from .imaging import keys, require, write_json
+from .rna_normalization import library_totals
 from .spatial import exact_id, file_record, validate_assay
 from .spatial_adapters import assay_to_anndata
 
@@ -56,27 +56,8 @@ def score_programs(config_path, output):
                          'status': 'eligible' if available[-1] else 'insufficient_gene_coverage'})
     matrix = data.X.astype(float).tocsr()
     matrix.eliminate_zeros()
-    selected_totals = np.asarray(matrix.sum(axis=1)).ravel()
-    libraries, external = selected_totals.copy(), None
-    if config['normalization_basis'] == 'external_full_library':
-        require(config['library_totals_csv'] is not None, 'full-library totals required')
-        path = base/config['library_totals_csv']
-        external = file_record(path)
-        records = {}
-        with path.open(encoding='utf-8-sig', newline='') as stream:
-            reader = csv.DictReader(stream)
-            require(reader.fieldnames == ['observation_id', 'total_counts'], 'invalid full-library table')
-            for row in reader:
-                oid = row['observation_id']
-                require(oid in data.obs_names and oid not in records, 'unknown/duplicate full-library observation')
-                require(row['total_counts'].isascii() and row['total_counts'].isdigit(), 'integer library total required')
-                records[oid] = int(row['total_counts'])
-        require(set(records) == set(data.obs_names), 'complete full-library table required')
-        libraries = np.array([records[oid] for oid in data.obs_names], dtype=float)
-        require(np.isfinite(libraries).all() and np.all(libraries <= 2**53-1) and
-                np.all(libraries >= selected_totals), 'full library cannot be smaller than selected counts')
-    else:
-        require(config['library_totals_csv'] is None, 'selected-feature normalization cannot carry full-library input')
+    library_path = base/config['library_totals_csv'] if config['library_totals_csv'] is not None else None
+    libraries, external = library_totals(data, config['normalization_basis'], library_path)
     factors = np.divide(10000., libraries, out=np.zeros_like(libraries), where=libraries > 0)
     normalized = sparse.diags(factors) @ matrix
     normalized.data = np.log1p(normalized.data)

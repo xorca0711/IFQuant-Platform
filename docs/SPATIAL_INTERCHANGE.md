@@ -151,6 +151,10 @@ See [current evidence](../validation/evidence/priorities-1-2-20261009.json) and
 
 ## Additional upstream and analysis boundaries
 
-`import-ngff-window` now imports an explicit NGFF 0.4 YX/CYX calibrated window (up to 16 million pixels), preserving scale, global translation, crop origin and a full local store inventory. It requires micrometer axes and declared grayscale/RGB channel semantics. This is a bounded source bridge, not arbitrary multidimensional NGFF discovery. `import-cell-features` maps declared MCMICRO-compatible CSV columns without treating intensity as RNA. Tests include crop/calibration reconciliation and exact string IDs.
+`import-ngff-window` v1 imports an explicit NGFF 0.4 YX/CYX calibrated window (up to 16 million pixels), preserving scale, global translation, crop origin and a full local store inventory. It requires micrometer axes and declared grayscale/RGB channel semantics. This is a bounded source bridge, not arbitrary multidimensional NGFF discovery. `import-cell-features` maps declared MCMICRO-compatible CSV columns without treating intensity as RNA. Tests include crop/calibration reconciliation and exact string IDs.
 
 For runnable RNA programs, domain baselines, morphology/RNA associations, VALIS point QC and processed Slide-GoTags, see [analysis workflows](ANALYSIS_WORKFLOW.md). Full-resolution TIFF processing remains the main large-image path.
+
+Plan v2 adds NGFF 0.5 and explicit T/Z/channel selections, retaining selected
+physical coordinates. See [the current public-development guide](PUBLIC_DEVELOPMENT.md)
+for that profile and the broader 308-feature lung replay with full-library totals.

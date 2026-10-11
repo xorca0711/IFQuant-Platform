@@ -51,6 +51,11 @@ def _domains(args):
     return domain_baselines(args.config, args.output)
 
 
+def _instanseg(args):
+    from .instance_segmentation import segment_instanseg
+    return segment_instanseg(args.config, args.output)
+
+
 def _profiles(args):
     from .morphology_profiles import measure_profiles
     return measure_profiles(args.config, args.output)
@@ -74,11 +79,12 @@ def add_commands(parsers):
         ('reviewer-agreement', _agreement, 'summarize paired ordinal reviews without filling missing scores'),
         ('score-rna-programs', _programs, 'score versioned RNA programs with explicit coverage and normalization'),
         ('test-spatial-hypotheses', _hypotheses, 'run predeclared mixing hypotheses with conditioned nulls'),
-        ('import-ngff-window', _ngff, 'read a bounded calibrated NGFF 0.4 YX/CYX window'),
+        ('import-ngff-window', _ngff, 'read a bounded calibrated NGFF 0.4/0.5 plane with explicit axes'),
         ('import-cell-features', _features, 'map MCMICRO-compatible numeric cell measurements explicitly'),
         ('evaluate-registration', _registration, 'evaluate portable VALIS point results and independent landmarks'),
         ('import-slide-gotags', _gotags, 'import processed MC38-OVA author annotations with coverage gates'),
         ('domain-baselines', _domains, 'compare bounded expression-only and graph-smoothed exploratory clusters'),
+        ('segment-instanseg', _instanseg, 'run pinned CPU brightfield nuclei inference on a calibrated bounded ROI'),
         ('measure-morphology-profiles', _profiles, 'measure calibrated reviewed cuff profiles and septal transects'),
         ('specimen-associations', _associations, 'test paired morphology/RNA summaries at biological-unit level')):
         p = parsers.add_parser(name, help=description)

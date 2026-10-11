@@ -1,5 +1,12 @@
 # Development result through priority 5
 
+**Current follow-up (2026-10-11):** see [public development](PUBLIC_DEVELOPMENT.md)
+for the InstanSeg, broad lung/BANKSY, NGFF 0.5 and complete reduced-level H&E runs.
+The 2026-10-09 results below remain historical evidence; their conditional
+InstanSeg/program/BANKSY statements are superseded by the current register.
+
+## Original priority 1–5 pass
+
 2026-10-09. All **31 numbered jobs** have an explicit outcome in the
 [roadmap/register](DEVELOPMENT_PLAN.md) and its
 [JSON counterpart](DEVELOPMENT_REGISTER.json). This completes the current

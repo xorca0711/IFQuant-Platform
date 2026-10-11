@@ -39,10 +39,11 @@ tissue and spatial schema families remain separate.
 Program registries carry `registry_id`, `species`, `feature_id_namespace`, and
 per-program exact feature IDs, reference, minimum coverage and interpretation.
 No symbol-to-ID, orthologue, species or cell-type conversion is automatic.
-Niethamer is a candidate lung-regeneration reference from the
-[methodology review](../notes/2026-10-09-development-roadmap.md); curated real
-programs must identify their source table/version and injury/timepoint scope.
-The demo registry is intentionally synthetic.
+The [Niethamer marker registry](../protocols/niethamer-lung-markers-v1.json) now
+provides five source-cited mouse panels with explicit injury/timepoint limits.
+The original demo registry remains synthetic. See [public development](PUBLIC_DEVELOPMENT.md)
+for the real 308-feature replay, shared full-library denominator, optional BANKSY
+comparison, pinned InstanSeg ROI executor and NGFF 0.4/0.5 plane selection.
 
 `selected_features` normalizes within the supplied panel. For full-library
 normalization select `external_full_library` and supply a complete

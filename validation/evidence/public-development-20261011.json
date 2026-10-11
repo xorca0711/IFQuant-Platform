@@ -1,0 +1,259 @@
+{
+  "schema_version": "ifquant.public-development-evidence/1",
+  "date": "2026-10-11",
+  "scientific_validation": false,
+  "runtime": "Windows 11 ARM64 host, isolated x64 CPython 3.12.13; concurrent local work affects timings",
+  "verification": {
+    "pytest_passed": 209,
+    "pytest_subtests_passed": 144,
+    "warnings": 41,
+    "suite_log_sha256": "62ed6ec7b172287dae0e10f4f0eb4f3fba1340e9714e98a67d2b4a954a5ba4a9",
+    "focused_tests_passed": 26,
+    "focused_log_sha256": "335fdda0d200bd56918ec8341a392e97a251d35a0ed45876eaf20cf3620c4a42",
+    "remote_ci": "Read the linked PR for current remote status; local success is not CI evidence",
+    "build": "wheel and source distribution built",
+    "lazy_import": "wheel core imported with site packages disabled; torch/anndata absent",
+    "lint": "all changed Python modules, scripts and tests passed scoped Ruff",
+    "build_log_sha256": "85c820e744b917a2c352e968e3fc2c3593e0ff024b045be8c04252ce15c16e17"
+  },
+  "lung_rna": {
+    "all_selected_gene_totals_reconciled": true,
+    "artifacts": {
+      "domain-results.json": "0afcda8dad2396a660d3a801fe0d3fd3c79343c07808fb86a378041e82945c1b",
+      "full-library.csv": "038052c9e37737b1d65fcc98e2a24325493b8f8e1a20073aac8b22e849ce45f5",
+      "program-results.json": "413dfaeb277a9a6c41673018e084d9d98876d128c3cb37fa8616b7585b436cd5",
+      "selection.json": "5cc5c3c07d8378e1047ca5aa1b5e722d1464f5984bd5d32e4c330681e3e9409d"
+    },
+    "measured_observations": 2486,
+    "plan_sha256": "a6d5cc6da6a27fcf899b85880edc14d5eaba494db09d2d2d8fa3d230df7f7e25",
+    "positions": 4992,
+    "schema_version": "ifquant.public-rna-evidence/1",
+    "scientific_validation": false,
+    "scope": "Software and descriptive marker/partition comparison on one deposited Day 3 library. No injury-state, cell-type, lineage, independent mouse replication, or domain-accuracy claim.",
+    "selected_features": 308,
+    "selected_nonzero_counts": 613472,
+    "selected_total_counts": 8378972,
+    "source_sample": "GSM6108348",
+    "source_sha256": "34ba72860ee308c3d883dfb09a2e6b00b814dd013bc7250cd56933ee654432ed",
+    "source_total_counts": 26079373
+  },
+  "instanseg": {
+    "calibration_sources": {
+      "fixture": "pinned model rdf.yaml input axis scale",
+      "public_he": "pinned TIFF OME PhysicalSizeX/Y"
+    },
+    "fixture_comparison": {
+      "f1": 1,
+      "false_negative": 0,
+      "false_positive": 0,
+      "iou_threshold": 0.5,
+      "mean_matched_iou": 1,
+      "precision": 1,
+      "predicted_instances": 336,
+      "recall": 1,
+      "reference_instances": 336,
+      "reference_kind": "upstream model test output; conformance reference, not independent expert annotation",
+      "true_positive": 336
+    },
+    "manifest_sha256": "485483bc5f73c9cb727381b702bb7593b7c5065d4e4903caf551779e0e4b994a",
+    "public_calibration_um": [
+      0.5000799214486333,
+      0.5000799214486333
+    ],
+    "runs": {
+      "fixture": {
+        "engine": {
+          "device": "cpu",
+          "instanseg_torch": "0.1.2",
+          "torch": "2.8.0+cpu"
+        },
+        "objects": 336,
+        "result_sha256": "709cdbb112fc912384126238de94679cd2e7ed9b79480dbc3415c9c94992925b",
+        "seconds": 13.61419659999956
+      },
+      "public_he": {
+        "engine": {
+          "device": "cpu",
+          "instanseg_torch": "0.1.2",
+          "torch": "2.8.0+cpu"
+        },
+        "objects": 1026,
+        "result_sha256": "90a8b4ab0e02720af34c467d8898842ae45f2799d9fbe2a4a03699eed4ea6399",
+        "seconds": 127.12289410000085
+      }
+    },
+    "schema_version": "ifquant.public-instanseg-evidence/1",
+    "scientific_validation": false
+  },
+  "histology_throughput": {
+    "fit_seconds": 6.918362299998989,
+    "grid": {
+      "base_height": 32914,
+      "base_width": 46000,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 8228,
+      "pixel_size_x_um": 1.996,
+      "pixel_size_y_um": 1.9961212931453574,
+      "scale_x": 4,
+      "scale_y": 4.000243072435586,
+      "width": 11500
+    },
+    "package_validation": {
+      "package_sha256": "8f461ba84252671f48989d9b569b07667ddf000089b5afdf45e4ee6c1a1b4273",
+      "regions": 1,
+      "scientific_validation": false,
+      "status": "valid",
+      "tiles": 391
+    },
+    "plan": {
+      "clusters": 3,
+      "fit_level": 2,
+      "max_samples": 30000,
+      "pixel_size_um": 0.499,
+      "run_level": 1,
+      "scope": "same-image unsupervised appearance fit and complete selected-level execution; no held-out model accuracy or lung identity",
+      "seed": 42,
+      "source": {
+        "name": "openslide/CMU-1.svs",
+        "role": "wsi",
+        "sha256": "00a3d54482cd707abf254fe69dccc8d06b8ff757a1663f1290c23418c480eb30",
+        "size_bytes": 177552579,
+        "terms": "CC0 per OpenSlide Aperio test-data index; tissue/species not asserted",
+        "url": "https://openslide.cs.cmu.edu/download/openslide-testdata/Aperio/CMU-1.svs"
+      },
+      "tile_size": 512
+    },
+    "run_seconds": 281.25445360000595,
+    "sampled_peak_rss_bytes": 168828928,
+    "schema_version": "ifquant.histology-throughput/1",
+    "scientific_validation": false
+  },
+  "domain_comparison": {
+    "eligible_observations": 2486,
+    "graph_edges": 35165,
+    "methods": {
+      "banksy_lambda_0": {
+        "neighbor_same_cluster_fraction": 0.4895492677378075
+      },
+      "banksy_lambda_0.8": {
+        "neighbor_same_cluster_fraction": 0.5363002985923504
+      },
+      "expression_only": {
+        "neighbor_same_cluster_fraction": 0.514375088866771
+      },
+      "graph_smoothed": {
+        "neighbor_same_cluster_fraction": 0.5807194653775061
+      }
+    },
+    "partition_comparisons": [
+      {
+        "adjusted_rand_index": 0.5867962241565,
+        "methods": [
+          "expression_only",
+          "graph_smoothed"
+        ]
+      },
+      {
+        "adjusted_rand_index": 0.6767719936378722,
+        "methods": [
+          "expression_only",
+          "banksy_lambda_0"
+        ]
+      },
+      {
+        "adjusted_rand_index": 0.3961068732599356,
+        "methods": [
+          "expression_only",
+          "banksy_lambda_0.8"
+        ]
+      },
+      {
+        "adjusted_rand_index": 0.5012795941978195,
+        "methods": [
+          "graph_smoothed",
+          "banksy_lambda_0"
+        ]
+      },
+      {
+        "adjusted_rand_index": 0.5113730434863771,
+        "methods": [
+          "graph_smoothed",
+          "banksy_lambda_0.8"
+        ]
+      },
+      {
+        "adjusted_rand_index": 0.36735592882699686,
+        "methods": [
+          "banksy_lambda_0",
+          "banksy_lambda_0.8"
+        ]
+      }
+    ],
+    "engine": {
+      "clustering": "centered SVD and fixed-k kmeans; not upstream Leiden pipeline",
+      "name": "pybanksy",
+      "version": "1.3.5"
+    }
+  },
+  "program_coverage": [
+    {
+      "available_genes": 2,
+      "fraction": 1,
+      "missing_feature_ids": [],
+      "program_id": "CAP1_markers",
+      "status": "eligible",
+      "total_genes": 2
+    },
+    {
+      "available_genes": 2,
+      "fraction": 1,
+      "missing_feature_ids": [],
+      "program_id": "CAP2_markers",
+      "status": "eligible",
+      "total_genes": 2
+    },
+    {
+      "available_genes": 2,
+      "fraction": 1,
+      "missing_feature_ids": [],
+      "program_id": "iCAP_associated_markers",
+      "status": "eligible",
+      "total_genes": 2
+    },
+    {
+      "available_genes": 4,
+      "fraction": 1,
+      "missing_feature_ids": [],
+      "program_id": "glycolysis_context",
+      "status": "eligible",
+      "total_genes": 4
+    },
+    {
+      "available_genes": 2,
+      "fraction": 1,
+      "missing_feature_ids": [],
+      "program_id": "MHCII_context",
+      "status": "eligible",
+      "total_genes": 2
+    }
+  ],
+  "sources": {
+    "lung": "datasets/examples/kasmani-day3-young.json",
+    "rna_plan": "datasets/examples/lung-rna-development.json",
+    "instanseg": "datasets/examples/instanseg-brightfield.json",
+    "histology": "datasets/examples/public-qualification.json"
+  },
+  "implementation_hashes": {
+    "src/ifquant_platform/instance_segmentation.py": "caf3d99f7286f2773812a247615ba82330f8ce12ddcb525d1627836c13eb4c42",
+    "src/ifquant_platform/spatial_domains.py": "abb3cf580f11859a6acaeb287dd5ef0cffa5cee520a5f9e4c56e5c2c66445555",
+    "src/ifquant_platform/rna_normalization.py": "e64df84c4b5b8fde380186b89915d036d842c9d5252b1f11770e4e696238f102",
+    "src/ifquant_platform/upstream_interchange.py": "cf8d6ec4d3a87d0126ef66e74e131558ad2f2c03f07ea0245f2570799073846a",
+    "protocols/niethamer-lung-markers-v1.json": "d772623cc935bfefdf826d291e6c56f87bbcc0f6eaf8f24297e94420c4c6b431",
+    "scripts/replay_lung_rna.py": "5902e96c721fad4a818b4e9c703a7b72992793c69a650362129d11a618931901",
+    "scripts/replay_instanseg.py": "2ef48155ba6abcfce18c19da71d79530ab4e2d4501a7a4edff46bdb5d511d058",
+    "scripts/replay_histology_throughput.py": "24889e3ea0162f206faed468156944f476d82841496e613214959b5650d4be2c",
+    "uv.lock": "6f38da3130d02eb6e5dbba9fc61af17a97b811879e37181e68c8a79c71ad7525"
+  },
+  "remaining": "docs/PUBLIC_DEVELOPMENT.md"
+}
