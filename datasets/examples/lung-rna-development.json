@@ -1,0 +1,12 @@
+{
+  "schema_version": "ifquant.lung-rna-development/1",
+  "source_manifest": "kasmani-day3-young.json",
+  "program_registry": "../../protocols/niethamer-lung-markers-v1.json",
+  "variable_features": 300,
+  "minimum_detected_spots": 20,
+  "exclude_prefixes": ["mt-", "Rpl", "Rps"],
+  "selection": "Descending population variance of log1p(CP10k) using full-library totals; exact feature ID breaks ties; append all registry genes. Not Seurat HVG selection.",
+  "domains": {"components": 20, "clusters": 5, "seed": 20261011, "radius": 55, "smoothing_weight": 0.5,
+    "banksy": {"neighbors": 15, "lambda": 0.8, "max_m": 1}},
+  "scope": "Software and descriptive marker/partition comparison on one deposited Day 3 library. No injury-state, cell-type, lineage, independent mouse replication, or domain-accuracy claim."
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "ifquant.gene-programs/1",
+  "registry_id": "niethamer-2025-mouse-lung-markers-v1",
+  "species": "Mus musculus",
+  "feature_id_namespace": "Ensembl mouse; exact symbols mapped in pinned GSM6108348 10x HDF5",
+  "programs": [
+    {"program_id": "CAP1_markers", "feature_ids": ["ENSMUSG00000022579", "ENSMUSG00000005672"], "reference": "https://doi.org/10.1016/j.stem.2024.12.002; Figure 6C,D capillary-state discussion; Gpihbp1, Kit", "min_coverage_fraction": 1, "interpretation": "Positive marker summary; mixed spots cannot establish CAP1 identity."},
+    {"program_id": "CAP2_markers", "feature_ids": ["ENSMUSG00000022122", "ENSMUSG00000000805"], "reference": "https://doi.org/10.1016/j.stem.2024.12.002; Figure 6C,D capillary-state discussion; Ednrb, Car4", "min_coverage_fraction": 1, "interpretation": "Positive marker summary; mixed spots cannot establish CAP2 identity."},
+    {"program_id": "iCAP_associated_markers", "feature_ids": ["ENSMUSG00000029309", "ENSMUSG00000055254"], "reference": "https://doi.org/10.1016/j.stem.2024.12.002; iCAP-specific gene discussion; Sparcl1, Ntrk2", "min_coverage_fraction": 1, "interpretation": "Association marker summary, not an iCAP classifier. The Day 3 replay precedes the reported approximately 11 dpi onset."},
+    {"program_id": "glycolysis_context", "feature_ids": ["ENSMUSG00000020277", "ENSMUSG00000023456", "ENSMUSG00000063229", "ENSMUSG00000032294"], "reference": "https://doi.org/10.1016/j.stem.2024.12.002; Figure S7F; Pfkl, Tpi1, Ldha, Pkm", "min_coverage_fraction": 1, "interpretation": "Nonspecific metabolic RNA context; not metabolic flux or endothelial identity."},
+    {"program_id": "MHCII_context", "feature_ids": ["ENSMUSG00000022504", "ENSMUSG00000024610"], "reference": "https://doi.org/10.1016/j.stem.2024.12.002; Figure S7G; Ciita, Cd74", "min_coverage_fraction": 1, "interpretation": "Nonspecific antigen-presentation RNA context; not functional presentation or cell identity."}
+  ]
+}

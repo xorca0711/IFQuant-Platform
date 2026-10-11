@@ -1,71 +1,82 @@
 # Current project state
 
-Updated 2026-10-09. Branch `codex/development-priorities-1-5`. Follow-up publication is tracked on this branch. Earlier
-[PR #2](https://github.com/xorca0711/IFQuant-Platform/pull/2) was already merged;
-this increment is a separate PR.
-Commit/push/PR updates are authorized. No merge or deployment is authorized.
+Update this before stopping work, every session.
 
-The user expanded scope from priorities 1–2 to all jobs through **priority 5**,
-including pipeline corrections, rationale, current documentation and an overall
-report. That development pass is implemented for review; independent scientific
-acceptance and conditional engines remain explicit in the
-[31-job register](docs/DEVELOPMENT_PLAN.md) and
-[execution report](docs/EXECUTION_REPORT.md).
+Updated 2026-10-11. Branch `codex/public-data-development` starts from merged
+PR #3 / main `e54192d`. The user authorized remaining feasible development,
+roadmap updates, commit, push and updates to PR #4. No merge or scientific
+acceptance is authorized.
 
-## Current deliverables and observed evidence
+## Latest: tiled nuclei and live VALIS
 
-- Native AnnData/classic Visium/SpatialData interchange, completed links/context
-  validation, bounded calibrated NGFF intake and numeric MCMICRO-compatible tables.
-- Real Kasmani Day 3 young-lung replay: 4,992 positions, 2,486 measured RNA,
-  2,506 not reported; five raw-count totals reconciled; both native round trips
-  pass. Image is a deposited 2000 × 1834 derivative with no invented physical
-  calibration or independent animal identity.
-- Real 46,000 × 32,914 RGB Aperio image benchmark: 64 reproducible 512-pixel
-  windows, 15.2 ms median read, about 90.2 MiB sampled peak RSS on this host.
-  A real pyramid-level reader bug was corrected. This is not full-slide analysis
-  throughput or lung pathology validation.
-- QuPath 0.7 discrete classifier bridge executed; a synthetic threshold reference
-  matched exactly. Independent supervised lesion-model scoring remains gated.
-- Calibrated 2D cuff/septal measurements, mask metrics, ordinal reviewer agreement,
-  explicit RNA programs/normalization, domain baselines, biological-unit
-  associations, live VALIS point export/QC, processed GoTags profile and frozen
-  spatial hypotheses/nulls. Ten runnable synthetic workflow examples.
-- Published Slide-GoTags source reconciliation: 240 RCC_1_A rows / six pairs match
-  between supplement and figure data. Processed-cell portal sign-in is required;
-  cell-level spatial reproduction has not run.
+- Resumable whole-grid InstanSeg with core pixel ownership, conservative overlap
+  identity, lock/recovery behavior, calibrated object tables and tiled BigTIFF.
+  Public full-field replay: nine tiles, 5,726 candidates, 44 seam flags; package
+  reconstruction passed. This is not a native whole-slide throughput benchmark.
+- Single-window comparison: F1 0.99053 / matched IoU 0.99186 on shared pixels.
+  This measures tiling sensitivity; independent segmentation accuracy is open.
+- Isolated VALIS 1.2.0 execution: controlled public-image transform RMSE 5.949 µm
+  across 16 points; real IHC pair completed nonrigid registration with no sampled
+  folds. Real pair accuracy is undefined without independent landmarks; physical
+  section relation remains unknown.
+- Full suite: 217 tests / 144 subtests passed. After the final pre-allocation
+  capacity guard, nine focused tests passed (including one new regression), and
+  the public package reconstructed unchanged. Scoped lint and core wheel passed.
+- Runtime and source constraints, failed-attempt rationale and artifact hashes
+  are in [new evidence](validation/evidence/stitching-valis-20261011.json) and
+  [execution guide](docs/STITCHING_REGISTRATION.md). Publication targets existing
+  [PR #4](https://github.com/xorca0711/IFQuant-Platform/pull/4); GitHub is authoritative
+  for current remote checks.
 
-Verification and hashes are recorded in
-[`validation/evidence/priorities-1-5-20261009.json`](validation/evidence/priorities-1-5-20261009.json).
-The completed lung record is
-[`validation/evidence/priorities-1-2-20261009.json`](validation/evidence/priorities-1-2-20261009.json).
-GitHub is authoritative for the latest remote checks.
+## Earlier public development increment
 
-## Remaining gates, in order
+- Pinned CPU InstanSeg H&E ROI nuclei inference and calibrated object exports.
+  All 336 objects in the upstream model fixture matched (F1/IoU 1); a calibrated
+  public ROI produced 1,026 nuclei. Conformance is not independent accuracy.
+- Five source-cited Niethamer mouse lung marker panels; exact Ensembl IDs and
+  injury/timepoint interpretation limits. Shared complete full-library totals
+  protect normalization from feature-panel selection.
+- Broader real lung replay: 308 features, 613,472 nonzero counts, 2,486 measured
+  spots and 2,506 not-reported positions. All selected gene totals reconcile.
+  Expression/graph baselines and optional BANKSY λ=0/0.8 execute on the same data.
+- NGFF 0.4/0.5 bounded uint8 planes with explicit T/Z/channel selection, preserved
+  physical coordinates and storage/dimension-name checks.
+- Complete H&E pipeline at CMU-1 pyramid level 1: 94,622,000 pixels, 391 tiles,
+  281.3 s local analysis and approximately 161 MiB sampled peak RSS; package
+  revalidation passed. Same-image appearance fit is a workload, not pathology truth.
+- Regression suite: **209 tests and 144 subtests passed**; 41 upstream warnings.
+  Optional CPU-engine CI now checks a BANKSY fixture and pinned model conformance.
 
-1. Representative intended-use images, acquisition metadata, independent expert
-   anatomy/artifact/lesion/cell references and a frozen disease-specific rubric.
-2. Human review of native/StarDist boundaries and topology warnings; scored
-   baseline/supervised classifier comparisons. Canonical InstanSeg execution is
-   conditional and unimplemented.
-3. Curated lung gene programs, sufficiently broad measured features and verified
-   independent specimens; compatible references before cell2location/Tangram or
-   BANKSY comparisons. The five-gene replay cannot establish biological domains.
-4. Actual paired-slide VALIS execution with independent landmarks; supported
-   access to processed Slide-GoTags cells before a cell-level reproduction.
-5. Question-driven activation of LIANA+, SpatialGlue, CODEX, UNI/HEST; future
-   intended-use and acquisition-domain evaluation (roadmap WP6).
+[Portable evidence](validation/evidence/public-development-20261011.json),
+[workflow/results/gaps](docs/PUBLIC_DEVELOPMENT.md) and the updated
+[31-job register](docs/DEVELOPMENT_PLAN.md) are the current records.
+The [original execution report](docs/EXECUTION_REPORT.md) preserves prior evidence.
+GitHub is authoritative for the follow-up PR and remote checks.
 
-## Reproducibility / historical records
+## Remaining gaps, in order
 
-Use the [workflow commands](docs/ANALYSIS_WORKFLOW.md). On this Windows ARM64 host,
-the complete optional stack is `.venv-spatial` using isolated x64 CPython.
-Zarr local async socket pairs and QuPath Java preferences require unsandboxed
-execution in this environment. Core imports remain lazy. Raw data, model weights,
-environments and generated runs stay in ignored caches/output, never Git.
+1. Independent annotated nuclei comparisons and seam review; native-resolution
+   multi-scanner throughput, label pyramids and deliberate fluorescence adapters.
+   These remain software/public-data work, not private-data gates.
+2. Native VALIS slide readers/warped-image export, independent real paired-slide
+   landmarks and representative local deformation coverage. Bounded-plane live
+   execution is complete; real-pair accuracy is still unmeasured.
+3. Compatible scRNA reference selection, count-capacity qualification and verified
+   specimen identities before cell2location/Tangram or biological associations.
+4. Supported authenticated Slide-GoTags cell access before cell-level reproduction.
+   Existing workbook agreement covers 240 reported rows / six pairs only.
+5. Expert anatomy/lesion/cell references, native/StarDist warning decisions,
+   supervised QuPath comparison, disease-specific ordinal rubric and representative
+   acquisition validation. No universal injury score or scientific acceptance.
 
-The earlier saved checkpoint `2566fc1` and
-[checkpoint note](notes/2026-10-09-priorities-1-2-checkpoint.md) remain historical.
-Their in-progress statements are superseded by this state. Prior 156/144 and
-181/144 test totals belong to earlier code checkpoints. Fluorescence Phase 1–9
-records remain scoped evidence; current priorities 1–5 are a different numbering
-system. Preserve failed-run evidence and human-review boundaries.
+Optional LIANA+/SpatialGlue/CODEX/UNI/HEST remain question/input dependent.
+The tool still targets future high-resolution images; public resources do not
+constrain its product identity. Lung injury/regeneration remains first.
+
+## Runtime and publication
+
+`.venv-spatial` uses isolated x64 CPython on this ARM64 Windows host. New optional
+extras are `inference` and `domains`; model weights, source data and generated runs
+stay ignored. Zarr local sockets need normal runtime access on this host. See
+[agent context](AI_CONTEXT.md) for operational details and [third-party notices](THIRD_PARTY_NOTICES.md)
+for optional engine terms. Preserve historical records and failed attempts.

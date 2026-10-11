@@ -7,11 +7,16 @@
 | StarDist fresh export and deterministic QC succeeded | Descriptive only | `validation/evidence/stages-1-4-20261009.json` | Run 11: 2,380 candidates, 2,308 accepted, 72 excluded; 1,322 accepted topology warnings. |
 | High-resolution intake, H&E candidate workflow and specimen/cell reports execute | Descriptive only | `validation/evidence/priorities-1-5-20261009.json` | Real 46,000 × 32,914-pixel window benchmark and QuPath label bridge; no real H&E accuracy or whole-slide analysis throughput claim. |
 | Scientific accuracy, injury severity, lineage and backend equivalence | Not established | `docs/STAGES_1_4_STATUS.md` | Independent data, reviewer decisions and endpoint-specific evaluation required. |
-| Earlier combined claim that InstanSeg and native AnnData/SpatialData adapters were unimplemented | Retracted-superseded | `validation/evidence/priorities-1-2-20261009.json` | Native adapters now execute; InstanSeg remains a separate pending executor. |
+| Earlier combined claim that InstanSeg and native AnnData/SpatialData adapters were unimplemented | Retracted-superseded | `validation/evidence/priorities-1-2-20261009.json` | Native adapters and a separate H&E ROI InstanSeg executor now execute; the fluorescence-v1 InstanSeg adapter remains pending. |
 | Native spatial interchange and real lung intake replay | Descriptive only | `validation/evidence/priorities-1-2-20261009.json` | Exact-ID AnnData/Visium/SpatialData exchange and selected raw-count reconciliation; no biological inference. |
 | Processed spatial RNA, explicit affine region links and genotype/TCR missingness | Descriptive only | `validation/evidence/stages-5-6-20261009.json` | CSV/affine foundation; native interchange is implemented separately. Paper-level biological reproduction remains unestablished. |
 | Calibrated morphology, RNA programs, graph baselines, registration QC and frozen spatial hypotheses execute | Descriptive only | `validation/evidence/priorities-1-5-20261009.json` | Ten synthetic workflow examples; real intended-use validation gates remain open. |
 | Slide-GoTags published table/figure statistics reconcile | Descriptive only | `validation/evidence/priorities-1-5-20261009.json` | 240 rows / six RCC_1_A pairs match; no cell-level NMS or p-value recomputation. |
+| Pinned CPU InstanSeg H&E inference and model conformance execute | Descriptive only | `validation/evidence/public-development-20261011.json` | 336 fixture objects match; 1,026 nuclei in a calibrated public ROI; no independent accuracy or whole-slide stitching claim. |
+| Resumable tiled InstanSeg nuclei stitching executes | Descriptive only | `validation/evidence/stitching-valis-20261011.json` | Nine-tile full public field, 5,726 candidates and 44 seam flags; exact package reconstruction, no independent accuracy. |
+| VALIS public pair and controlled-transform registration execute | Descriptive only | `validation/evidence/stitching-valis-20261011.json` | Isolated runtime; controlled RMSE 5.949 µm; real pair accuracy undefined without landmarks. |
+| Broad lung marker/BANKSY replay and full-library normalization execute | Descriptive only | `validation/evidence/public-development-20261011.json` | 308 genes, 2,486 measured spots, all selected raw totals reconciled; no cell-state/domain truth. |
+| Complete reduced-pyramid H&E analysis executes | Descriptive only | `validation/evidence/public-development-20261011.json` | 391 tiles / 94.6 million pixels; same-image appearance model, no pathology accuracy. |
 
 IFQuant Platform is a **QuPath-first high-resolution tissue imaging and spatial
 phenotyping tool**, with lung injury/regeneration as its first application.
@@ -106,10 +111,13 @@ uv sync --locked --extra dev --extra imaging --extra morphology --extra performa
 uv run --no-sync python scripts/demo_development_pipeline.py --output validation/output/development-demo
 ```
 
-The [analysis guide](docs/ANALYSIS_WORKFLOW.md) also includes the pinned real WSI
-and published-source replay. InstanSeg, cell2location/Tangram, BANKSY and optional
-fusion/interaction engines remain conditional; their implementation is not implied
-by the analysis interfaces.
+The [public development guide](docs/PUBLIC_DEVELOPMENT.md) adds pinned CPU InstanSeg,
+a 308-feature lung/BANKSY replay, full-image reduced-level throughput, and NGFF
+0.4/0.5 plane selection. Cell2location/Tangram and optional fusion/interaction
+engines remain conditional. The [stitching and registration guide](docs/STITCHING_REGISTRATION.md)
+adds resumable whole-grid nuclei execution and live VALIS public examples.
+Independent accuracy, native whole-slide capacity and fluorescence-v1 adapters
+remain open; H&E nuclei use a separate tissue workflow.
 
 ## Repository map
 

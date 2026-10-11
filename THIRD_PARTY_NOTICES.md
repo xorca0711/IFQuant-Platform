@@ -18,3 +18,32 @@ and makes no numerical-equivalence claim.
 QuPath, StarDist and any future model extension are separately installed
 components. Preserve their code and weight notices when distributing a runtime.
 The repository's image demonstration is procedurally generated synthetic data.
+
+
+## Optional public development engines (2026-10-11)
+
+- InstanSeg code (`instanseg-torch` 0.1.2) and the official brightfield_nuclei 0.1.1
+  model identify Apache-2.0 terms. The manifest pins the archive and example; the
+  model's RDF metadata and embedded test files remain in the ignored cache.
+  No upstream implementation or weights are copied into this repository.
+- `pybanksy` 1.3.5 is GPL-3.0. It is an optional separately installed dependency;
+  the wrapper is original source. A distributed combined runtime must retain and
+  comply with applicable third-party terms; MIT does not relicense BANKSY.
+- CPU PyTorch 2.8.0 and its dependencies retain their upstream notices. Installing
+  an optional runtime does not convey rights to redistribute source datasets.
+- Niethamer mouse marker facts are attributed to DOI 10.1016/j.stem.2024.12.002;
+  exact symbol/Ensembl mapping uses the pinned Kasmani HDF5 feature table. The
+  repository does not redistribute article content or upstream source matrices.
+
+## Isolated registration runtime
+
+- [VALIS 1.2.0](https://pypi.org/project/valis-wsi/1.2.0/) and
+  [pyvips 3.2.0](https://pypi.org/project/pyvips/3.2.0/) declare MIT terms.
+  Binary libvips and its bundled libraries retain their own notices; see the
+  [libvips distribution](https://www.libvips.org/) and installed wheel licenses.
+- The pinned official VALIS IHC example files remain in the ignored cache.
+  Dataset-specific redistribution rights are not inferred from the code license;
+  no source images or registrar objects are committed or published by this change.
+- VALIS imports may download DISK/LightGlue weights even with the configured
+  non-learned VGG/OpenCV descriptor. Their cache files and hashes are inventoried
+  in run reports; their upstream terms remain separate. None is redistributed here.

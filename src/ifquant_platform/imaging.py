@@ -180,7 +180,7 @@ def validate_source(doc, *, verify_files=True):
     keys(doc['subject'], {'subject_id', 'species', 'specimen_id', 'section_id'}, 'subject')
     for key, value in doc['subject'].items():
         identifier(value, key)
-    require(doc['modality'] in ('he', 'fluorescence'), 'unsupported modality')
+    require(doc['modality'] in ('he', 'brightfield', 'fluorescence'), 'unsupported modality')
     require(doc['calibration_source'] == 'user_declared_base_pixel_size', 'invalid calibration source')
     keys(doc['selection'], {'reader', 'series', 'level'}, 'selection')
     require(doc['selection']['reader'] in ('tiff', 'pillow'), 'invalid reader')

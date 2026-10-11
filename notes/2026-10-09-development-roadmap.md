@@ -89,7 +89,7 @@ Priorities describe the proposed development sequence: **core** means directly u
 | --- | --- | --- |
 | **SpatialData, Marconato et al., online 2024 / issue 2025** — [paper](https://www.nature.com/articles/s41592-024-02212-x), [docs](https://spatialdata.scverse.org/en/stable/) | Images, labels, points, shapes, tables and coordinate transforms in a spatial data framework. | **Core interface design; next adapter.** Use it for interoperability while IFQuant contracts retain QC, meaning and provenance. |
 | **Squidpy, Palla et al., Nature Methods, 2022** — [paper](https://www.nature.com/articles/s41592-021-01358-2) | Spatial graphs, neighborhood enrichment, co-occurrence and image-associated omics analysis. | **Next; useful before omics.** Apply to validated IF cell phenotypes and regional labels. Condition null models on tissue structure and specimen. |
-| **VALIS, Gatenbee et al., Nature Communications, 2023** — [paper](https://www.nature.com/articles/s41467-023-40218-9) | Registration of brightfield and fluorescence whole-slide image series. | **Next when pairing exists.** Store transforms and landmark errors; neighboring sections do not guarantee the same individual cells. |
+| **VALIS, Gatenbee et al., Nature Communications, 2023** — [paper](https://www.nature.com/articles/s41467-023-40218-9) | Registration of brightfield and fluorescence whole-slide image series. | **Public execution implemented.** Bounded IHC-pair and controlled-transform replay; native slide export and independent landmarks remain. Neighboring sections do not guarantee the same cells. |
 | **cell2location, Kleshchevnikov et al., Nature Biotechnology, 2022** — [paper](https://www.nature.com/articles/s41587-021-01139-4) | Reference-based estimation of cell-type abundance in spatial transcriptomic locations. | **Next for mixed-cell spots.** Requires an appropriate single-cell reference; retain uncertainty and unknown populations. Not necessary for every single-cell spatial assay. |
 | **Tangram, Biancalani et al., Nature Methods, 2021** — [paper](https://www.nature.com/articles/s41592-021-01264-7) | Alignment of single-cell expression with spatial expression data. | **Conditional alternative.** Evaluate mapping on held-out genes and locations. Nonspatial scRNA-seq plus H&E alone does not establish measured cell coordinates. |
 | **BANKSY, Singhal et al., Nature Genetics, 2024** — [paper](https://www.nature.com/articles/s41588-024-01664-3) | Neighborhood-aware cell typing and tissue-domain identification. | **Next after a simple neighborhood baseline.** Useful for candidate inflammatory or regenerative niches; clusters require biological interpretation. |
@@ -213,14 +213,34 @@ WP0 and the design work in WP1 come first. H&E engineering can then progress alo
 - **Biological comparisons:** keep mouse/patient/study groups separate; never treat tiles, cells or adjacent sections as independent biological replicates. For fractions, pool eligible raw components only under a declared sampling/aggregation rule; preserve ordinal components rather than inventing averages.
 - **Model comparisons:** freeze preprocessing and test partitions, audit public-data/pretrained-model overlap, compare against simple baselines and report calibration/coverage where probabilities are used. No numeric scientific pass threshold is invented from the available unlabeled material.
 
-## Updated execution and next steps
+## Updated execution and next steps — 2026-10-11
 
-The user authorized implementation through all current priorities 1–5. The [31-job register](../docs/DEVELOPMENT_PLAN.md) and [execution report](../docs/EXECUTION_REPORT.md) now supersede this note's original start-up order. Native interchange, the real lung replay, imaging qualification tools and optional molecular/statistical boundaries execute. Three conditional method branches remain explicitly unimplemented; several implemented tools still need scientific reference data.
+The [31-job register](../docs/DEVELOPMENT_PLAN.md) and
+[public development report](../docs/PUBLIC_DEVELOPMENT.md) supersede the original
+start-up order and backend status descriptions above. Public data now exercise
+pinned InstanSeg H&E ROI inference, a broader 308-feature lung/BANKSY comparison,
+five cited Niethamer marker panels, complete reduced-level H&E execution, and
+explicit NGFF 0.4/0.5 plane intake. These are engineering/descriptive results.
 
-1. Obtain representative future high-resolution images and independent pathology/cell references under the frozen sampling protocol. Review native/StarDist warnings and score the trained QuPath comparison before adding another unscored segmentation engine.
-2. Curate source-bound lung programs and broad-feature inputs with independently verified biological units. The five-gene Kasmani panel is an interchange example, not evidence for biological domains or deconvolution.
-3. Execute registration on actual paired images with held-out landmarks. Obtain processed Slide-GoTags cells through supported authenticated access and select a narrow cell-level reproduction. Current public source evidence reconciles 240 reported rows, not cell-level spatial inference.
-4. Activate cell2location/Tangram, BANKSY, InstanSeg, LIANA+, SpatialGlue, CODEX, UNI or HEST only when a compatible input/question/reference supports a meaningful comparison. Those references are mapped to jobs in the register.
-5. Evaluate intended-use accuracy, sampling bias and acquisition-domain robustness as WP6. Independent image analysis remains a complete product branch while omics/TME extensions are optional.
+1. Whole-grid nuclei stitching/resume and actual VALIS registration now execute;
+   see [the new guide](../docs/STITCHING_REGISTRATION.md) for scope and evidence.
+   Next, review seam disagreements against independent public annotations, then
+   compare backends and benchmark complete native-resolution slides across scanners.
+2. Extend VALIS to native slide readers/warped-image export and independent real
+   paired-slide landmarks. The current real pair has no independent accuracy
+   reference; the controlled-transform check tests coordinate execution only.
+3. Select a compatible scRNA reference and verified biological units before
+   cell2location/Tangram, deconvolution or morphology/RNA effects. BANKSY partitions
+   and marker summaries do not establish biological domains or cell states.
+4. Obtain processed Slide-GoTags cells through supported authenticated access for
+   a frozen cell-level reproduction. The current source evidence reconciles 240
+   reported rows; it does not recompute spatial inference from cells.
+5. Establish disease-specific severity, expert boundary acceptance and acquisition
+   robustness with appropriate independent references. LIANA+, SpatialGlue,
+   CODEX, UNI/HEST remain question/input-dependent branches.
 
-Revisions include explicit TIFF pyramid-array selection, partial-download detection, bounded NGFF/cell-feature bridges, calibrated 2D cuff/transect semantics, explicit RNA normalization, specimen-level association, conditioned finite-sample nulls and abstention for unsupported calls. The [execution report](../docs/EXECUTION_REPORT.md) gives the evidence and rationale. No biological validity, expert acceptance or universal severity score is inferred from software tests.
+The [public report](../docs/PUBLIC_DEVELOPMENT.md) explains the capacity-safe panel
+and full-library normalization; the [stitching guide](../docs/STITCHING_REGISTRATION.md)
+records isolated runtime choices, conservative seam handling and their limitations.
+Public resources do not restrict the future product identity. No universal injury
+score, lineage, expert acceptance or backend equivalence is inferred.

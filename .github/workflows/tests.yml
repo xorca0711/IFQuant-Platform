@@ -50,7 +50,7 @@ jobs:
           version: '0.11.17'
           enable-cache: true
       - run: uv sync --locked --python ${{ matrix.python }} --extra dev --extra imaging --extra morphology --extra performance --extra spatialdata
-      - run: uv run --no-sync pytest -q tests/test_spatial.py tests/test_spatial_adapters.py tests/test_lung_replay.py tests/test_analysis_pipeline.py tests/test_public_qualification.py
+      - run: uv run --no-sync pytest -q tests/test_spatial.py tests/test_spatial_adapters.py tests/test_lung_replay.py tests/test_analysis_pipeline.py tests/test_public_qualification.py tests/test_public_development.py tests/test_whole_slide_instances.py tests/test_valis_execution.py
       - run: uv run --no-sync python scripts/demo_development_pipeline.py --output validation/output/ci-development
       - run: >-
           uv run --no-sync ruff check src/ifquant_platform/spatial*.py
@@ -59,12 +59,72 @@ jobs:
           src/ifquant_platform/imaging_evaluation.py src/ifquant_platform/molecular_programs.py
           src/ifquant_platform/molecular_context.py src/ifquant_platform/morphology_profiles.py
           src/ifquant_platform/registration_qc.py src/ifquant_platform/upstream_interchange.py
+          src/ifquant_platform/instance_segmentation.py src/ifquant_platform/rna_normalization.py
           tests/test_spatial*.py tests/test_lung_replay.py tests/test_analysis_pipeline.py
           tests/test_public_qualification.py scripts/replay_lung_example.py
           scripts/demo_development_pipeline.py scripts/replay_public_qualification.py
           scripts/reconcile_gotags_source.py
+          scripts/replay_lung_rna.py scripts/replay_instanseg.py scripts/replay_histology_throughput.py
+          tests/test_public_development.py
+          src/ifquant_platform/whole_slide_instances.py src/ifquant_platform/valis_execution.py
+          src/ifquant_platform/valis_reader.py scripts/replay_tiled_instanseg.py scripts/replay_valis.py
+          tests/test_whole_slide_instances.py tests/test_valis_execution.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: spatial-development-${{ matrix.os }}-${{ matrix.python }}
           path: validation/output/ci-development/
+  public-engines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.17'
+          enable-cache: true
+      - run: uv sync --locked --python 3.12 --extra dev --extra domains --extra inference --extra wsi-codecs
+      - run: uv run --no-sync pytest -q tests/test_public_development.py tests/test_whole_slide_instances.py
+      - run: uv run --no-sync python scripts/replay_instanseg.py --download --output validation/output/ci-instanseg
+      - name: Check model conformance (not expert accuracy)
+        run: >-
+          uv run --no-sync python -c "import json;
+          r=json.load(open('validation/output/ci-instanseg/evidence.json'))['fixture_comparison'];
+          assert r['f1'] >= .99 and r['mean_matched_iou'] >= .99, r"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pinned-public-engines
+          path: validation/output/ci-instanseg/
+  valis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.17'
+          enable-cache: true
+      - run: uv sync --directory environments/valis --locked --python 3.11
+      - name: Live public registration and controlled-transform check
+        env:
+          PYTHONPATH: src
+          MPLBACKEND: Agg
+        run: >-
+          uv run --project environments/valis --no-sync python scripts/replay_valis.py
+          --download --output validation/output/ci-valis
+        working-directory: .
+      - name: Check controlled-transform geometry only
+        run: >-
+          python -c "import json;
+          r=json.load(open('validation/output/ci-valis/evidence.json'))['runs']['controlled']['qc'];
+          assert r['landmark_errors']['evaluation']['count'] == 16;
+          assert r['landmark_errors']['evaluation']['rmse_um'] < 20;
+          assert r['deformation']['folded_triangles'] == 0"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-valis-registration
+          path: |
+            validation/output/ci-valis/evidence.json
+            validation/output/ci-valis/*/result.json
+            validation/output/ci-valis/*/qc.json
+            validation/output/ci-valis/*/warped-points.csv

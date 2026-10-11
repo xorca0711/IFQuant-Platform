@@ -17,7 +17,9 @@ approval or backend comparison follows from this success.
 Evidence: `validation/evidence/stages-1-4-20261009.json`; ignored detailed output
 is in `validation/output/pilot-20261009-engineering-11-stardist`. Run 10 retains
 its sandbox/Java preferences failure. Human H1/H2 review remains pending, and
-InstanSeg still fails explicitly as unimplemented. Stage 1–4 tissue/reporting
+the fluorescence-v1 InstanSeg executor still fails explicitly as unimplemented.
+A separate pinned H&E ROI executor now runs: see [public development](PUBLIC_DEVELOPMENT.md).
+That result does not establish fluorescence backend equivalence. Stage 1–4 tissue/reporting
 work is described separately in `docs/STAGES_1_4_STATUS.md`.
 
 ## Historical checkpoint — before the fresh run

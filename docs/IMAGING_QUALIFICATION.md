@@ -65,7 +65,11 @@ performance. The source guide is the
 Use `compare-masks` for bounded registered regions up to 16 million pixels.
 Provide explicit class IDs, an ignored reference value and accepted synthetic or
 reviewed-reference metadata. External label masks can be compared through this
-boundary, but an InstanSeg canonical object exporter is still conditional.
+boundary. A separate pinned CPU H&E ROI executor and label matcher now run;
+see [public development](PUBLIC_DEVELOPMENT.md). Resumable whole-grid stitching
+and deterministic package reconstruction now execute; see
+[stitching qualification](STITCHING_REGISTRATION.md). Independent accuracy and the
+fluorescence-v1 canonical adapter remain open.
 
 ## Morphology and severity boundaries
 

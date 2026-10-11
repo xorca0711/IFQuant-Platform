@@ -58,7 +58,7 @@ def evaluate_registration(config_path, output):
     for key in ('subject_id', 'specimen_id', 'species'):
         require(moving['subject'][key] == fixed['subject'][key], 'registration subject/specimen mismatch')
     same = moving['subject']['section_id'] == fixed['subject']['section_id']
-    require(cfg['section_relation'] in ('same_section', 'serial_section') and
+    require(cfg['section_relation'] in ('same_section', 'serial_section', 'unknown') and
             same == (cfg['section_relation'] == 'same_section'), 'registration section relation mismatch')
     path = base/cfg['points_csv']
     record = file_record(path)

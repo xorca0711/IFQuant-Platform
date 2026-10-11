@@ -37,6 +37,7 @@
     "modality": {
       "enum": [
         "he",
+        "brightfield",
         "fluorescence"
       ]
     },
