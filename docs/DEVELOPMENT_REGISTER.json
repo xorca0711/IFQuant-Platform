@@ -1,7 +1,7 @@
 {
   "schema_version": "ifquant.development-register/1",
   "date": "2026-10-11",
-  "scope": "All current development priorities 1\u20135 addressed; scientific gates and conditional methods remain explicit",
+  "scope": "All current development priorities 1–5 addressed; scientific gates and conditional methods remain explicit",
   "jobs": [
     {
       "id": "1.1",
@@ -39,9 +39,9 @@
       "id": "1.5",
       "title": "Dependencies, capacity and CI",
       "status": "implemented",
-      "delivered": "Locked optional environments, sparse/size guards and Linux/Windows CI.",
+      "delivered": "Locked main and isolated VALIS environments, pre-allocation capacity guards and Linux/Windows CI.",
       "evidence": ".github/workflows/tests.yml",
-      "remaining_or_rationale": "Full optional stack uses x64 on this ARM64 host; one benchmark is not universal capacity evidence."
+      "remaining_or_rationale": "VALIS uses separate Python 3.11 / NumPy 1.26; full optional stack uses x64 on this ARM64 host. Native whole-slide capacity remains to be benchmarked."
     },
     {
       "id": "1.6",
@@ -127,9 +127,9 @@
       "id": "3.5",
       "title": "InstanSeg executor / comparison",
       "status": "implemented_with_gate",
-      "delivered": "Pinned CPU H&E ROI nuclei executor, calibrated measurements and instance matching; 336-object model conformance and public crop inference.",
-      "evidence": "scripts/replay_instanseg.py",
-      "remaining_or_rationale": "Independent accuracy, whole-slide stitching and fluorescence-v1 canonical export remain open; separate tissue contract is deliberate."
+      "delivered": "Pinned CPU H&E ROI and resumable whole-grid nuclei execution; conservative overlap stitching, byte-bound BigTIFF/table package and deterministic rebuild; nine-tile public replay.",
+      "evidence": "docs/STITCHING_REGISTRATION.md",
+      "remaining_or_rationale": "44 seam flags require review. Independent accuracy, native-resolution multi-scanner throughput, label pyramids and fluorescence-v1 canonical export remain open."
     },
     {
       "id": "3.6",
@@ -189,7 +189,7 @@
     },
     {
       "id": "4.6",
-      "title": "Morphology\u2013RNA association",
+      "title": "Morphology–RNA association",
       "status": "implemented_with_gate",
       "delivered": "Within-stratum biological-unit aggregation, rank effect, permutation and BH; repeated-group designs rejected.",
       "evidence": "src/ifquant_platform/associations.py",
@@ -199,17 +199,17 @@
       "id": "5.1",
       "title": "VALIS result adapter",
       "status": "implemented_with_gate",
-      "delivered": "Live Slide forward-point exporter with level-zero direction and portable CSV.",
-      "evidence": "src/ifquant_platform/registration_qc.py",
-      "remaining_or_rationale": "Actual VALIS paired-slide runtime replay remains a public-data-capable software job; independent landmarks are a separate acceptance gate."
+      "delivered": "Isolated VALIS 1.2.0 executor, calibrated bounded PNG reader and live level-zero point export; real public IHC pair plus controlled-transform replay.",
+      "evidence": "docs/STITCHING_REGISTRATION.md",
+      "remaining_or_rationale": "Native whole-slide reader/warped-image export remains open. Public pair section relation is unknown; no cell-identity claim."
     },
     {
       "id": "5.2",
       "title": "Registration qualification",
       "status": "implemented_with_gate",
-      "delivered": "Separate fit/evaluation errors, sampled folds/area change and local held-out support.",
-      "evidence": "src/ifquant_platform/registration_qc.py",
-      "remaining_or_rationale": "Independent real landmarks and representative local deformation coverage required."
+      "delivered": "Separate fit/evaluation errors, local support and sampled folds; controlled public transform RMSE 5.949 micrometers across 16 points; nonrigid public pair sampled without folds.",
+      "evidence": "validation/evidence/stitching-valis-20261011.json",
+      "remaining_or_rationale": "Real pair has no independent landmarks and undefined accuracy; representative deformation/edge coverage and expert landmark acceptance remain required."
     },
     {
       "id": "5.3",

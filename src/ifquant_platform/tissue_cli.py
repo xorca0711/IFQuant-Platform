@@ -71,7 +71,7 @@ def add_commands(parsers):
         p.add_argument('--' + field, required=True)
     p.add_argument('--pixel-size-x', type=float, required=True, help='base image micrometers/pixel')
     p.add_argument('--pixel-size-y', type=float, required=True, help='base image micrometers/pixel')
-    p.add_argument('--modality', choices=['he', 'fluorescence'], default='he')
+    p.add_argument('--modality', choices=['he', 'brightfield', 'fluorescence'], default='he')
     p.add_argument('--reader', choices=['tiff', 'pillow'], default='tiff')
     p.add_argument('--series', type=int, default=0)
     p.add_argument('--level', type=int, default=0)

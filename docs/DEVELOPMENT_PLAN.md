@@ -28,7 +28,7 @@ and activation requirements recorded, engine not implemented/executed.
 | **1.2 AnnData interchange** | demonstrated | Sparse selected raw counts, exact IDs, obs/var and status; real round trip. [Evidence](../src/ifquant_platform/spatial_adapters.py) | Dense matrices rejected; declared raw layer required. |
 | **1.3 Classic Visium interchange** | demonstrated | 10x v3 HDF5 and integer MTX; headered/legacy positions; one scale conversion. [Evidence](../scripts/replay_lung_example.py) | Visium HD and automatic unit inference remain outside this profile. |
 | **1.4 SpatialData exchange** | demonstrated | Named frames, RNA points/table, optional image/regions, portable store hashes. [Evidence](../src/ifquant_platform/spatial_exchange.py) | IFQuant-profile import, not arbitrary store discovery. |
-| **1.5 Dependencies, capacity and CI** | implemented | Locked optional environments, sparse/size guards and Linux/Windows CI. [Evidence](../.github/workflows/tests.yml) | Full optional stack uses x64 on this ARM64 host; one benchmark is not universal capacity evidence. |
+| **1.5 Dependencies, capacity and CI** | implemented | Locked main and isolated VALIS environments, pre-allocation capacity guards and Linux/Windows CI. [Evidence](../.github/workflows/tests.yml) | VALIS uses separate Python 3.11 / NumPy 1.26; full optional stack uses x64 on this ARM64 host. Native whole-slide capacity remains to be benchmarked. |
 | **1.6 OME-NGFF / MCMICRO intake** | revised implemented | Calibrated NGFF 0.4/0.5 bounded plane with explicit T/Z/channel selection; MCMICRO numeric feature mapping. [Evidence](../src/ifquant_platform/upstream_interchange.py) | Only uint8 planes and canonical TCZYX subsets; arbitrary discovery, 3D analysis and Visium HD remain outside this profile. |
 
 ## Priority 2
@@ -49,7 +49,7 @@ and activation requirements recorded, engine not implemented/executed.
 | **3.2 Annotation and sampling protocol** | implemented | Anatomy, lesion, artifact, uncertainty, exhaustive-negative coverage and biological-unit protocol. [Evidence](IMAGING_QUALIFICATION.md) | Acquisition-specific independent expert annotations still needed. |
 | **3.3 Appearance / QuPath classifier comparison** | implemented with gate | Existing frozen appearance baseline plus discrete-label QuPath bridge and mask metrics; real runtime threshold-fixture pass. [Evidence](../qupath/scripts/ExportPixelClassifier.groovy) | Supervised pathology model and held-out reference comparison still required. |
 | **3.4 Native / StarDist qualification** | implemented with gate | Previously repaired geometry export, frozen warning evidence and independent object-evaluation framework retained. [Evidence](PHASE5_STATUS.md) | 1,322 accepted StarDist topology warnings still need boundary review; no scientific equivalence claim. |
-| **3.5 InstanSeg executor / comparison** | implemented with gate | Pinned CPU H&E ROI nuclei executor, calibrated measurements and instance matching; 336-object model conformance and public crop inference. [Evidence](../scripts/replay_instanseg.py) | Independent accuracy, whole-slide stitching and fluorescence-v1 canonical export remain open; separate tissue contract is deliberate. |
+| **3.5 InstanSeg executor / comparison** | implemented with gate | Pinned CPU H&E ROI and resumable whole-grid nuclei execution; conservative overlap stitching, byte-bound BigTIFF/table package and deterministic rebuild; nine-tile public replay. [Evidence](STITCHING_REGISTRATION.md) | 44 seam flags require review. Independent accuracy, native-resolution multi-scanner throughput, label pyramids and fluorescence-v1 canonical export remain open. |
 | **3.6 Morphology endpoints** | revised implemented | Qualified area endpoints; calibrated cuff area per inner perimeter and reviewed septal transects. [Evidence](../src/ifquant_platform/morphology_profiles.py) | Replaced unsupported automatic thickness/stereology interpretation with explicit 2D profile measurements. |
 | **3.7 Severity / reviewer agreement** | implemented with gate | Versioned ordinal forms retained; paired agreement, weighted kappa and missingness added. [Evidence](../src/ifquant_platform/imaging_evaluation.py) | Model-specific rubric and real blinded reviewers still needed; no universal score. |
 
@@ -68,8 +68,8 @@ and activation requirements recorded, engine not implemented/executed.
 
 | Job | Status | Delivered / evidence | Remaining gate or revision rationale |
 | --- | --- | --- | --- |
-| **5.1 VALIS result adapter** | implemented with gate | Live Slide forward-point exporter with level-zero direction and portable CSV. [Evidence](../src/ifquant_platform/registration_qc.py) | Actual VALIS paired-slide runtime replay remains a public-data-capable software job; independent landmarks are a separate acceptance gate. |
-| **5.2 Registration qualification** | implemented with gate | Separate fit/evaluation errors, sampled folds/area change and local held-out support. [Evidence](../src/ifquant_platform/registration_qc.py) | Independent real landmarks and representative local deformation coverage required. |
+| **5.1 VALIS result adapter** | implemented with gate | Isolated VALIS 1.2.0 executor, calibrated bounded PNG reader and live level-zero point export; real public IHC pair plus controlled-transform replay. [Evidence](STITCHING_REGISTRATION.md) | Native whole-slide reader/warped-image export remains open. Public pair section relation is unknown; no cell-identity claim. |
+| **5.2 Registration qualification** | implemented with gate | Separate fit/evaluation errors, local support and sampled folds; controlled public transform RMSE 5.949 micrometers across 16 points; nonrigid public pair sampled without folds. [Evidence](../validation/evidence/stitching-valis-20261011.json) | Real pair has no independent landmarks and undefined accuracy; representative deformation/edge coverage and expert landmark acceptance remain required. |
 | **5.3 Processed Slide-GoTags intake** | implemented with gate | MC38-OVA author-column profile, exact IDs, observed coverage, expression/nanopore distinction and clonotype missingness. [Evidence](../src/ifquant_platform/gotags_adapter.py) | Synthetic source-profile fixture only; processed cell download requires portal sign-in. Coverage-free author calls are not promoted. |
 | **5.4 Frozen spatial hypotheses** | implemented | Hashes, pairs, radii, units, seed, coverage strata, boundary policy and sensitivity are explicit inputs. [Evidence](../src/ifquant_platform/spatial_statistics.py) | No post-hoc biological hypothesis supplied by the tool. |
 | **5.5 Nulls / multiplicity / uncertainty** | revised implemented | Finite-sample corrected conditioned permutations, undefined/degenerate abstention, BH and jitter ranges. [Evidence](../tests/test_analysis_pipeline.py) | Revision of author global shuffle/zero substitution; jitter range is not a confidence interval. |
@@ -78,17 +78,19 @@ and activation requirements recorded, engine not implemented/executed.
 
 ## Next development order
 
-The 2026-10-11 [public development report](PUBLIC_DEVELOPMENT.md) is the current
-execution/remaining-work companion. It includes the rationale for the bounded
-InstanSeg scope, 308-feature panel and explicit full-library normalization.
+The [public development report](PUBLIC_DEVELOPMENT.md) and
+[stitching/registration guide](STITCHING_REGISTRATION.md) record the completed
+software and public executions. Whole-grid nuclei stitching/resume and live VALIS
+registration are implemented; independent accuracy remains a separate gate.
 
-1. Complete whole-slide InstanSeg stitching/resume and deliberate package adapters;
-   extend format profiles only with explicit coordinate/intensity semantics.
-2. Run annotated public segmentation comparisons and multi-scanner/native-resolution
-   throughput. These are possible without the user's own data; the current model
-   fixture demonstrates conformance only.
-3. Execute actual VALIS paired-slide registration and held-out landmark QC in an
-   isolated compatible runtime. The existing point boundary is not a runtime replay.
+1. Review seam disagreements and run independent annotated public nuclei comparisons;
+   audit model/train overlap before comparing native, StarDist and InstanSeg.
+2. Benchmark complete native-resolution slides across scanners, including memory,
+   disk and recovery costs. Add label pyramids and deliberate canonical adapters;
+   expand formats only with explicit coordinate/intensity semantics.
+3. Extend VALIS from bounded calibrated planes to native slide readers/warped-image
+   export; qualify independent real paired-slide landmarks and local deformation
+   coverage. Public source-series proxies do not establish subject/cell identity.
 4. Qualify a compatible scRNA reference, raw-count capacity and independent specimen
    identities before cell2location/Tangram or biological morphology/RNA effects.
 5. Obtain supported authenticated Slide-GoTags cells for a frozen cell-level target;

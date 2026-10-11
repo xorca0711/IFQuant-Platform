@@ -41,6 +41,11 @@ def _registration(args):
     return evaluate_registration(args.config, args.output)
 
 
+def _valis_pair(args):
+    from .valis_execution import run_valis_pair
+    return run_valis_pair(args.config, args.output)
+
+
 def _gotags(args):
     from .gotags_adapter import import_gotags
     return import_gotags(args.config, args.output)
@@ -56,6 +61,16 @@ def _instanseg(args):
     return segment_instanseg(args.config, args.output)
 
 
+def _instanseg_slide(args):
+    from .whole_slide_instances import run_tiled_instanseg
+    return run_tiled_instanseg(args.config, args.output, resume=args.resume, max_tiles=args.max_tiles)
+
+
+def _validate_instanseg_slide(args):
+    from .whole_slide_instances import validate_tiled_instanseg
+    return validate_tiled_instanseg(args.output)
+
+
 def _profiles(args):
     from .morphology_profiles import measure_profiles
     return measure_profiles(args.config, args.output)
@@ -67,6 +82,15 @@ def _associations(args):
 
 
 def add_commands(parsers):
+    p = parsers.add_parser('segment-instanseg-slide', help='stitch resumable tiled nuclei across a complete selected source grid')
+    p.add_argument('config')
+    p.add_argument('--output', required=True)
+    p.add_argument('--resume', action='store_true')
+    p.add_argument('--max-tiles', type=int)
+    p.set_defaults(handler=_instanseg_slide)
+    p = parsers.add_parser('validate-instanseg-slide', help='rebuild and verify a completed tiled nuclei package')
+    p.add_argument('output')
+    p.set_defaults(handler=_validate_instanseg_slide)
     p = parsers.add_parser('benchmark-image', help='measure reproducible source-window reads and process memory')
     p.add_argument('source')
     p.add_argument('--output', required=True)
@@ -82,6 +106,7 @@ def add_commands(parsers):
         ('import-ngff-window', _ngff, 'read a bounded calibrated NGFF 0.4/0.5 plane with explicit axes'),
         ('import-cell-features', _features, 'map MCMICRO-compatible numeric cell measurements explicitly'),
         ('evaluate-registration', _registration, 'evaluate portable VALIS point results and independent landmarks'),
+        ('register-valis-pair', _valis_pair, 'execute pinned VALIS on declared public or private brightfield PNG planes'),
         ('import-slide-gotags', _gotags, 'import processed MC38-OVA author annotations with coverage gates'),
         ('domain-baselines', _domains, 'compare bounded expression-only and graph-smoothed exploratory clusters'),
         ('segment-instanseg', _instanseg, 'run pinned CPU brightfield nuclei inference on a calibrated bounded ROI'),

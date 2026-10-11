@@ -69,6 +69,11 @@ model. Ordinal severity is not an appropriate continuous mean endpoint here.
 
 ## Registration and spatial inference
 
+The [isolated VALIS executor](STITCHING_REGISTRATION.md) now runs a real public
+IHC pair and a controlled-transform check. Its bounded calibrated PNG profile
+uses the point boundary below. Unknown physical section relationship is explicit;
+real paired-slide accuracy requires independent evaluation landmarks.
+
 On live trusted VALIS Slide objects, call
 `ifquant_platform.registration_qc.export_valis_points(moving_slide, fixed_slide, input_csv, output_csv)`.
 This invokes `warp_xy_from_to` with source, point and destination levels **0**.

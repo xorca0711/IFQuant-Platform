@@ -1,0 +1,331 @@
+{
+  "schema_version": "ifquant.development-evidence/1",
+  "date": "2026-10-11",
+  "scope": "Resumable tiled brightfield nuclei and isolated live VALIS public registration; no scientific validation",
+  "base_commit": "95134b3",
+  "public_tiled_instanseg": {
+    "comparison_window_xywh": [
+      128,
+      128,
+      512,
+      512
+    ],
+    "package_sha256": "7cfc733d17007e41e2725d2bc3ee0f1ac8cf84353dbe4d26b3a3b0f00461236a",
+    "pause_record": null,
+    "plan": {
+      "halo": 64,
+      "maximum_objects": 100000,
+      "minimum_overlap_pixels": 16,
+      "overlap_iou": 0.5,
+      "schema_version": "ifquant.instanseg-slide/1",
+      "source": "source.json",
+      "threads": 4,
+      "tile_size": 512,
+      "weights": "validation/runtime-cache/instanseg/instanseg.pt"
+    },
+    "result": {
+      "boundary_objects": 0,
+      "foreground_pixels": 488916,
+      "objects": 5726,
+      "overlap_decisions": {
+        "already_linked": 577,
+        "joined": 2389,
+        "rejected_same_tile_collision": 0
+      },
+      "tiles": 9,
+      "unresolved_seam_objects": 44
+    },
+    "schema_version": "ifquant.public-tiled-instanseg/1",
+    "scientific_validation": false,
+    "scope": "all pixels of a native-resolution public H&E field; whole-slide-capable streaming software, not a billion-pixel slide throughput benchmark",
+    "source_grid": {
+      "base_height": 1484,
+      "base_width": 1380,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 1484,
+      "pixel_size_x_um": 0.5000799214486333,
+      "pixel_size_y_um": 0.5000799214486333,
+      "scale_x": 1,
+      "scale_y": 1,
+      "width": 1380
+    },
+    "source_image_sha256": "7c9c10e85363119d6f28cf01fadfef76d03b7ad0fa5bbad3c95720ee0a2320eb",
+    "tiling_comparison": {
+      "f1": 0.9905254091300603,
+      "false_negative": 2,
+      "false_positive": 20,
+      "iou_threshold": 0.5,
+      "mean_matched_iou": 0.9918587776511146,
+      "precision": 0.9829059829059829,
+      "predicted_instances": 1170,
+      "recall": 0.9982638888888888,
+      "reference_instances": 1152,
+      "reference_kind": "single-window prediction on the same pixels; tiling sensitivity, not independent annotation",
+      "true_positive": 1150
+    },
+    "validation": {
+      "boundary_objects": 0,
+      "foreground_pixels": 488916,
+      "objects": 5726,
+      "overlap_decisions": {
+        "already_linked": 577,
+        "joined": 2389,
+        "rejected_same_tile_collision": 0
+      },
+      "scientific_validation": false,
+      "status": "valid",
+      "tiles": 9,
+      "unresolved_seam_objects": 44
+    }
+  },
+  "inference_binding_at_execution": {
+    "code": {
+      "imaging.py": "d8c1e41d2926d074f5ebcaa97f34d600656dc5500cac8a467b1652d336d9ba80",
+      "instance_segmentation.py": "f65b82f86cae116ff3b3e35f5f1c48a87d8467cd6604797dfb6a46ec159dad0a",
+      "whole_slide_instances.py": "5f850df59a03d5b59182c8e928d6496ce1a4cad90ef25864be1ba1b99508d368"
+    },
+    "config": "519281af029e6168df50f66dddee168ff034e4c2f3b2be270b18e4b631481a8b",
+    "environment": {
+      "instanseg-torch": "0.1.2",
+      "numpy": "2.5.3",
+      "tifffile": "2026.9.20",
+      "torch": "2.8.0+cpu"
+    },
+    "source": "09aedf2abdeeb25b0aed1420b916a4b1f4f6bac836c2459f623a00521bbd75c0",
+    "weights": "0c724da169d507d8dd2e206ad3675a0b1566824eee6e20ad9a0ba916311d9dd0"
+  },
+  "public_valis": {
+    "independent_public_pair_landmarks": false,
+    "manifest_sha256": "1dd227fb5d2422d1e203c6e0a4356866afecfbf67dbbfaeda24d9dd25d21cbde",
+    "runs": {
+      "controlled": {
+        "qc": {
+          "deformation": {
+            "folded_triangles": 0,
+            "interpretation": "finite-grid orientation/area check; not a proof of global diffeomorphism",
+            "maximum_area_ratio": 1.0000494413353984,
+            "minimum_area_ratio": 1.000049441335397,
+            "status": "sampled"
+          },
+          "landmark_errors": {
+            "evaluation": {
+              "count": 16,
+              "max_um": 6.3894753616327,
+              "rmse_um": 5.9492383929787005
+            },
+            "fit": {
+              "count": 0,
+              "max_um": null,
+              "rmse_um": null
+            }
+          },
+          "output": "validation/output/valis-final-20261011/controlled/qc.json",
+          "scientific_validation": false
+        },
+        "result_sha256": "88d6859891449eed6b141fbe306cb0d804494ecc48a9e6ac34c112816a1cc4f3",
+        "runtime": {
+          "numpy": "1.26.4",
+          "pyvips": "3.2.0",
+          "scikit-image": "0.26.0",
+          "torch": "2.8.0+cpu",
+          "valis-wsi": "1.2.0"
+        },
+        "seconds": 70.90232969999488
+      },
+      "public_pair": {
+        "qc": {
+          "deformation": {
+            "folded_triangles": 0,
+            "interpretation": "finite-grid orientation/area check; not a proof of global diffeomorphism",
+            "maximum_area_ratio": 1.043208649157661,
+            "minimum_area_ratio": 0.9533536475302739,
+            "status": "sampled"
+          },
+          "landmark_errors": {
+            "evaluation": {
+              "count": 0,
+              "max_um": null,
+              "rmse_um": null
+            },
+            "fit": {
+              "count": 0,
+              "max_um": null,
+              "rmse_um": null
+            }
+          },
+          "output": "validation/output/valis-final-20261011/public_pair/qc.json",
+          "scientific_validation": false
+        },
+        "result_sha256": "b86c24cbc47604541bc4dd04c059ce9540511b4448185228533464bdde01fd0d",
+        "runtime": {
+          "numpy": "1.26.4",
+          "pyvips": "3.2.0",
+          "scikit-image": "0.26.0",
+          "torch": "2.8.0+cpu",
+          "valis-wsi": "1.2.0"
+        },
+        "seconds": 83.56294959998922
+      }
+    },
+    "schema_version": "ifquant.public-valis-evidence/1",
+    "scientific_validation": false
+  },
+  "valis_details": {
+    "controlled": {
+      "files": {
+        "validation\\output\\valis-final-20261011\\controlled\\result.json": "88d6859891449eed6b141fbe306cb0d804494ecc48a9e6ac34c112816a1cc4f3",
+        "validation\\output\\valis-final-20261011\\controlled\\qc.json": "53c8eb69ae2a2de11a541170979c1b6395f7ae04c6a66a40ba31859b5bda12a8",
+        "validation\\output\\valis-final-20261011\\controlled\\warped-points.csv": "bbfa93b23bded8bb6bf6899c662112814741ce1632f54ceeb0a4dffb275a0220",
+        "validation\\output\\valis-final-20261011\\controlled\\valis-fitted-summary.csv": "41973ddc1c2c8a77494f232052aa169907ef6892743e950f74593ae3b24411f5"
+      },
+      "section_relation": "same_section",
+      "source_bindings": {
+        "fixed": "04bf5f431f9e2d93b7ae5fa3d89dab959f1f865ae57a9fe3d8986ed2846b0608",
+        "moving": "ac945351cd689d50464fa56ae59eb1808e343cc36bd9b48c9a7a2dbe5798fe76"
+      },
+      "ancillary_import_weights": [
+        {
+          "path": "validation/runtime-cache/valis/torch/hub/checkpoints/depth-save.pth",
+          "sha256": "9c2ee4ded238892dfa51569941372601e35e4a74aa6f84ea80053d2ab1c07abe",
+          "size_bytes": 4375832
+        },
+        {
+          "path": "validation/runtime-cache/valis/torch/hub/checkpoints/disk_lightglue_v0-1_arxiv-pth",
+          "sha256": "b5b21d47ea24f2c5e501aec9c91b9716e4c8c3429a4dc1e615c133c4c9378335",
+          "size_bytes": 47631405
+        }
+      ],
+      "observations": [
+        {
+          "local_error_proxy_um": 5.825580125362536,
+          "local_support": "near_heldout_landmark",
+          "nearest_evaluation_distance_um": 2948.402248705256,
+          "outside_fixed_image": false,
+          "point_id": "o0",
+          "role": "observation",
+          "source_x": 1293.5,
+          "source_y": 1363.5,
+          "target_x": null,
+          "target_y": null,
+          "warped_x": 1264.80640843897,
+          "warped_y": 1394.8191197835322
+        }
+      ]
+    },
+    "public_pair": {
+      "files": {
+        "validation\\output\\valis-final-20261011\\public_pair\\result.json": "b86c24cbc47604541bc4dd04c059ce9540511b4448185228533464bdde01fd0d",
+        "validation\\output\\valis-final-20261011\\public_pair\\qc.json": "d2f0e456cb3f9c704dbbbb1c635aab26fc084b35c758df0004ed5b4adbf510b8",
+        "validation\\output\\valis-final-20261011\\public_pair\\warped-points.csv": "d6738bf05ae75542deaa313fdbe10144789e1343636f27050e1872f4450aa25e",
+        "validation\\output\\valis-final-20261011\\public_pair\\valis-fitted-summary.csv": "6c9bd24d139d991fac5db0b2c6eb0cf3499b511f3b081d204594a1957cc01ea4"
+      },
+      "section_relation": "unknown",
+      "source_bindings": {
+        "fixed": "04bf5f431f9e2d93b7ae5fa3d89dab959f1f865ae57a9fe3d8986ed2846b0608",
+        "moving": "8019eb98b65e50d1d42222fd6b55996db586ebec6aca11445170703d0498df01"
+      },
+      "ancillary_import_weights": [
+        {
+          "path": "validation/runtime-cache/valis/torch/hub/checkpoints/depth-save.pth",
+          "sha256": "9c2ee4ded238892dfa51569941372601e35e4a74aa6f84ea80053d2ab1c07abe",
+          "size_bytes": 4375832
+        },
+        {
+          "path": "validation/runtime-cache/valis/torch/hub/checkpoints/disk_lightglue_v0-1_arxiv-pth",
+          "sha256": "b5b21d47ea24f2c5e501aec9c91b9716e4c8c3429a4dc1e615c133c4c9378335",
+          "size_bytes": 47631405
+        }
+      ],
+      "observations": [
+        {
+          "local_error_proxy_um": null,
+          "local_support": "unsupported",
+          "nearest_evaluation_distance_um": null,
+          "outside_fixed_image": false,
+          "point_id": "o0",
+          "role": "observation",
+          "source_x": 1349.5,
+          "source_y": 1408.5,
+          "target_x": null,
+          "target_y": null,
+          "warped_x": 1409.5819432768303,
+          "warped_y": 1338.9089218902482
+        }
+      ]
+    }
+  },
+  "final_source_sha256": {
+    "src/ifquant_platform/whole_slide_instances.py": "ff21253e18cbc54da592df0e761d0938eb7e9dd4a6ba20ca8793b2c92cdbe5cb",
+    "src/ifquant_platform/instance_segmentation.py": "f65b82f86cae116ff3b3e35f5f1c48a87d8467cd6604797dfb6a46ec159dad0a",
+    "src/ifquant_platform/valis_execution.py": "488c54ac590205c6b8b3eaf6902cb22b8c4d6c94658821a6ffed9eb02599761a",
+    "src/ifquant_platform/valis_reader.py": "503dc222190e2eb50ecf05d29ce5e535054827231f57a8b4c470263acba6814c",
+    "src/ifquant_platform/registration_qc.py": "6f9383da3d85d3387cdc1550599a2ad35ee4a02adaa4b08c333e487236c6bac6",
+    "src/ifquant_platform/imaging.py": "d8c1e41d2926d074f5ebcaa97f34d600656dc5500cac8a467b1652d336d9ba80",
+    "src/ifquant_platform/analysis_cli.py": "ea91b64916a3da00e91c4aef17afa7f2dff9781de2dd4d74868deea58fd8151e",
+    "src/ifquant_platform/tissue_cli.py": "1e85cdadf7f092f2dfbf5e32e43eef08865398e81f08123409cb7768c8a3c385",
+    "scripts/replay_tiled_instanseg.py": "a421d4ad29cc425d962044c72d2ca83553b60cbd4d75fad8e7a47042aa24a79d",
+    "scripts/replay_valis.py": "0f8a4e95cdd5b812c748318deefbc3429fde221d083059c5d8331f58bf6e34f7",
+    "environments/valis/pyproject.toml": "3eb72eba4eeb6d3505e71f9da195e87043cdfa821eb404fc335aa73e63819559",
+    "environments/valis/uv.lock": "f5e20efda3a3e4a269a4c452b23a68003cac8c43683d55a0a67e5e94651d06fa",
+    "datasets/examples/valis-ihc-pair.json": "1dd227fb5d2422d1e203c6e0a4356866afecfbf67dbbfaeda24d9dd25d21cbde"
+  },
+  "local_log_sha256": {
+    "validation/output/stitch-valis-suite.log": "2522761dec35dc53dd3bbbe6582586a9324c73e0cc9e8aa27ceac29fe14b7b60",
+    "validation/output/stitch-valis-build.log": "bb2623d22ec77af379e155ca15072cbb2f618912c7c3d433f561dab15fabb71d",
+    "validation/output/stitch-package-current.log": "2b864f19fa2d2a988e0af30a3d7d2104471e09615300af027841ab3512b7711e",
+    "validation/output/valis-final-20261011.log": "488e0ab07aa8103bfa617857d1e938acf3227ff08b67351bfba5b0cfee5e3274"
+  },
+  "verification": {
+    "full_suite": {
+      "passed": 217,
+      "subtests_passed": 144,
+      "warnings": 41,
+      "seconds": 56.9
+    },
+    "final_focused_tests": {
+      "passed": 9,
+      "seconds": 2.51,
+      "scope": "Stitching and VALIS tests after moving tile-capacity check before allocation; includes one additional regression"
+    },
+    "scoped_lint": "passed",
+    "core_wheel": "built",
+    "final_code_public_package_reconstruction": "valid; unchanged objects/labels/matches",
+    "isolated_wheel_import": "passed; no numpy, torch, valis or pyvips imported by the executor modules",
+    "documentation": "current relative links and all 31 register evidence paths exist"
+  },
+  "revisions": [
+    {
+      "issue": "Python 3.12 fastcluster source build failed",
+      "resolution": "Isolated locked Python 3.11 x64 / NumPy 1.26 environment; preserved failed environment."
+    },
+    {
+      "issue": "VALIS rigid-only cleanup reads absent nonrigid settings",
+      "resolution": "Initialize empty missing container; still require completed registration."
+    },
+    {
+      "issue": "LZW TIFF decode unavailable via tifffile without imagecodecs",
+      "resolution": "Use installed libvips for pixels and OME metadata for calibration."
+    },
+    {
+      "issue": "768-pixel tiling comparison exceeded instance pair capacity after successful inference",
+      "resolution": "Preserve inference; compare predeclared 512-pixel common window; guard unchanged."
+    },
+    {
+      "issue": "Initial real pair exploratory run assumed serial section relationship",
+      "resolution": "Final fresh run explicitly uses unknown relationship; prior exploratory outputs not authoritative."
+    },
+    {
+      "issue": "Tile inventory capacity enforced after allocation",
+      "resolution": "Final guard moved before allocation; targeted regression plus public package reconstruction passed; inference binding remains its original code hash."
+    }
+  ],
+  "missing_evidence": [
+    "No independent nuclei annotations; same-image single-window comparison measures tiling sensitivity.",
+    "Full public field is about two million pixels, not a billion-pixel slide benchmark.",
+    "Initial run paused after two tiles and resumed, but separate pause.json was not recorded; synthetic pause/resume invariance is tested and future replay writes that record.",
+    "Public IHC pair has no independently annotated landmarks or established physical section relationship.",
+    "Finite interior probes do not prove global absence of folding."
+  ],
+  "scientific_validation": false
+}

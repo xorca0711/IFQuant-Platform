@@ -6,6 +6,8 @@ __pycache__/
 .uv-cache/
 .venv/
 .venv-spatial/
+.venv-valis/
+.venv-valis311/
 build/
 dist/
 *.egg-info/

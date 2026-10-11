@@ -89,7 +89,7 @@ Priorities describe the proposed development sequence: **core** means directly u
 | --- | --- | --- |
 | **SpatialData, Marconato et al., online 2024 / issue 2025** — [paper](https://www.nature.com/articles/s41592-024-02212-x), [docs](https://spatialdata.scverse.org/en/stable/) | Images, labels, points, shapes, tables and coordinate transforms in a spatial data framework. | **Core interface design; next adapter.** Use it for interoperability while IFQuant contracts retain QC, meaning and provenance. |
 | **Squidpy, Palla et al., Nature Methods, 2022** — [paper](https://www.nature.com/articles/s41592-021-01358-2) | Spatial graphs, neighborhood enrichment, co-occurrence and image-associated omics analysis. | **Next; useful before omics.** Apply to validated IF cell phenotypes and regional labels. Condition null models on tissue structure and specimen. |
-| **VALIS, Gatenbee et al., Nature Communications, 2023** — [paper](https://www.nature.com/articles/s41467-023-40218-9) | Registration of brightfield and fluorescence whole-slide image series. | **Next when pairing exists.** Store transforms and landmark errors; neighboring sections do not guarantee the same individual cells. |
+| **VALIS, Gatenbee et al., Nature Communications, 2023** — [paper](https://www.nature.com/articles/s41467-023-40218-9) | Registration of brightfield and fluorescence whole-slide image series. | **Public execution implemented.** Bounded IHC-pair and controlled-transform replay; native slide export and independent landmarks remain. Neighboring sections do not guarantee the same cells. |
 | **cell2location, Kleshchevnikov et al., Nature Biotechnology, 2022** — [paper](https://www.nature.com/articles/s41587-021-01139-4) | Reference-based estimation of cell-type abundance in spatial transcriptomic locations. | **Next for mixed-cell spots.** Requires an appropriate single-cell reference; retain uncertainty and unknown populations. Not necessary for every single-cell spatial assay. |
 | **Tangram, Biancalani et al., Nature Methods, 2021** — [paper](https://www.nature.com/articles/s41592-021-01264-7) | Alignment of single-cell expression with spatial expression data. | **Conditional alternative.** Evaluate mapping on held-out genes and locations. Nonspatial scRNA-seq plus H&E alone does not establish measured cell coordinates. |
 | **BANKSY, Singhal et al., Nature Genetics, 2024** — [paper](https://www.nature.com/articles/s41588-024-01664-3) | Neighborhood-aware cell typing and tissue-domain identification. | **Next after a simple neighborhood baseline.** Useful for candidate inflammatory or regenerative niches; clusters require biological interpretation. |
@@ -222,10 +222,13 @@ pinned InstanSeg H&E ROI inference, a broader 308-feature lung/BANKSY comparison
 five cited Niethamer marker panels, complete reduced-level H&E execution, and
 explicit NGFF 0.4/0.5 plane intake. These are engineering/descriptive results.
 
-1. Finish whole-slide nuclei stitching/resume and explicit package adapters; run
-   independent annotated public comparisons and multi-scanner throughput.
-2. Execute VALIS on actual public paired images in a compatible isolated runtime;
-   distinguish runtime/adapter correctness from held-out landmark acceptance.
+1. Whole-grid nuclei stitching/resume and actual VALIS registration now execute;
+   see [the new guide](../docs/STITCHING_REGISTRATION.md) for scope and evidence.
+   Next, review seam disagreements against independent public annotations, then
+   compare backends and benchmark complete native-resolution slides across scanners.
+2. Extend VALIS to native slide readers/warped-image export and independent real
+   paired-slide landmarks. The current real pair has no independent accuracy
+   reference; the controlled-transform check tests coordinate execution only.
 3. Select a compatible scRNA reference and verified biological units before
    cell2location/Tangram, deconvolution or morphology/RNA effects. BANKSY partitions
    and marker summaries do not establish biological domains or cell states.
@@ -236,8 +239,8 @@ explicit NGFF 0.4/0.5 plane intake. These are engineering/descriptive results.
    robustness with appropriate independent references. LIANA+, SpatialGlue,
    CODEX, UNI/HEST remain question/input-dependent branches.
 
-The [public report](../docs/PUBLIC_DEVELOPMENT.md) explains why private data are
-not needed for these completed software tasks, why the capacity-safe panel uses
-full-library totals, and why H&E nuclei execution has its own tissue contract.
+The [public report](../docs/PUBLIC_DEVELOPMENT.md) explains the capacity-safe panel
+and full-library normalization; the [stitching guide](../docs/STITCHING_REGISTRATION.md)
+records isolated runtime choices, conservative seam handling and their limitations.
 Public resources do not restrict the future product identity. No universal injury
 score, lineage, expert acceptance or backend equivalence is inferred.

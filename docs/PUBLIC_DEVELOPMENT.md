@@ -4,7 +4,12 @@ Updated 2026-10-11. This extends the original priority 1–5 pass. Public resour
 exercise software intended for future obtainable high-resolution images; they do
 not define or limit the product's eventual inputs.
 
-## Delivered in this increment
+The subsequent [stitching and registration increment](STITCHING_REGISTRATION.md)
+implements whole-grid InstanSeg stitching/resume and live VALIS execution. Its
+[separate evidence](../validation/evidence/stitching-valis-20261011.json) preserves
+this earlier run record and supersedes the former unimplemented-software gaps.
+
+## Delivered in the first public development increment
 
 | Register jobs | Deliverable | Evidence and boundary |
 | --- | --- | --- |
@@ -54,8 +59,9 @@ official `brightfield_nuclei` 0.1.1 TorchScript model is accepted; code is
 The current profile accepts isotropic uint8 RGB H&E windows up to one million
 pixels and four million pixels at the model's 0.5 µm scale. It exports instance
 labels and centroids/areas in the selected source grid, with boundary objects
-flagged. Pixel centers are at index +0.5. It does not stitch neighboring tiles,
-infer whole cells, assign phenotype or produce injury severity.
+flagged. Pixel centers are at index +0.5. This ROI command does not stitch tiles;
+the separate `segment-instanseg-slide` command now does. Neither infers whole
+cells, assigns phenotype or produces injury severity.
 
 The upstream fixture's 336 objects matched with F1 and mean IoU of 1.0. The
 public 512 ×512 ROI produced 1,026 nuclei. Its OME metadata supplies
@@ -128,9 +134,9 @@ include source verification/output publication; concurrent workloads affect them
 
 | Order | Specific jobs | What permits completion |
 | --- | --- | --- |
-| 1 — Expand software qualification | Add tiled InstanSeg overlap ownership/stitching, cancellation/resume, package validation and a deliberate fluorescence export adapter; test seam/count invariance. Extend NGFF beyond bounded uint8 planes only with explicit semantics. | Public images and engineering fixtures suffice. Current ROI inference is not a whole-slide executor. |
+| 1 — Expand software qualification | Tiled stitching, resume and package validation are implemented. Next: label pyramids, deliberate fluorescence export adapter and larger-scale recovery/capacity tests. Extend NGFF only with explicit semantics. | Public images and engineering fixtures suffice; the current full-field replay is not a native whole-slide throughput benchmark. |
 | 2 — Public comparative benchmarks | Select an independently annotated, license-compatible nuclei set; audit model/train overlap; compare native, StarDist and InstanSeg with one sampling/evaluation contract. Test complete native-resolution slide throughput across scanners. | Public reference data can start this work; generalization to the user's future acquisition remains unestablished. CMU-1 is not asserted to be lung. |
-| 3 — Registration execution | Isolate a compatible VALIS runtime, bind an actual public paired-slide set, export forward points, and score separate held-out landmarks/local deformation coverage through the existing QC interface. | Public paired images/reference landmarks or a controlled-transform engineering fixture; no private data inherently required. This remains software/runtime work, not completed by the current point adapter. The [upstream installation requirements](https://valis.readthedocs.io/en/stable/installation.html) include external imaging dependencies. |
+| 3 — Registration qualification | Live isolated VALIS execution, public IHC pair and controlled-transform QC are completed. Next: native slide readers/export, independent real landmarks and representative deformation coverage. | Current bounded public planes establish execution; the real pair has no independent accuracy reference. See [scope and results](STITCHING_REGISTRATION.md). |
 | 4 — Broader molecular comparisons | Select a compatible independently annotated scRNA reference; justify raw-count panel/capacity and reference transfer; compare simple mapping before cell2location/Tangram. Add verified animal/timepoint replication for biological analyses. | Appropriate public references can support development; 308 selected genes and one accession proxy do not establish deconvolution or replicate-level effects. |
 | 5 — Authenticated TME reproduction | Obtain processed Slide-GoTags cells through the supported portal, bind author-column/coverage provenance and predeclare one cell-level spatial reproduction target. | Authorized source access; current 240-row workbook consistency is not cell-level reproduction. The supplied paper remains the optional TME reference, not a lung-severity model. |
 | 6 — Intended-use acceptance | Independent anatomy/lesion/cell masks, blinded disease-specific ordinal ratings, native/StarDist boundary review, supervised QuPath comparison, representative acquisition-domain robustness. | Independent experts and representative future images, or a genuinely matching public benchmark. The user's own dataset is not mandatory, but suitable evidence is. |

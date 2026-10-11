@@ -1,5 +1,6 @@
 """Pinned CPU brightfield inference and bounded, label-number invariant matching."""
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 from .canonical import canonical_sha256, file_sha256, load_strict_json
@@ -7,6 +8,34 @@ from .imaging import integer, keys, open_source, require, validate_source, write
 from .spatial import file_record
 
 MODEL_SHA256 = '0c724da169d507d8dd2e206ad3675a0b1566824eee6e20ad9a0ba916311d9dd0'
+
+
+@contextmanager
+def cpu_predictor(weights, threads):
+    """One pinned model per run; restore process thread settings on failure."""
+    import importlib.metadata
+    require(file_sha256(weights) == MODEL_SHA256, 'only pinned official brightfield_nuclei 0.1.1 weights accepted')
+    require(importlib.metadata.version('instanseg-torch') == '0.1.2', 'pinned instanseg-torch 0.1.2 required')
+    import torch
+    from instanseg import InstanSeg
+    require(torch.__version__.split('+')[0] == '2.8.0', 'pinned torch 2.8.0 required')
+    previous = torch.get_num_threads()
+    try:
+        torch.set_num_threads(threads)
+        model = torch.jit.load(str(weights), map_location='cpu').eval()
+        require(file_sha256(weights) == MODEL_SHA256, 'weights changed while loading')
+        predictor = InstanSeg(model, device='cpu', image_reader='skimage.io', verbosity=0, channels_last=False)
+        def infer(image, pixel_size):
+            with torch.inference_mode():
+                result = predictor.eval_small_image(image, pixel_size=pixel_size, target='nuclei',
+                    normalise=True, return_image_tensor=False, rescale_output=True)
+            height, width = image.shape[:2]
+            require(tuple(result.shape[-2:]) == (height, width) and result.numel() == height*width,
+                    'model output does not preserve the selected image grid')
+            return validate_labels(result.detach().cpu().numpy().reshape(height, width))
+        yield infer
+    finally:
+        torch.set_num_threads(previous)
 
 
 def validate_labels(values):

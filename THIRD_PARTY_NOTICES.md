@@ -34,3 +34,16 @@ The repository's image demonstration is procedurally generated synthetic data.
 - Niethamer mouse marker facts are attributed to DOI 10.1016/j.stem.2024.12.002;
   exact symbol/Ensembl mapping uses the pinned Kasmani HDF5 feature table. The
   repository does not redistribute article content or upstream source matrices.
+
+## Isolated registration runtime
+
+- [VALIS 1.2.0](https://pypi.org/project/valis-wsi/1.2.0/) and
+  [pyvips 3.2.0](https://pypi.org/project/pyvips/3.2.0/) declare MIT terms.
+  Binary libvips and its bundled libraries retain their own notices; see the
+  [libvips distribution](https://www.libvips.org/) and installed wheel licenses.
+- The pinned official VALIS IHC example files remain in the ignored cache.
+  Dataset-specific redistribution rights are not inferred from the code license;
+  no source images or registrar objects are committed or published by this change.
+- VALIS imports may download DISK/LightGlue weights even with the configured
+  non-learned VGG/OpenCV descriptor. Their cache files and hashes are inventoried
+  in run reports; their upstream terms remain separate. None is redistributed here.

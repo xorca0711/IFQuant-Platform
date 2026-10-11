@@ -4,10 +4,31 @@ Update this before stopping work, every session.
 
 Updated 2026-10-11. Branch `codex/public-data-development` starts from merged
 PR #3 / main `e54192d`. The user authorized remaining feasible development,
-roadmap updates, commit, push and a follow-up PR. No merge or scientific
+roadmap updates, commit, push and updates to PR #4. No merge or scientific
 acceptance is authorized.
 
-## Delivered in this increment
+## Latest: tiled nuclei and live VALIS
+
+- Resumable whole-grid InstanSeg with core pixel ownership, conservative overlap
+  identity, lock/recovery behavior, calibrated object tables and tiled BigTIFF.
+  Public full-field replay: nine tiles, 5,726 candidates, 44 seam flags; package
+  reconstruction passed. This is not a native whole-slide throughput benchmark.
+- Single-window comparison: F1 0.99053 / matched IoU 0.99186 on shared pixels.
+  This measures tiling sensitivity; independent segmentation accuracy is open.
+- Isolated VALIS 1.2.0 execution: controlled public-image transform RMSE 5.949 µm
+  across 16 points; real IHC pair completed nonrigid registration with no sampled
+  folds. Real pair accuracy is undefined without independent landmarks; physical
+  section relation remains unknown.
+- Full suite: 217 tests / 144 subtests passed. After the final pre-allocation
+  capacity guard, nine focused tests passed (including one new regression), and
+  the public package reconstructed unchanged. Scoped lint and core wheel passed.
+- Runtime and source constraints, failed-attempt rationale and artifact hashes
+  are in [new evidence](validation/evidence/stitching-valis-20261011.json) and
+  [execution guide](docs/STITCHING_REGISTRATION.md). Publication targets existing
+  [PR #4](https://github.com/xorca0711/IFQuant-Platform/pull/4); GitHub is authoritative
+  for current remote checks.
+
+## Earlier public development increment
 
 - Pinned CPU InstanSeg H&E ROI nuclei inference and calibrated object exports.
   All 336 objects in the upstream model fixture matched (F1/IoU 1); a calibrated
@@ -34,11 +55,12 @@ GitHub is authoritative for the follow-up PR and remote checks.
 
 ## Remaining gaps, in order
 
-1. Whole-slide InstanSeg stitching, resume and deliberate package adapters;
-   independent annotated public comparisons and native-resolution multi-scanner
-   throughput. These remain software/public-data work, not private-data gates.
-2. Actual VALIS public paired-slide runtime execution and held-out landmark QC.
-   The existing point adapter is implemented; a live registration replay is not.
+1. Independent annotated nuclei comparisons and seam review; native-resolution
+   multi-scanner throughput, label pyramids and deliberate fluorescence adapters.
+   These remain software/public-data work, not private-data gates.
+2. Native VALIS slide readers/warped-image export, independent real paired-slide
+   landmarks and representative local deformation coverage. Bounded-plane live
+   execution is complete; real-pair accuracy is still unmeasured.
 3. Compatible scRNA reference selection, count-capacity qualification and verified
    specimen identities before cell2location/Tangram or biological associations.
 4. Supported authenticated Slide-GoTags cell access before cell-level reproduction.

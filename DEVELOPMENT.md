@@ -29,6 +29,9 @@ certify that history. Human pathology review has not been supplied.
 | 2026-10-11 | Complete feasible software/public-data work and publish a follow-up PR | User | User | Authorized development and publication | No private validation data available; no merge or scientific acceptance authorized. |
 | 2026-10-11 | Pinned H&E nuclei executor, broad RNA/BANKSY replay, explicit NGFF planes and throughput qualification | Codex | Pending human review | Implemented for review | Reproducibility evidence remains separate from independent pathology validation. |
 
+| 2026-10-11 | Complete whole-slide InstanSeg stitching and public VALIS execution, update PR #4 | User | User | Authorized development and publication | Explicit request; no merge or scientific acceptance authorized. |
+| 2026-10-11 | Conservative tiled nuclei stitching, isolated live registration and bounded public replays | Codex | Pending human review | Implemented for review | Software reconstruction and controlled geometry are separated from independent biological accuracy. |
+
 ## Rejected or substantially revised AI proposals
 
 | Date | Proposal | Rejected/modified by | Reason and resulting change |
@@ -44,10 +47,15 @@ certify that history. Human pathology review has not been supplied.
 | 2026-10-09 | Claim complete Slide-GoTags reproduction from public source tables | Source-data audit / Codex | Tables lack cell coordinates/edge counts; portal needs sign-in. Reconcile 240 reported rows and keep cell-level reproduction gated. |
 | 2026-10-09 | Copy author global shuffling and zero substitution for undefined mixing | Codex methodological review | Use specimen/region/coverage-conditioned nulls, +1 p correction, BH, explicit undefined/degenerate abstention and uncertainty scenarios; do not call this an exact author-method reproduction. |
 
-No human scientific approval, model equivalence decision, or code acceptance is
-inferred from test completion. See [current progress](PROGRESS.md) and
-[local evidence](validation/evidence/stages-1-4-20261009.json).
-
 | 2026-10-11 | Leave all InstanSeg/BANKSY/program work conditional on private validation data | Codex implementation review | Revised: public resources suffice for scoped execution and source curation; independent accuracy remains open. |
 | 2026-10-11 | Use 500 variable genes in the initial public RNA plan | Capacity check / Codex | Exceeded the existing million-row import guard; reduced to 300 plus cited markers (308 total), retaining full-library denominators. |
 | 2026-10-11 | Fit brightfield nuclei into the existing fluorescence-v1 cell executor immediately | Codex implementation review | Revised to an explicit bounded H&E tissue result; whole-slide stitching and a deliberate canonical adapter remain separate work. |
+| 2026-10-11 | Install VALIS into the current NumPy 2.x / Python 3.12 environment | Runtime evidence / Codex | Separate locked Python 3.11 / NumPy 1.26 runtime avoids incompatible constraints and failed fastcluster source compilation. |
+| 2026-10-11 | Call rigid-only VALIS without a compatibility shim | Runtime evidence / Codex | VALIS 1.2.0 cleanup accesses an absent container; initialize only that empty container and still require completed outputs. |
+| 2026-10-11 | Assume physical serial-section identity from public example names | Source evidence / Codex | Relationship is not established; added explicit unknown relation and retained source-series proxy identity. |
+| 2026-10-11 | Compare the entire dense 768-pixel inference ROI with exhaustive instance matching | Capacity evidence / Codex | Exceeded the existing four-million-pair guard; retained inference outputs and compared the fixed 512-pixel common window without weakening the guard. |
+| 2026-10-11 | Materialize a full tile inventory before enforcing its cap | Targeted review / Codex | Moved the 100,000-tile guard before allocation; dedicated regression and existing package reconstruction passed. |
+
+No human scientific approval, model equivalence decision, or code acceptance is
+inferred from test completion. See [current progress](PROGRESS.md) and
+[local evidence](validation/evidence/stages-1-4-20261009.json).

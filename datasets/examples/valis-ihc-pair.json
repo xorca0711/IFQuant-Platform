@@ -1,0 +1,11 @@
+{
+  "schema_version": "ifquant.public-example/1",
+  "upstream_revision": "325828c1dec444e6bb672a78e875537436dd3c20",
+  "source": "https://github.com/MathOnco/valis/tree/325828c1dec444e6bb672a78e875537436dd3c20/examples/example_datasets/ihc",
+  "scope": "Two reduced IHC example slides in the authors' registration series; patient identity is not asserted. No independently annotated landmarks accompany this replay.",
+  "terms": "Official public VALIS example data, retained in ignored cache with attribution. Upstream repository code is MIT; dataset-specific redistribution rights are not inferred.",
+  "files": [
+    {"name": "ihc_1.ome.tiff", "url": "https://raw.githubusercontent.com/MathOnco/valis/325828c1dec444e6bb672a78e875537436dd3c20/examples/example_datasets/ihc/ihc_1.ome.tiff", "size_bytes": 16680586, "sha256": "ba6849f9ac545bef245217ed4dec1c50aef2f1bdd7520f1264364195017de190"},
+    {"name": "ihc_2.ome.tiff", "url": "https://raw.githubusercontent.com/MathOnco/valis/325828c1dec444e6bb672a78e875537436dd3c20/examples/example_datasets/ihc/ihc_2.ome.tiff", "size_bytes": 15605448, "sha256": "796d59ec58ac79d767a4304ddec9dbb29e757e5fe96b6961c9c002f9302b665b"}
+  ]
+}

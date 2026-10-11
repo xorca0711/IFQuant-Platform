@@ -7,7 +7,7 @@ all work through priority 5, fixes with rationale, current docs and commit/push/
 Do not infer permission to merge or any human scientific acceptance.
 
 - Workspace `X:/GitHub/IFQuant-Platform`; branch `codex/public-data-development`,
-  based on merged PR #3 / main `e54192d`; publish a new follow-up PR. Legacy `X:/GitHub/IFQuant-Lung` is read-only. MIT original source;
+  based on merged PR #3 / main `e54192d`; update existing PR #4 (https://github.com/xorca0711/IFQuant-Platform/pull/4). Legacy `X:/GitHub/IFQuant-Lung` is read-only. MIT original source;
   third-party code/model/data terms remain separate. No subagents were used.
 - Product: future high-resolution tissue imaging and spatial phenotyping;
   lung injury/regeneration first, optional TME/omics. Public data are development
@@ -33,7 +33,7 @@ Do not infer permission to merge or any human scientific acceptance.
 - Raw/cache files and generated outputs are ignored. Commit portable evidence,
   manifests and scripts only. Source papers/workbooks, images, weights and runtime
   binaries are not part of Git. Input download is explicit and pinned.
-- New evidence: `validation/evidence/public-development-20261011.json`; 209 tests
+- Earlier evidence: `validation/evidence/public-development-20261011.json`; 209 tests
   plus 144 subtests passed. `docs/PUBLIC_DEVELOPMENT.md` gives commands/results/gaps.
   Pinned model conformance and public ROI inference, 308-feature lung/BANKSY replay,
   five marker panels, NGFF multi-axis planes, 391-tile reduced-level H&E execution.
@@ -43,10 +43,28 @@ Do not infer permission to merge or any human scientific acceptance.
 - All future claims requiring humans/data remain open: independent pathology
   labels, severity rubric, native/StarDist warning acceptance, supervised model
   comparisons, broad-feature biological analyses and representative paired-slide
-  registration. InstanSeg now executes a bounded H&E ROI through a separate tissue contract;
-  it does not unlock the fluorescence-v1 canonical backend. Whole-slide stitching
-  and independent accuracy remain open. BANKSY feature comparison executes;
+  registration. InstanSeg now executes both ROIs and resumable tiled grids through
+  a separate tissue contract; it does not unlock the fluorescence-v1 canonical
+  backend. Public full-field stitching and live VALIS execute; independent accuracy
+  and native whole-slide throughput remain open. BANKSY feature comparison executes;
   cell2location/Tangram/LIANA+/SpatialGlue/CODEX remain conditional.
 - Tests, example outputs and provenance summaries are linked from the current
   evidence JSON. Reuse valid checks; repeat only after relevant changes. Remote
   CI status must be read from GitHub, not inferred from local success.
+
+- Latest evidence: `validation/evidence/stitching-valis-20261011.json`; guide
+  `docs/STITCHING_REGISTRATION.md`. 217 full-suite tests / 144 subtests passed;
+  nine focused tests passed after adding the pre-allocation capacity regression.
+  Nine public InstanSeg tiles produce 5,726 candidates with 44 seam flags.
+  Final guard revision reconstructs the same package without repeating inference.
+- VALIS: isolated `.venv-valis311` with Python 3.11 x64, NumPy 1.26.4,
+  CPU torch 2.8.0, VALIS 1.2.0 and pyvips binary. Lock lives in
+  `environments/valis`; do not merge this NumPy 1.x stack into the main environment.
+  Set PYTHONPATH to repo `src`, MPLBACKEND=Agg, and explicit TORCH_HOME cache.
+  For uv run use `--project environments/valis` to preserve the repo-root cwd.
+  Python 3.12 fastcluster build failed; 3.11 wheel succeeded. Rigid-only VALIS
+  cleanup needs an empty missing nonrigid settings container; do not suppress
+  registration failures. Unknown public section relationship stays unknown.
+- Public VALIS final run: `validation/output/valis-final-20261011`; controlled
+  RMSE 5.949 µm / 16 points; real nonrigid pair no sampled folds, no independent
+  landmarks. Earlier failed/serial-relation exploratory attempts stay ignored.
