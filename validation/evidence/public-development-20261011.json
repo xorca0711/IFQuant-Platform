@@ -255,5 +255,17 @@
     "scripts/replay_histology_throughput.py": "24889e3ea0162f206faed468156944f476d82841496e613214959b5650d4be2c",
     "uv.lock": "6f38da3130d02eb6e5dbba9fc61af17a97b811879e37181e68c8a79c71ad7525"
   },
-  "remaining": "docs/PUBLIC_DEVELOPMENT.md"
+  "remaining": "docs/PUBLIC_DEVELOPMENT.md",
+  "hash_scope": "Run hashes record observed local bytes and paths, not cross-platform bitwise-identical output. Git normalizes text to LF; repository blob hashes are listed separately.",
+  "repository_blob_hashes": {
+    "src/ifquant_platform/instance_segmentation.py": "caf3d99f7286f2773812a247615ba82330f8ce12ddcb525d1627836c13eb4c42",
+    "src/ifquant_platform/spatial_domains.py": "b58cb803f0b404bd411a9abb45eace98a06ea46d6bb2c18eb5cd0af0e5bcd5e4",
+    "src/ifquant_platform/rna_normalization.py": "e64df84c4b5b8fde380186b89915d036d842c9d5252b1f11770e4e696238f102",
+    "src/ifquant_platform/upstream_interchange.py": "cf8d6ec4d3a87d0126ef66e74e131558ad2f2c03f07ea0245f2570799073846a",
+    "protocols/niethamer-lung-markers-v1.json": "ee6ee6f1dcad420018f911fd097d0a0390c20fb3f19f061c28b9cc7204847bc5",
+    "scripts/replay_lung_rna.py": "5902e96c721fad4a818b4e9c703a7b72992793c69a650362129d11a618931901",
+    "scripts/replay_instanseg.py": "2ef48155ba6abcfce18c19da71d79530ab4e2d4501a7a4edff46bdb5d511d058",
+    "scripts/replay_histology_throughput.py": "24889e3ea0162f206faed468156944f476d82841496e613214959b5650d4be2c",
+    "uv.lock": "6f38da3130d02eb6e5dbba9fc61af17a97b811879e37181e68c8a79c71ad7525"
+  }
 }
